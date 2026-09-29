@@ -212,11 +212,11 @@ describe("研究页面契约", () => {
     });
     const writer = await renderPage(<WriterPage />, store);
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "开始写作" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "开始内容生产" })).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "开始写作" }));
+    fireEvent.click(screen.getByRole("button", { name: "开始内容生产" }));
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "生成文章" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "生成内容" })).toBeEnabled(),
     );
     writer.unmount();
     writer.client.clear();
@@ -243,16 +243,16 @@ describe("研究页面契约", () => {
       },
     ]);
     await renderPage(<WriterPage />);
-    await screen.findByText("先接入 AI，再开始写作");
-    fireEvent.change(screen.getByLabelText(/这次想写什么/), {
+    await screen.findByText("先接入 AI，再开始内容生产");
+    fireEvent.change(screen.getByLabelText(/这次想生成什么内容/), {
       target: { value: "运营主题" },
     });
-    expect(screen.getByRole("button", { name: "开始写作" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "开始内容生产" })).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "接入 AI" }));
     expect(await screen.findByLabelText("你的 API Key")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "保存并返回写作" }),
+      screen.getByRole("button", { name: "保存并返回内容生产" }),
     ).toBeDisabled();
   });
 
@@ -260,8 +260,8 @@ describe("研究页面契约", () => {
     mocks.listProviderConfigs.mockRejectedValue(new Error("offline"));
     await renderPage(<WriterPage />);
     await screen.findByText("AI 设置读取失败，请重试。原有配置不会被清空。");
-    expect(screen.queryByText("先接入 AI，再开始写作")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "开始写作" })).toBeDisabled();
+    expect(screen.queryByText("先接入 AI，再开始内容生产")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "开始内容生产" })).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
   });
 
@@ -275,10 +275,10 @@ describe("研究页面契约", () => {
     mocks.generateContent.mockRejectedValue(new Error("quota"));
     await renderPage(<WriterPage />, store);
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "开始写作" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "开始内容生产" })).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "开始写作" }));
-    fireEvent.click(screen.getByRole("button", { name: "生成文章" }));
+    fireEvent.click(screen.getByRole("button", { name: "开始内容生产" }));
+    fireEvent.click(screen.getByRole("button", { name: "生成内容" }));
     await screen.findByRole("alert");
     expect(mocks.generateContent).toHaveBeenCalledTimes(1);
     expect(store.get(composerSessionAtom).userMaterial).toBe("用户的真实材料");
@@ -287,13 +287,13 @@ describe("研究页面契约", () => {
 
   it("retains_preparation_and_step_when_returning_from_settings", async () => {
     const first = await renderPage(<WriterPage />);
-    fireEvent.change(screen.getByLabelText(/这次想写什么/), {
+    fireEvent.change(screen.getByLabelText(/这次想生成什么内容/), {
       target: { value: "运营主题" },
     });
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "开始写作" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "开始内容生产" })).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "开始写作" }));
+    fireEvent.click(screen.getByRole("button", { name: "开始内容生产" }));
     first.unmount();
     first.client.clear();
     const second = await renderPage(<WriterPage />, first.store);
@@ -302,7 +302,7 @@ describe("研究页面契约", () => {
     second.unmount();
     second.client.clear();
     await renderPage(<WriterPage />);
-    expect(screen.getByLabelText(/这次想写什么/)).toHaveValue("");
+    expect(screen.getByLabelText(/这次想生成什么内容/)).toHaveValue("");
   });
 
   it("retains_unsaved_edits_and_blocks_export_until_saved", async () => {
@@ -384,10 +384,10 @@ describe("研究页面契约", () => {
     });
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: "保存并返回写作" }),
+        screen.getByRole("button", { name: "保存并返回内容生产" }),
       ).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "保存并返回写作" }));
+    fireEvent.click(screen.getByRole("button", { name: "保存并返回内容生产" }));
     await waitFor(() =>
       expect(screen.queryByLabelText("你的 API Key")).not.toBeInTheDocument(),
     );

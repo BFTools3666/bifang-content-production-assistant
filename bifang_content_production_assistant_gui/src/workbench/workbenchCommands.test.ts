@@ -33,7 +33,7 @@ import {
 describe("workbench Tauri command boundary", () => {
   beforeEach(() => invokeMock.mockReset());
 
-  /** Grid 缩略图只按文章 ID 读取，不向 WebView 暴露路径或可变尺寸。 */
+  /** Grid 缩略图只按内容 ID 读取，不向 WebView 暴露路径或可变尺寸。 */
   it("loads_a_fixed_grid_thumbnail_by_task_id", async () => {
     const thumbnail = "data:image/png;base64,aGVsbG8=";
     invokeMock.mockResolvedValueOnce(thumbnail);
@@ -448,7 +448,7 @@ describe("workbench Tauri command boundary", () => {
     const syncResult = {
       connectorId: config.id,
       connectorRevision: config.revision,
-      fileName: "文章-v3.md",
+      fileName: "内容-v3.md",
       fileToken: "file_test",
       format: "markdown" as const,
       packageVersion: 3,

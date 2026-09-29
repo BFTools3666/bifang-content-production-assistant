@@ -827,18 +827,18 @@
   "settings": {
     "host_state_failed": "Some system settings could not be read. You can retry; switches will not pretend to be enabled.",
     "language_failed": "The language preference could not be saved. The interface keeps its current language.",
-    "business_settings": "Writing and connections",
+    "business_settings": "Content production and connections",
     "ai_services": "AI services",
     "feishu_connection": "Feishu and cloud documents",
-    "writing_prompts": "Writing instructions",
+    "writing_prompts": "Content instructions",
     "run_history": "Run history"
   },
   "research": {
     "navigation": {
       "benchmarks": "Find references",
       "styles": "Styles",
-      "writer": "Write",
-      "drafts": "My articles"
+      "writer": "Content production",
+      "drafts": "My content"
     }
   }
 }

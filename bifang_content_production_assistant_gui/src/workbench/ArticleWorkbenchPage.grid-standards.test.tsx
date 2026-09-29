@@ -64,7 +64,7 @@ function emptyStage(): StageProgress {
   };
 }
 
-/** 构造能够进入真实 Grid 的草稿文章。 */
+/** 构造能够进入真实 Grid 的草稿内容。 */
 function draftArticle(index: number): ArticleView {
   return {
     article: {
@@ -95,7 +95,7 @@ function draftArticle(index: number): ArticleView {
         image: emptyStage(),
         summary: emptyStage(),
       },
-      title: `文章 ${String(index).padStart(2, "0")}`,
+      title: `内容 ${String(index).padStart(2, "0")}`,
       updatedAtMs: 1_789_123_456_000 + index,
     },
     hasImage: false,
@@ -316,13 +316,13 @@ describe("workbench Grid standards", () => {
     queryClient.setQueryData(["workbench"], snapshot);
     renderWorkbench(instance, createStore(), queryClient);
 
-    expect(await screen.findByText("文章 01")).toBeInTheDocument();
+    expect(await screen.findByText("内容 01")).toBeInTheDocument();
     expect(screen.getByText(zhCN.workbench.refreshing)).toBeInTheDocument();
 
     await act(async () => deferred.reject(new Error("refresh offline")));
     expect(
       await screen.findByText(zhCN.workbench.refresh_failed),
     ).toBeInTheDocument();
-    expect(screen.getByText("文章 01")).toBeInTheDocument();
+    expect(screen.getByText("内容 01")).toBeInTheDocument();
   });
 });

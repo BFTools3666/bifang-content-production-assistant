@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { hasRetryableStage } from "./articleRetry";
 import type { ArticleTask } from "./workbenchTypes";
 
-/** 只构造重试门禁使用的最小文章阶段视图。 */
+/** 只构造重试门禁使用的最小内容阶段视图。 */
 function taskWithImageFailure(retryable: boolean): ArticleTask {
   return {
     id: "article-a",

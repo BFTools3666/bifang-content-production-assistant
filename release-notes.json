@@ -2,6 +2,22 @@
   "schemaVersion": 2,
   "releases": [
     {
+      "releaseDate": "2026-09-30",
+      "version": "v0.2.23",
+      "featureOptimizations": [
+        {
+          "zh-CN": "业务入口统一为内容生产，依次完成生产准备、生成内容、检查修改和保存导出。小红书使用笔记称呼。",
+          "en-US": "Use Content Production as the workflow entry with preparation, generation, review and export. Refer to Xiaohongshu output as notes."
+        }
+      ],
+      "bugFixes": [
+        {
+          "zh-CN": "主工具在 Windows 安装时备份目标确实指向旧 SEO 程序的快捷方式，减少误开旧版；原有数据和配置保留。",
+          "en-US": "When installing the main Windows app, archive verified shortcuts to the earlier SEO program while keeping its data and settings."
+        }
+      ]
+    },
+    {
       "releaseDate": "2026-09-29",
       "version": "v0.2.21",
       "featureOptimizations": [

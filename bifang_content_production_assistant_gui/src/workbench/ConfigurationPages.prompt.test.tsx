@@ -277,10 +277,10 @@ describe("prompt and provider configuration pages", () => {
         version: 1,
       },
       {
-        article: "# 示例正文\n\n这里是用于本地预览的文章内容。",
+        article: "# 示例正文\n\n这里是用于本地预览的内容。",
         keywords: "内容运营、批量生成",
         requirements: "结构清晰，使用简体中文",
-        summary: "这是一段用于本地预览的文章简介。",
+        summary: "这是一段用于本地预览的内容简介。",
         title: "批量内容工作台示例",
       },
     );

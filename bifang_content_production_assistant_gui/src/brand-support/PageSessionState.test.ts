@@ -6,7 +6,7 @@ import {
   type PageSessionState,
 } from "./pageSessionState";
 
-/** 测试页签使用的最小文章范围。 */
+/** 测试页签使用的最小内容范围。 */
 type TestScope = "all" | "failed";
 
 const DEFAULT_STATE: PageSessionState<TestScope, { keyword: string }> = {

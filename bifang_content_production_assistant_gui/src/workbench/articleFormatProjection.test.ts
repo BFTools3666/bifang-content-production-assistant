@@ -42,7 +42,7 @@ describe("article format projection", () => {
     );
   });
 
-  /** 解释后预览丢弃主动内容和全部原始属性，只留下安全文章结构。 */
+  /** 解释后预览丢弃主动内容和全部原始属性，只留下安全内容结构。 */
   it("builds_a_sandbox_document_without_active_or_remote_content", () => {
     const preview = buildSafePreviewDocument(
       '<h1 onclick="steal()">标题</h1><p>正文 <a href="https://evil.test">链接</a></p><img src="https://evil.test/a.png"><script>steal()</script><form action="https://evil.test"></form>',

@@ -53,7 +53,7 @@ function stage(status: StageProgress["status"] = "notStarted"): StageProgress {
   };
 }
 
-/** 创建一条满足真实 IPC 结构的草稿文章。 */
+/** 创建一条满足真实 IPC 结构的草稿内容。 */
 function article(): ArticleView {
   return {
     article: {
@@ -422,7 +422,7 @@ describe("article Grid interactions", () => {
     expect(onGenerateStage).not.toHaveBeenCalled();
 
     const titleCell = within(row).getAllByRole("cell")[1];
-    if (!titleCell) throw new Error("缺少文章标题单元格");
+    if (!titleCell) throw new Error("缺少内容标题单元格");
     fireEvent.click(titleCell);
     expect(onSelectionChange).toHaveBeenCalledOnce();
     expect(onInspect).not.toHaveBeenCalled();
@@ -486,17 +486,17 @@ describe("article Grid interactions", () => {
     ).not.toBeInTheDocument();
     expect(
       screen.getAllByRole("columnheader").map((header) => header.textContent),
-    ).toEqual(["选择", "文章信息", "正文", "简介", "配图", "格式"]);
+    ).toEqual(["选择", "内容信息", "正文", "简介", "配图", "格式"]);
 
     const row = screen.getByTestId("article-row-article-1");
     const cells = within(row).getAllByRole("cell");
     expect(cells).toHaveLength(6);
     const informationCell = cells[1];
-    if (!informationCell) throw new Error("缺少文章信息单元格");
+    if (!informationCell) throw new Error("缺少内容信息单元格");
     expect(
       within(informationCell).getByText("企业知识库搭建指南"),
     ).toBeInTheDocument();
-    expect(within(informationCell).getByText("文章包 v1")).toBeInTheDocument();
+    expect(within(informationCell).getByText("内容包 v1")).toBeInTheDocument();
     expect(within(informationCell).getByText("草稿")).toBeInTheDocument();
     expect(within(informationCell).getByText("创建时间")).toBeInTheDocument();
     expect(within(informationCell).getByText("更新时间")).toBeInTheDocument();

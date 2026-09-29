@@ -229,7 +229,7 @@ describe("connector settings page", () => {
 
     expect(await screen.findByText(/升级后待选择/)).toBeInTheDocument();
     expect(
-      screen.getByRole("switch", { name: "允许用于文章发布" }),
+      screen.getByRole("switch", { name: "允许用于内容发布" }),
     ).toBeDisabled();
     expect(screen.getByRole("button", { name: "测试连接" })).toBeDisabled();
 

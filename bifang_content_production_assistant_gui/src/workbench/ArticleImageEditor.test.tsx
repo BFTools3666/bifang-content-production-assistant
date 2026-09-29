@@ -200,7 +200,7 @@ describe("article image editor", () => {
     });
 
     resolveSave?.();
-    await screen.findByText("配图编辑已保存为新的文章包版本。");
+    await screen.findByText("配图编辑已保存为新的内容包版本。");
     await waitFor(() => expect(loadEditorMock).toHaveBeenCalledTimes(2));
     expect(onDirtyChange).toHaveBeenLastCalledWith(false);
   });
@@ -221,7 +221,7 @@ describe("article image editor", () => {
     await user.click(screen.getByRole("button", { name: "保存新配图版本" }));
 
     expect(
-      await screen.findByText("文章或配图已变化，请重新载入编辑器后再保存。"),
+      await screen.findByText("内容或配图已变化，请重新载入编辑器后再保存。"),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "保存新配图版本" }),
@@ -232,7 +232,7 @@ describe("article image editor", () => {
     expect(loadEditorMock).toHaveBeenCalledOnce();
   });
 
-  /** 排队或运行中的文章仍显示原图和查看工具，但明确禁用保存。 */
+  /** 排队或运行中的内容仍显示原图和查看工具，但明确禁用保存。 */
   it("keeps_busy_article_images_viewable_and_disables_save", async () => {
     loadEditorMock.mockResolvedValue({
       ...editorView(),
@@ -248,7 +248,7 @@ describe("article image editor", () => {
       await screen.findByRole("img", { name: "《SEO 指南》的 AI 生成配图" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("当前文章正在排队或运行，暂时不能保存配图编辑。"),
+      screen.getByText("当前内容正在排队或运行，暂时不能保存配图编辑。"),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "保存新配图版本" }),
@@ -276,7 +276,7 @@ describe("article image editor", () => {
     rerenderWithRefreshKey("9:2:0:attempt-image-1");
 
     expect(
-      await screen.findByText("当前文章正在排队或运行，暂时不能保存配图编辑。"),
+      await screen.findByText("当前内容正在排队或运行，暂时不能保存配图编辑。"),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "保存新配图版本" }),
