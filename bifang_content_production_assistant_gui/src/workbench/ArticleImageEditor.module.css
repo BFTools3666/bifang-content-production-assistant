@@ -1,0 +1,80 @@
+.viewer {
+  min-width: 0;
+  background: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-7)
+  );
+}
+
+.preview,
+.fullscreenPreview {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 220px;
+  max-height: 54vh;
+  border-radius: var(--mantine-radius-sm);
+  background:
+    linear-gradient(45deg, rgb(128 128 128 / 10%) 25%, transparent 25%),
+    linear-gradient(-45deg, rgb(128 128 128 / 10%) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgb(128 128 128 / 10%) 75%),
+    linear-gradient(-45deg, transparent 75%, rgb(128 128 128 / 10%) 75%);
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: 16px 16px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.preview:active,
+.fullscreenPreview:active {
+  cursor: grabbing;
+}
+
+.previewImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: none;
+  max-height: none;
+  transform-origin: center;
+  transition: transform 120ms ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.zoomSlider {
+  width: clamp(92px, 18vw, 170px);
+}
+
+.cropGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(88px, 1fr));
+  gap: var(--mantine-spacing-xs);
+}
+
+.fullscreenLayout {
+  height: calc(100vh - 96px);
+}
+
+.fullscreenPreview {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+}
+
+@media (width <= 720px) {
+  .cropGrid {
+    grid-template-columns: repeat(2, minmax(88px, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .previewImage {
+    transition: none;
+  }
+}

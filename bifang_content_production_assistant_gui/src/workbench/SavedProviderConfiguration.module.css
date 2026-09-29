@@ -1,0 +1,8 @@
+.stage,
+.value {
+  min-width: 0;
+}
+
+.value {
+  overflow-wrap: anywhere;
+}

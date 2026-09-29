@@ -1,0 +1,24 @@
+[package]
+name = "bifang_content_production_assistant_cli"
+version.workspace = true
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+description = "批量 AI 内容工作台的只读产品 CLI"
+
+[[bin]]
+name = "bifang_content_production_assistant_cli"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+bifang_content_production_assistant_core.workspace = true
+jiff.workspace = true
+sea-orm.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+assert_cmd.workspace = true
+tempfile.workspace = true

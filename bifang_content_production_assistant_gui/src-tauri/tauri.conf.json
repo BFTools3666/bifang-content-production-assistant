@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "毕方内容生产助手",
+  "version": "0.2.17",
+  "identifier": "com.arden.bifang-content-production-assistant",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost"
+    },
+    "windows": [
+      {
+        "label": "main",
+        "title": "毕方内容生产助手",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 640,
+        "center": true,
+        "preventOverflow": true,
+        "resizable": true
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "category": "Utility",
+    "icon": ["icons/32x32.png"],
+    "macOS": {
+      "files": {
+        "Resources/Legal/LICENSE.zh-CN.md": "../../LICENSE.zh-CN.md",
+        "Resources/Legal/LICENSE.en.md": "../../LICENSE.en.md",
+        "Resources/Legal/THIRD_PARTY_LICENSES.txt": "../../legal/THIRD_PARTY_LICENSES.txt",
+        "Resources/Legal/THIRD_PARTY_NOTICE.txt": "../../legal/THIRD_PARTY_NOTICE.txt",
+        "Resources/Legal/MPL-Sources/cssparser-0.36.0.crate": "../../legal/MPL-Sources/cssparser-0.36.0.crate",
+        "Resources/Legal/MPL-Sources/cssparser-macros-0.6.1.crate": "../../legal/MPL-Sources/cssparser-macros-0.6.1.crate",
+        "Resources/Legal/MPL-Sources/dtoa-short-0.3.5.crate": "../../legal/MPL-Sources/dtoa-short-0.3.5.crate",
+        "Resources/Legal/MPL-Sources/option-ext-0.2.0.crate": "../../legal/MPL-Sources/option-ext-0.2.0.crate",
+        "Resources/Legal/MPL-Sources/selectors-0.36.1.crate": "../../legal/MPL-Sources/selectors-0.36.1.crate"
+      },
+      "dmg": {
+        "background": "./dmg/background.png",
+        "windowSize": {
+          "width": 660,
+          "height": 400
+        },
+        "appPosition": {
+          "x": 180,
+          "y": 220
+        },
+        "applicationFolderPosition": {
+          "x": 480,
+          "y": 220
+        }
+      }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [],
+      "pubkey": ""
+    },
+    "deep-link": {
+      "desktop": {
+        "schemes": ["app-bifang-content-production-assistant"]
+      }
+    }
+  }
+}

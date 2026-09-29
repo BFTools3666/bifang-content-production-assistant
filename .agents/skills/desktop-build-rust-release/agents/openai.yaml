@@ -1,0 +1,4 @@
+interface:
+  display_name: "构建 Rust 发布候选"
+  short_description: "仅从 clean HEAD 构建并暂存可审计的 Rust 发布候选"
+  default_prompt: "使用 $desktop-build-rust-release；普通构建不自动提交，dirty 时停止，只从固定 clean HEAD 构建候选并确保 manifest sourceCommit 等于 HEAD。"

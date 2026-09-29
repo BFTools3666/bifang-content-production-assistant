@@ -1,0 +1,57 @@
+.previewSurface {
+  min-width: 0;
+  background: light-dark(
+    var(--mantine-color-gray-0),
+    var(--mantine-color-dark-7)
+  );
+}
+
+.previewTrigger {
+  display: block;
+  width: 100%;
+  min-height: 220px;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-sm);
+  background: var(--app-surface);
+  cursor: zoom-in;
+}
+
+.previewTrigger:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  max-height: min(46vh, 420px);
+  object-fit: contain;
+}
+
+.previewPlaceholder {
+  min-height: 220px;
+  justify-content: center;
+}
+
+.refreshError {
+  flex: 1 1 20rem;
+}
+
+.editorModalContent {
+  width: min(1240px, calc(100vw - 32px));
+  max-width: 1240px;
+  max-height: calc(100dvh - 32px);
+}
+
+.editorModalBody {
+  min-width: 0;
+  overflow: auto;
+}
+
+@media (width <= 48em) {
+  .editorModalContent {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+}

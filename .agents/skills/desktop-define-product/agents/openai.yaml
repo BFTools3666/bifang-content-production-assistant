@@ -1,0 +1,4 @@
+interface:
+  display_name: "定义产品"
+  short_description: "在当前终端项目定义产品边界"
+  default_prompt: "使用 $desktop-define-product；确认当前根是本产品的唯一终端项目根，再把新产品或真实范围变化整理成边界明确的 MVP 规格。"

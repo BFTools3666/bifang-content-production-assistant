@@ -1,0 +1,287 @@
+.page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.detailDrawerContent {
+  position: relative;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.detailDrawerHeader,
+.detailDrawerBody {
+  min-width: 0;
+  padding-inline-start: calc(
+    var(--mb-padding, var(--mantine-spacing-md)) + 8px
+  );
+}
+
+.detailDrawerBody,
+.detailDrawerLayout,
+.detailDrawerTabs,
+.detailDrawerTabs [role="tabpanel"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.detailDrawerLayout {
+  overflow-wrap: anywhere;
+}
+
+.detailDrawerLayout > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.detailDrawerTabsList {
+  flex-wrap: wrap;
+}
+
+.detailDrawerTabsList > [role="tab"] {
+  flex: 1 1 5rem;
+  min-width: min(5rem, 100%);
+  white-space: normal;
+}
+
+.detailDrawerResizeHandle {
+  position: fixed;
+  z-index: 1002;
+  inset-block: 0;
+  inset-inline-end: calc(var(--drawer-size) - 24px);
+  width: 24px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.detailDrawerResizeHandle::before {
+  position: absolute;
+  top: calc(50% - 28px);
+  inset-inline-start: 10px;
+  width: 3px;
+  height: 56px;
+  border-radius: var(--mantine-radius-xl);
+  background: var(--app-border);
+  content: "";
+  transition:
+    background-color 120ms ease,
+    transform 120ms ease;
+}
+
+.detailDrawerResizeHandle:hover::before,
+.detailDrawerResizeHandle:focus-visible::before,
+.detailDrawerResizeHandle[data-resizing]::before {
+  background: var(--app-accent);
+  transform: scaleX(1.5);
+}
+
+.gridSurface {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.gridTableContainer {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.articleGrid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.articleGrid th,
+.articleGrid td {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.gridSelectColumn {
+  width: 4rem;
+}
+
+.gridInfoColumn {
+  width: 24%;
+}
+
+.gridInfoCell,
+.gridTitle {
+  width: 100%;
+  min-width: 0;
+}
+
+.gridInspectAction {
+  flex: 0 0 auto;
+}
+
+.paginationBar {
+  min-width: 0;
+  border-top: 1px solid var(--app-border);
+}
+
+.toolbarField {
+  flex: 1 1 220px;
+  min-width: min(220px, 100%);
+}
+
+.stageCell {
+  width: 100%;
+  min-width: 0;
+  align-items: flex-start;
+  overflow-wrap: anywhere;
+}
+
+.stageActionWrapper {
+  display: inline-flex;
+  width: 100%;
+  min-width: 0;
+}
+
+.stageActionLabel {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.gridTextPreviewButton {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 4.5rem;
+  padding: var(--mantine-spacing-xs);
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--app-surface);
+  text-align: start;
+}
+
+.gridTextPreviewButton:hover,
+.gridImagePreviewButton:hover {
+  border-color: var(--app-accent);
+  background: var(--app-background);
+}
+
+.gridTextPreviewButton:focus-visible,
+.gridImagePreviewButton:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
+}
+
+.gridTextPreview {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.gridImagePreviewHost {
+  width: 100%;
+  max-width: 10rem;
+  min-width: 0;
+  aspect-ratio: 14 / 9;
+}
+
+.gridImagePreviewState,
+.gridImagePreviewButton,
+.gridImageThumbnail {
+  width: 100%;
+  height: 100%;
+}
+
+.gridImagePreviewState {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--app-background);
+}
+
+.gridImagePreviewButton {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--app-surface);
+  cursor: zoom-in;
+}
+
+.gridImageThumbnail {
+  display: block;
+}
+
+.emptyAction {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-md);
+  color: var(--app-text);
+  background: var(--app-surface);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.emptyAction:hover {
+  border-color: var(--app-accent);
+}
+
+.emptyAction:focus-visible {
+  outline: 2px solid var(--app-accent);
+  outline-offset: 2px;
+}
+
+.artifactCode {
+  width: 100%;
+  max-height: 340px;
+  box-sizing: border-box;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.formatTabs {
+  width: 100%;
+  min-width: 0;
+}
+
+.formatTabsList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.formatTabsList > [role="tab"] {
+  justify-content: center;
+  min-width: 0;
+}
+
+.formatPreviewFrame {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: min(56vh, 520px);
+  min-height: 320px;
+  box-sizing: border-box;
+  border: 1px solid var(--app-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--app-surface);
+}
+
+@media (max-width: 48em) {
+  .toolbarField {
+    flex-basis: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detailDrawerResizeHandle::before {
+    transition: none;
+  }
+}

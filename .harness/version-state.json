@@ -1,0 +1,188 @@
+{
+  "applied_bug_ids": [
+    "BUGFIX-AI-SERVICES-LOADING-HANG",
+    "BUGFIX-LEGACY-ARK-PROVIDER-UPGRADE",
+    "BUGFIX-BATCH-PREFLIGHT-KEYCHAIN-HANG",
+    "BUGFIX-EXPLICIT-STAGE-AI-ASSIGNMENT",
+    "BUG-GRID-CONTENT-PREVIEWS",
+    "BUG-ARK-REAL-E2E-PROBE",
+    "BUG-DETAIL-DRAWER-FALSE-LOADING",
+    "BUGFIX-FORMAT-TABS-RENDERED-PREVIEW",
+    "BUGFIX-GRID-NO-HORIZONTAL-SCROLL",
+    "BUGFIX-IMAGE-EDITOR-SEPARATE-MODAL",
+    "BUGFIX-PRODUCT-DISPLAY-NAME-RENAME",
+    "BUGFIX-LARK-CLI-ONBOARDING-GUIDE",
+    "BUGFIX-FULL-PRODUCT-IDENTITY-CORRECTION",
+    "BUG-BIFANG-DMG-LICENSE-20260924",
+    "BUG-LARK-CLI-FOLDER-LIST-PARAMS-20260924",
+    "BUG-LARK-CLI-SYNC-FENCE-20260924",
+    "BUG-LARK-CLI-SETUP-BOUNDARY-20260924"
+  ],
+  "cycle_base_version": "0.1.0",
+  "feature_bump_applied": true,
+  "last_release": null,
+  "pending_changes": [
+    {
+      "change_id": "FEATURE-BATCH-AI-CONTENT-WORKBENCH-MVP",
+      "kind": "feature",
+      "required_version": "0.2.0"
+    },
+    {
+      "change_id": "FEATURE-PROVIDER-CONTROLS-FEISHU-INITIAL-DATA",
+      "kind": "feature",
+      "required_version": "0.2.0"
+    },
+    {
+      "change_id": "FEATURE-STAGE-CENTRIC-AI-CONFIGURATION",
+      "kind": "feature",
+      "required_version": "0.2.0"
+    },
+    {
+      "change_id": "FEATURE-VOLCENGINE-ARK-IMAGE-PROVIDER",
+      "kind": "feature",
+      "required_version": "0.2.0"
+    },
+    {
+      "change_id": "BUGFIX-AI-SERVICES-LOADING-HANG",
+      "kind": "bug-fix",
+      "required_version": "0.2.1"
+    },
+    {
+      "change_id": "BUGFIX-LEGACY-ARK-PROVIDER-UPGRADE",
+      "kind": "bug-fix",
+      "required_version": "0.2.2"
+    },
+    {
+      "change_id": "BUGFIX-BATCH-PREFLIGHT-KEYCHAIN-HANG",
+      "kind": "bug-fix",
+      "required_version": "0.2.3"
+    },
+    {
+      "change_id": "BUGFIX-EXPLICIT-STAGE-AI-ASSIGNMENT",
+      "kind": "bug-fix",
+      "required_version": "0.2.4"
+    },
+    {
+      "change_id": "FEATURE-PROVIDER-DELETE-PRESERVE-HISTORY",
+      "kind": "feature",
+      "required_version": "0.2.4"
+    },
+    {
+      "change_id": "FEATURE-IMAGE-AI-CONNECTION-TEST",
+      "kind": "feature",
+      "required_version": "0.2.4"
+    },
+    {
+      "change_id": "FEATURE-GRID-STAGE-GENERATION",
+      "kind": "feature",
+      "required_version": "0.2.4"
+    },
+    {
+      "change_id": "BUG-GRID-CONTENT-PREVIEWS",
+      "kind": "bug-fix",
+      "required_version": "0.2.5"
+    },
+    {
+      "change_id": "BUG-ARK-REAL-E2E-PROBE",
+      "kind": "bug-fix",
+      "required_version": "0.2.6"
+    },
+    {
+      "change_id": "BUG-DETAIL-DRAWER-FALSE-LOADING",
+      "kind": "bug-fix",
+      "required_version": "0.2.7"
+    },
+    {
+      "change_id": "FEAT-RESIZABLE-DETAIL-DRAWER",
+      "kind": "feature",
+      "required_version": "0.2.7"
+    },
+    {
+      "change_id": "FEATURE-ARTICLE-IMAGE-EDITOR",
+      "kind": "feature",
+      "required_version": "0.2.7"
+    },
+    {
+      "change_id": "FEATURE-DETAIL-STAGE-GENERATION",
+      "kind": "feature",
+      "required_version": "0.2.7"
+    },
+    {
+      "change_id": "FEATURE-GENERATION-METRICS-CREATED-SORT",
+      "kind": "feature",
+      "required_version": "0.2.7"
+    },
+    {
+      "change_id": "FEATURE-GRID-TABLE-STANDARDS-COMPLIANCE",
+      "kind": "feature",
+      "required_version": "0.2.7"
+    },
+    {
+      "change_id": "BUGFIX-FORMAT-TABS-RENDERED-PREVIEW",
+      "kind": "bug-fix",
+      "required_version": "0.2.8"
+    },
+    {
+      "change_id": "FEATURE-CLOUD-DOCUMENT-CONNECTORS",
+      "kind": "feature",
+      "required_version": "0.2.8"
+    },
+    {
+      "change_id": "BUGFIX-GRID-NO-HORIZONTAL-SCROLL",
+      "kind": "bug-fix",
+      "required_version": "0.2.9"
+    },
+    {
+      "change_id": "BUGFIX-IMAGE-EDITOR-SEPARATE-MODAL",
+      "kind": "bug-fix",
+      "required_version": "0.2.10"
+    },
+    {
+      "change_id": "BUGFIX-PRODUCT-DISPLAY-NAME-RENAME",
+      "kind": "bug-fix",
+      "required_version": "0.2.11"
+    },
+    {
+      "change_id": "FEATURE-LARK-CLI-PUBLISHING-TARGET",
+      "kind": "feature",
+      "required_version": "0.2.11"
+    },
+    {
+      "change_id": "BUGFIX-LARK-CLI-ONBOARDING-GUIDE",
+      "kind": "bug-fix",
+      "required_version": "0.2.12"
+    },
+    {
+      "change_id": "FEATURE-ARTICLE-READ-CLI",
+      "kind": "feature",
+      "required_version": "0.2.12"
+    },
+    {
+      "change_id": "BUGFIX-FULL-PRODUCT-IDENTITY-CORRECTION",
+      "kind": "bug-fix",
+      "required_version": "0.2.13"
+    },
+    {
+      "change_id": "BUG-BIFANG-DMG-LICENSE-20260924",
+      "kind": "bug-fix",
+      "required_version": "0.2.14"
+    },
+    {
+      "change_id": "BUG-LARK-CLI-FOLDER-LIST-PARAMS-20260924",
+      "kind": "bug-fix",
+      "required_version": "0.2.15"
+    },
+    {
+      "change_id": "BUG-LARK-CLI-SYNC-FENCE-20260924",
+      "kind": "bug-fix",
+      "required_version": "0.2.16"
+    },
+    {
+      "change_id": "BUG-LARK-CLI-SETUP-BOUNDARY-20260924",
+      "kind": "bug-fix",
+      "required_version": "0.2.17"
+    }
+  ],
+  "schema_version": 1,
+  "target_version": "0.2.17"
+}

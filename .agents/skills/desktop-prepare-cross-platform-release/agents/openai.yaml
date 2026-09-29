@@ -1,0 +1,4 @@
+interface:
+  display_name: "准备跨平台发布候选"
+  short_description: "从已发布上下文、远端版本 tag 与固定选择准备 Windows/macOS 原生候选"
+  default_prompt: "使用 $desktop-prepare-cross-platform-release，验证 release_context_sha256、远端默认分支、版本 tag 与每个运行器的 clean source_commit 后生成 manifests。"

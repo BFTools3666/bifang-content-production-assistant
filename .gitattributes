@@ -1,0 +1,3 @@
+# 第三方原始许可与 NOTICE 保留上游换行、空格和版权文本的字节形态。
+legal/THIRD_PARTY_LICENSES.txt -text -whitespace
+legal/THIRD_PARTY_NOTICE.txt -text -whitespace
