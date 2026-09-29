@@ -42,6 +42,9 @@
     "autostart_title": "开机自启",
     "autostart_description": "登录系统后正常显示并启动应用；实际状态以操作系统登录项为准。",
     "autostart_error": "无法完成开机自启更新；系统状态可读取时，开关已同步为实际状态。",
+    "telemetry_title": "匿名使用统计",
+    "telemetry_description": "默认关闭。开启后每天最多发送一次随机安装标识、应用版本、平台、架构和发生时间；不发送账号、设备标识、配置或创作内容，可随时关闭。",
+    "telemetry_error": "无法保存匿名统计设置；开关已尽量同步为本地实际状态。",
     "capability_pending": "正在更新系统设置…",
     "capability_enabled": "已开启",
     "capability_disabled": "已关闭",
@@ -50,7 +53,8 @@
     "capability_unknown_title": "当前状态未知",
     "capability_retry": "重新读取实际状态",
     "system_notification_unknown": "通知权限或本地偏好都暂时无法确认。请在系统允许后重新读取实际状态。",
-    "autostart_unknown": "当前无法读取操作系统登录项。请稍后重新读取实际状态。"
+    "autostart_unknown": "当前无法读取操作系统登录项。请稍后重新读取实际状态。",
+    "telemetry_unknown": "当前无法读取本地匿名统计设置。请稍后重新读取实际状态。"
   },
   "tray": {
     "show_window": "显示窗口",
@@ -107,6 +111,7 @@
     "status_up_to_date": "当前已是最新版本",
     "status_optional_update": "发现可选更新",
     "status_required_update": "必须更新后才能继续使用",
+    "status_updates_paused": "此发布流当前已暂停更新分发",
     "status_failed": "检查更新失败，您仍可继续使用当前版本",
     "current_version": "当前版本：{{version}}",
     "available_version": "可用版本：{{version}}",
@@ -115,7 +120,8 @@
     "required_description": "请安装经过签名验证的更新，或安全退出应用。普通功能在完成更新前不可用。",
     "version_transition": "当前 {{current}} → 可用 {{available}}",
     "install_update": "安装更新",
-    "exit_application": "退出应用"
+    "exit_application": "退出应用",
+    "open_download": "打开官方下载页"
   },
   "release_notes": {
     "dialog_title": "更新日志",

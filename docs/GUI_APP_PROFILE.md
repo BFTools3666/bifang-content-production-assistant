@@ -47,7 +47,7 @@ sidebar_mode = compact
 ## 固定 GUI 基线
 
 - system-locale：固定启用，只由 Rust 侧探测系统语言。
-- updater：固定启用插件基线；当前为 `NotConfigured`，不配置 endpoint，不发起出站请求。
+- updater：固定启用官方插件基线；继续保持 `NotConfigured`，不配置 endpoint，不发起出站请求。另由 Rust 公共服务适配器按 `ADR-20260929-001` 调用 application-version API v1 做版本发现，不自动下载或安装更新。
 - window-state：固定启用；只恢复仍与显示器相交的尺寸、位置和最大化状态，不恢复隐藏、最小化、全屏或装饰状态。
 - dialog：固定启用；Builder 注册位于 window-state 后、notification 前，主窗口 capability 精确为 `dialog:default`，不授予通用文件系统权限。
 - 系统通知和开机自启虽已安装能力，但设置开关初始均为关闭；不得因能力启用就产生通知或登录项。
@@ -86,7 +86,7 @@ sidebar_mode = compact
 
 compact 侧栏固定为 80px 宽、6px 内容内边距、36px Logo、22px 图标、11px/1.25 全宽居中名称、56px 菜单项、4px 图标与名称间距/垂直 padding、8px 区间距；不提供折叠按钮或固定 `em/ch` 名称盒。功能项从顶部增长，底部依次放置已启用赞助页、固定设置页和已启用关于页。主题与 detailed 侧栏折叠偏好分别使用 `bifang-content-production-assistant:application-color-scheme` 和 `bifang-content-production-assistant:app.sidebar.detailed.collapsed`；详细规则只读取 `docs/design_standards/README.md` 精确路由到的标准。
 
-主窗口在无有效保存状态时使用 1440×900、最小 960×640、居中并防止溢出。动态标题遵循 `{applicationName} v{version} {contactChannel}:{contactValue}`，固定品牌资料提供 `contactChannel=QQ`、`contactValue=2222980`；项目产品反馈渠道仍未另行定义。设置页固定提供应用/版本、中英文和浅色/深色/跟随系统主题，并显示通知与自启开关；不加入隐私或统计控件。
+主窗口在无有效保存状态时使用 1440×900、最小 960×640、居中并防止溢出。动态标题遵循 `{applicationName} v{version} {contactChannel}:{contactValue}`，固定品牌资料提供 `contactChannel=QQ`、`contactValue=2222980`；项目产品反馈渠道仍未另行定义。设置页固定提供应用/版本、中英文和浅色/深色/跟随系统主题，并显示通知、自启和匿名统计开关；匿名统计默认关闭，说明发送字段、时机和撤回方式。
 
 像素、密度或信息架构偏离必须先取得明确批准，并在本文件记录精确差异与关联 ADR。用户已批准 `ADR-20260916-002`：格式页由 Markdown/HTML 上下堆叠改为等宽并列选项卡，每种格式内提供“源码/渲染效果”模式，默认进入 Markdown 的渲染效果。用户同时批准 `ADR-20260916-003`：Grid 收敛为六列固定布局且不再横向滚动，并新增独立“连接器”一级页面和格式页显式同步入口。用户还批准 `ADR-20260916-004`：配图高级操作从详情 Drawer 移入独立大弹窗，Drawer 只保留当前配图预览和明确入口。
 

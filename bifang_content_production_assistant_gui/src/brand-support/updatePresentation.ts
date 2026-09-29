@@ -6,13 +6,16 @@ export type UpdateStatus =
   | "up-to-date"
   | "optional-update"
   | "required-update"
+  | "updates-paused"
   | "failed";
 
 /** 关于页和强更门共用的只读更新结果。 */
 export interface UpdatePresentation {
   status: UpdateStatus;
   currentVersion: string;
-  availableVersion?: string;
+  title?: string;
+  message?: string;
+  downloadReady: boolean;
 }
 
 /** 只接受 core 已判定的强更状态，前端不得从远端布尔值自行推导。 */

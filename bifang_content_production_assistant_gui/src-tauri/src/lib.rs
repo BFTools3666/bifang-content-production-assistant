@@ -4,6 +4,7 @@ mod deep_link;
 mod global_shortcut_contract;
 mod locale;
 mod notification;
+mod public_services;
 mod release_notes;
 mod tray;
 mod updater;
@@ -129,6 +130,9 @@ pub fn run() {
             let app_handle = app.handle();
             let default_app_data_dir = app_handle.path().app_data_dir()?;
             let app_data_dir = resolve_workbench_data_dir(default_app_data_dir)?;
+            app.manage(public_services::PublicServicesRuntime::new(
+                app_data_dir.clone(),
+            ));
             let repository = Arc::new(tauri::async_runtime::block_on(
                 workbench::WorkspaceRepository::open(&app_data_dir),
             ).map_err(std::io::Error::other)?);
@@ -167,6 +171,12 @@ pub fn run() {
             locale::get_system_locale,
             locale::set_interface_language,
             updater::check_for_updates,
+            public_services::start_public_services,
+            public_services::check_public_service_updates,
+            public_services::get_telemetry_enabled,
+            public_services::set_telemetry_enabled,
+            public_services::open_update_download,
+            public_services::exit_application,
             release_notes::load_release_notes,
             notification::get_system_notification_setting,
             notification::set_system_notification_enabled,
@@ -224,6 +234,7 @@ pub fn run() {
         ) {
             app.state::<NotificationWorker>().shutdown();
             app.state::<updater::UpdateTaskOwner>().abort_owned_task();
+            app.state::<public_services::PublicServicesRuntime>().shutdown();
             app.state::<workbench::BatchWorker>().shutdown();
         }
     });

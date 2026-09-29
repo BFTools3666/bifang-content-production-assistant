@@ -181,6 +181,11 @@
       "change_id": "BUG-LARK-CLI-SETUP-BOUNDARY-20260924",
       "kind": "bug-fix",
       "required_version": "0.2.17"
+    },
+    {
+      "change_id": "FEATURE-CLOUDBASE-PUBLIC-SERVICES",
+      "kind": "feature",
+      "required_version": "0.2.17"
     }
   ],
   "schema_version": 1,

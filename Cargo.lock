@@ -455,10 +455,12 @@ dependencies = [
 name = "bifang_content_production_assistant_core"
 version = "0.2.17"
 dependencies = [
+ "jiff",
  "pulldown-cmark",
  "serde",
  "serde_json",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -468,6 +470,7 @@ dependencies = [
  "base64 0.23.1",
  "bifang_content_production_assistant_core",
  "image",
+ "jiff",
  "keyring",
  "mac-usernotifications",
  "pulldown-cmark",

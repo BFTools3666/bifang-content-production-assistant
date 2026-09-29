@@ -11,8 +11,10 @@ name = "bifang_content_production_assistant_core"
 path = "src/lib.rs"
 
 [dependencies]
+jiff.workspace = true
 pulldown-cmark.workspace = true
 serde.workspace = true
+uuid.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true

@@ -36,10 +36,11 @@ export interface SettingsPageTemplateProps {
   onLanguageChange: (language: SupportedInterfaceLanguage) => void;
   autostart?: AsyncHostCapabilitySetting;
   systemNotification?: AsyncHostCapabilitySetting;
+  telemetry?: AsyncHostCapabilitySetting;
 }
 
-/** 设置页中可选的两个 Rust-only 宿主能力标识。 */
-type CapabilityId = "autostart" | "system_notification";
+/** 设置页中可选的 Rust-only 宿主能力标识。 */
+type CapabilityId = "autostart" | "system_notification" | "telemetry";
 
 /** 单个宿主能力开关的固定输入。 */
 interface CapabilitySwitchProps {
@@ -197,6 +198,7 @@ export function SettingsPageTemplate({
   onLanguageChange,
   autostart,
   systemNotification,
+  telemetry,
 }: SettingsPageTemplateProps): ReactElement {
   const { t } = useTranslation("brandSupport");
   const { colorScheme, setColorScheme } = useMantineColorScheme();
@@ -260,6 +262,10 @@ export function SettingsPageTemplate({
           capability={systemNotification}
           id="system_notification"
         />
+      ) : null}
+
+      {telemetry ? (
+        <CapabilitySwitch capability={telemetry} id="telemetry" />
       ) : null}
 
       {autostart ? (

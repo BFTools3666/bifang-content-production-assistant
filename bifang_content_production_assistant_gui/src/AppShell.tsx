@@ -38,12 +38,16 @@ import {
   APP_SIDEBAR_WIDTHS,
   AppSidebarTemplate,
 } from "./brand-support/AppSidebarTemplate";
+import { MandatoryUpdateGateTemplate } from "./brand-support/MandatoryUpdateGateTemplate";
 import type { SupportedInterfaceLanguage } from "./brand-support/SettingsPageTemplate";
 import i18n from "./i18n";
 import {
+  exitApplication,
   getAppMetadata,
   getSystemLocale,
+  openUpdateDownload,
   setInterfaceLanguage,
+  startPublicServices,
 } from "./tauriCommands";
 
 /** 当前中性 GUI 中可导航的固定本地路由。 */
@@ -112,6 +116,13 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
   const systemLocaleQuery = useQuery({
     queryFn: getSystemLocale,
     queryKey: ["system-locale"],
+    retry: false,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+  const publicServicesQuery = useQuery({
+    enabled: metadataQuery.data !== undefined,
+    queryFn: startPublicServices,
+    queryKey: ["update-presentation"],
     retry: false,
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -228,30 +239,44 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
     if (isAppPath(path)) void navigate({ to: path });
   };
 
+  const update = publicServicesQuery.data ?? {
+    currentVersion: metadataQuery.data.version,
+    downloadReady: false,
+    status: publicServicesQuery.isPending
+      ? ("checking" as const)
+      : ("failed" as const),
+  };
+
   return (
     <InterfaceLanguageContext.Provider value={languageController}>
-      <MantineAppShell
-        data-mode="compact"
-        data-navbar-width={APP_SIDEBAR_WIDTHS.compact}
-        data-testid="app-shell"
-        navbar={{ breakpoint: "sm", width: APP_SIDEBAR_WIDTHS.compact }}
+      <MandatoryUpdateGateTemplate
+        onExitApplication={() => void exitApplication()}
+        onOpenUpdateDownload={() => void openUpdateDownload()}
+        update={update}
       >
-        <MantineAppShell.Navbar p={0}>
-          <AppSidebarTemplate
-            activePath={activePath}
-            applicationName={metadataQuery.data.applicationName}
-            featureItems={featureItems}
-            logoSrc={APP_SIDEBAR_LOGO_PATH}
-            mode="compact"
-            onNavigate={handleNavigate}
-            supportPages={{ aboutPage: true, sponsorPage: true }}
-            version={metadataQuery.data.version}
-          />
-        </MantineAppShell.Navbar>
-        <MantineAppShell.Main>
-          <Box p={{ base: "md", sm: "xl" }}>{children}</Box>
-        </MantineAppShell.Main>
-      </MantineAppShell>
+        <MantineAppShell
+          data-mode="compact"
+          data-navbar-width={APP_SIDEBAR_WIDTHS.compact}
+          data-testid="app-shell"
+          navbar={{ breakpoint: "sm", width: APP_SIDEBAR_WIDTHS.compact }}
+        >
+          <MantineAppShell.Navbar p={0}>
+            <AppSidebarTemplate
+              activePath={activePath}
+              applicationName={metadataQuery.data.applicationName}
+              featureItems={featureItems}
+              logoSrc={APP_SIDEBAR_LOGO_PATH}
+              mode="compact"
+              onNavigate={handleNavigate}
+              supportPages={{ aboutPage: true, sponsorPage: true }}
+              version={metadataQuery.data.version}
+            />
+          </MantineAppShell.Navbar>
+          <MantineAppShell.Main>
+            <Box p={{ base: "md", sm: "xl" }}>{children}</Box>
+          </MantineAppShell.Main>
+        </MantineAppShell>
+      </MandatoryUpdateGateTemplate>
     </InterfaceLanguageContext.Provider>
   );
 }

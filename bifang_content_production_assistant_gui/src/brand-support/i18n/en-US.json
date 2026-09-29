@@ -42,6 +42,9 @@
     "autostart_title": "Start at login",
     "autostart_description": "Launch this app normally after you sign in. The operating system registration is the source of truth.",
     "autostart_error": "The login item could not be updated. When readable, the switch now reflects the actual system state.",
+    "telemetry_title": "Anonymous usage statistics",
+    "telemetry_description": "Off by default. When enabled, the app sends at most one daily event containing a random installation ID, app version, platform, architecture, and timestamp. It never sends account, device, configuration, or content data, and you can turn it off at any time.",
+    "telemetry_error": "The anonymous statistics preference could not be saved. The switch now reflects the local state when available.",
     "capability_pending": "Updating the system setting…",
     "capability_enabled": "Enabled",
     "capability_disabled": "Disabled",
@@ -50,7 +53,8 @@
     "capability_unknown_title": "The current state is unknown",
     "capability_retry": "Reload the actual state",
     "system_notification_unknown": "Notification permission and the local preference are both unavailable right now. Reload the actual state after the system becomes reachable again.",
-    "autostart_unknown": "The operating system login item cannot be read right now. Reload the actual state later."
+    "autostart_unknown": "The operating system login item cannot be read right now. Reload the actual state later.",
+    "telemetry_unknown": "The local anonymous statistics preference cannot be read right now. Reload the actual state later."
   },
   "tray": {
     "show_window": "Show Window",
@@ -107,6 +111,7 @@
     "status_up_to_date": "You are using the latest version",
     "status_optional_update": "An optional update is available",
     "status_required_update": "An update is required to continue",
+    "status_updates_paused": "Update distribution is paused for this release stream",
     "status_failed": "The update check failed; you can continue using this version",
     "current_version": "Current version: {{version}}",
     "available_version": "Available version: {{version}}",
@@ -115,7 +120,8 @@
     "required_description": "Install the signature-verified update or exit safely. Product features remain unavailable until the update finishes.",
     "version_transition": "Current {{current}} → available {{available}}",
     "install_update": "Install update",
-    "exit_application": "Exit application"
+    "exit_application": "Exit application",
+    "open_download": "Open official download page"
   },
   "release_notes": {
     "dialog_title": "Release notes",

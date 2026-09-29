@@ -9,13 +9,16 @@ import {
   decodeAdapterUpdaterStatus,
   decodeAppMetadata,
   decodeInterfaceLanguage,
+  decodeUpdatePresentation,
   getAppMetadata,
   getAutostartEnabled,
   getSystemLocale,
   getSystemNotificationSetting,
+  getTelemetryEnabled,
   setAutostartEnabled,
   setInterfaceLanguage,
   setSystemNotificationEnabled,
+  setTelemetryEnabled,
   synchronizeDocumentTitle,
 } from "./tauriCommands";
 
@@ -70,23 +73,29 @@ describe("narrow Tauri command boundary", () => {
     });
   });
 
-  /** 通知与自启分别调用自己的 getter/setter，且只接受布尔结果。 */
-  it("keeps notification and autostart command state separate", async () => {
+  /** 通知、自启与匿名统计分别调用自己的 getter/setter，且只接受布尔结果。 */
+  it("keeps boolean command state separate", async () => {
     invokeMock
       .mockResolvedValueOnce(false)
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(true)
-      .mockResolvedValueOnce(false);
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(true);
 
     await expect(getSystemNotificationSetting()).resolves.toBe(false);
     await expect(setSystemNotificationEnabled(true)).resolves.toBe(true);
     await expect(getAutostartEnabled()).resolves.toBe(true);
     await expect(setAutostartEnabled(false)).resolves.toBe(false);
+    await expect(getTelemetryEnabled()).resolves.toBe(false);
+    await expect(setTelemetryEnabled(true)).resolves.toBe(true);
     expect(invokeMock.mock.calls).toEqual([
       ["get_system_notification_setting"],
       ["set_system_notification_enabled", { enabled: true }],
       ["get_autostart_enabled"],
       ["set_autostart_enabled", { enabled: false }],
+      ["get_telemetry_enabled"],
+      ["set_telemetry_enabled", { enabled: true }],
     ]);
 
     invokeMock.mockResolvedValueOnce("false");
@@ -95,17 +104,26 @@ describe("narrow Tauri command boundary", () => {
     );
   });
 
-  /** 更新入口只接受稳定状态模型并保留 NotConfigured 零出站语义。 */
+  /** 更新入口严格接受公共服务展示模型并保留 NotConfigured 零出站语义。 */
   it("decodes the not-configured update presentation", async () => {
     expect(decodeAdapterUpdaterStatus("not-configured")).toBe("not-configured");
-    expect(() => decodeAdapterUpdaterStatus("idle")).toThrow(
+    expect(() => decodeAdapterUpdaterStatus("unavailable")).toThrow(
       "invalid updater status",
     );
-    invokeMock.mockResolvedValueOnce("not-configured");
-    await expect(checkForUpdates("0.1.0")).resolves.toEqual({
+    const presentation = {
       currentVersion: "0.1.0",
+      downloadReady: false,
       status: "not-configured",
-    });
-    expect(invokeMock).toHaveBeenCalledWith("check_for_updates");
+    };
+    expect(decodeUpdatePresentation(presentation)).toEqual(presentation);
+    expect(() =>
+      decodeUpdatePresentation({
+        ...presentation,
+        downloadUrl: "https://example.com",
+      }),
+    ).toThrow("invalid update presentation fields");
+    invokeMock.mockResolvedValueOnce(presentation);
+    await expect(checkForUpdates()).resolves.toEqual(presentation);
+    expect(invokeMock).toHaveBeenCalledWith("check_public_service_updates");
   });
 });

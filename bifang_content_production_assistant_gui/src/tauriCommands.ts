@@ -12,20 +12,24 @@ export interface AppMetadata {
   title: string;
 }
 
-/** Rust updater 适配器直接序列化的稳定状态集合。 */
+/** Rust 公共服务适配器直接序列化的稳定状态集合。 */
 type AdapterUpdaterStatus =
   | "not-configured"
   | "checking"
   | "up-to-date"
   | "optional-update"
-  | "unavailable";
+  | "required-update"
+  | "updates-paused"
+  | "failed";
 
 const ADAPTER_UPDATER_STATUSES: ReadonlySet<AdapterUpdaterStatus> = new Set([
   "not-configured",
   "checking",
   "up-to-date",
   "optional-update",
-  "unavailable",
+  "required-update",
+  "updates-paused",
+  "failed",
 ]);
 
 /** 判断未知 IPC 值是否是普通记录对象。 */
@@ -111,6 +115,37 @@ export function decodeAdapterUpdaterStatus(
   return value as AdapterUpdaterStatus;
 }
 
+/** 严格解码公共版本服务的最小展示对象。 */
+export function decodeUpdatePresentation(value: unknown): UpdatePresentation {
+  if (!isRecord(value)) throw new Error("invalid update presentation");
+  const allowed = new Set([
+    "currentVersion",
+    "downloadReady",
+    "message",
+    "status",
+    "title",
+  ]);
+  if (Object.keys(value).some((key) => !allowed.has(key))) {
+    throw new Error("invalid update presentation fields");
+  }
+  const status = decodeAdapterUpdaterStatus(value.status);
+  const downloadReady = value.downloadReady;
+  if (typeof downloadReady !== "boolean") {
+    throw new Error("invalid update download state");
+  }
+  const optionalText = (key: "title" | "message"): string | undefined => {
+    if (!(key in value)) return undefined;
+    return readString(value, key);
+  };
+  return {
+    currentVersion: readString(value, "currentVersion"),
+    downloadReady,
+    message: optionalText("message"),
+    status,
+    title: optionalText("title"),
+  };
+}
+
 /** 调用固定命令读取权威应用元数据。 */
 export async function getAppMetadata(): Promise<AppMetadata> {
   return decodeAppMetadata(await invoke<unknown>("get_app_metadata"));
@@ -162,14 +197,37 @@ export async function setAutostartEnabled(enabled: boolean): Promise<boolean> {
 }
 
 /** 调用受限更新命令，并以权威打包版本组装纯展示状态。 */
-export async function checkForUpdates(
-  currentVersion: string,
-): Promise<UpdatePresentation> {
-  const status = decodeAdapterUpdaterStatus(
-    await invoke<unknown>("check_for_updates"),
+export async function startPublicServices(): Promise<UpdatePresentation> {
+  return decodeUpdatePresentation(
+    await invoke<unknown>("start_public_services"),
   );
-  return {
-    currentVersion,
-    status: status === "unavailable" ? "failed" : status,
-  };
+}
+
+/** 手动执行一次 application-version API v1 检查。 */
+export async function checkForUpdates(): Promise<UpdatePresentation> {
+  return decodeUpdatePresentation(
+    await invoke<unknown>("check_public_service_updates"),
+  );
+}
+
+/** 读取本地统计同意状态。 */
+export async function getTelemetryEnabled(): Promise<boolean> {
+  const command = "get_telemetry_enabled";
+  return decodeBoolean(await invoke<unknown>(command), command);
+}
+
+/** 修改本地统计同意状态并返回权威值。 */
+export async function setTelemetryEnabled(enabled: boolean): Promise<boolean> {
+  const command = "set_telemetry_enabled";
+  return decodeBoolean(await invoke<unknown>(command, { enabled }), command);
+}
+
+/** 打开 Rust 保存的安全下载地址，WebView 不传入 URL。 */
+export async function openUpdateDownload(): Promise<void> {
+  await invoke("open_update_download");
+}
+
+/** 请求完整退出应用。 */
+export async function exitApplication(): Promise<void> {
+  await invoke("exit_application");
 }

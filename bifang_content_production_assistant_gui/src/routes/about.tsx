@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useAppMetadata } from "../AppShell";
 import { AboutPageTemplate } from "../brand-support/AboutPageTemplate";
 import type { UpdatePresentation } from "../brand-support/updatePresentation";
-import { checkForUpdates } from "../tauriCommands";
+import { checkForUpdates, openUpdateDownload } from "../tauriCommands";
 
 /** 渲染关于、零出站更新状态与本地候选更新日志入口。 */
 function AboutRouteComponent(): ReactElement {
@@ -18,12 +18,14 @@ function AboutRouteComponent(): ReactElement {
     placeholderData: metadataQuery.data
       ? {
           currentVersion: metadataQuery.data.version,
+          downloadReady: false,
           status: "not-configured",
         }
       : undefined,
-    queryFn: () => checkForUpdates(metadataQuery.data?.version ?? ""),
+    queryFn: checkForUpdates,
     queryKey: ["update-presentation"],
     retry: false,
+    staleTime: Number.POSITIVE_INFINITY,
   });
 
   if (!metadataQuery.data) {
@@ -36,12 +38,14 @@ function AboutRouteComponent(): ReactElement {
 
   const failedUpdate: UpdatePresentation = {
     currentVersion: metadataQuery.data.version,
+    downloadReady: false,
     status: "failed",
   };
   const update = updateQuery.isError
     ? failedUpdate
     : (updateQuery.data ?? {
         currentVersion: metadataQuery.data.version,
+        downloadReady: false,
         status: "not-configured",
       });
 
@@ -49,6 +53,9 @@ function AboutRouteComponent(): ReactElement {
     <AboutPageTemplate
       onCheckForUpdates={() => {
         void updateQuery.refetch();
+      }}
+      onOpenUpdateDownload={() => {
+        void openUpdateDownload();
       }}
       productName={metadataQuery.data.applicationName}
       update={update}

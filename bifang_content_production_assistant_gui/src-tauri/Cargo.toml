@@ -20,6 +20,7 @@ tauri-build = { workspace = true }
 base64 = { workspace = true }
 bifang_content_production_assistant_core = { workspace = true }
 image = { workspace = true }
+jiff = { workspace = true }
 keyring = { workspace = true }
 pulldown-cmark = { workspace = true }
 reqwest = { workspace = true }

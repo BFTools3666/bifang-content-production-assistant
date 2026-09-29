@@ -154,9 +154,14 @@ describe("selected compact GUI baseline", () => {
     await renderTemplate(
       <AboutPageTemplate
         onCheckForUpdates={onCheckForUpdates}
+        onOpenUpdateDownload={vi.fn()}
         productName="毕方内容生产助手"
         releaseNotesLoader={releaseNotesLoader}
-        update={{ currentVersion: "0.1.0", status: "not-configured" }}
+        update={{
+          currentVersion: "0.1.0",
+          downloadReady: false,
+          status: "not-configured",
+        }}
         version="0.1.0"
       />,
     );
@@ -185,9 +190,14 @@ describe("selected compact GUI baseline", () => {
     await renderTemplate(
       <AboutPageTemplate
         onCheckForUpdates={vi.fn()}
+        onOpenUpdateDownload={vi.fn()}
         productName="毕方内容生产助手"
         releaseNotesLoader={releaseNotesLoader}
-        update={{ currentVersion: "0.1.0", status: "not-configured" }}
+        update={{
+          currentVersion: "0.1.0",
+          downloadReady: false,
+          status: "not-configured",
+        }}
         version="0.1.0"
       />,
       "en-US",

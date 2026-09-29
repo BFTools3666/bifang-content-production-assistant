@@ -9,6 +9,7 @@ mod initial_content;
 mod model;
 mod prompt;
 mod provider;
+pub mod public_services;
 mod sop;
 mod workflow;
 mod workspace;

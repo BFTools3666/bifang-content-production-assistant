@@ -54,7 +54,11 @@ pub fn install_tray(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Erro
             SHOW_WINDOW_MENU_ID => {
                 let _ = crate::window_state::restore_main_window(app);
             }
-            QUIT_MENU_ID => app.exit(0),
+            QUIT_MENU_ID => {
+                app.state::<crate::public_services::PublicServicesRuntime>()
+                    .shutdown();
+                app.exit(0);
+            }
             _ => {}
         })
         .build(app)?;

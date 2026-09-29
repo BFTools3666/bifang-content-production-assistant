@@ -9,8 +9,10 @@ import { SettingsPageTemplate } from "../brand-support/SettingsPageTemplate";
 import {
   getAutostartEnabled,
   getSystemNotificationSetting,
+  getTelemetryEnabled,
   setAutostartEnabled,
   setSystemNotificationEnabled,
+  setTelemetryEnabled,
 } from "../tauriCommands";
 
 /** 当前页面内的短暂宿主状态快照；卸载后不会留下 WebView 持久数据。 */
@@ -58,11 +60,13 @@ function SettingsRouteComponent(): ReactElement | null {
     getSystemNotificationSetting,
   );
   const autostartState = useHostBooleanSnapshot(getAutostartEnabled);
+  const telemetryState = useHostBooleanSnapshot(getTelemetryEnabled);
 
   if (
     !metadataQuery.data ||
     notificationState.loading ||
-    autostartState.loading
+    autostartState.loading ||
+    telemetryState.loading
   ) {
     return (
       <Center mih={240}>
@@ -74,7 +78,8 @@ function SettingsRouteComponent(): ReactElement | null {
     );
   }
 
-  const hostStateFailed = notificationState.failed || autostartState.failed;
+  const hostStateFailed =
+    notificationState.failed || autostartState.failed || telemetryState.failed;
 
   return (
     <Stack gap="lg">
@@ -92,6 +97,7 @@ function SettingsRouteComponent(): ReactElement | null {
                 void Promise.all([
                   notificationState.reread(),
                   autostartState.reread(),
+                  telemetryState.reread(),
                 ]);
               }}
               variant="default"
@@ -119,6 +125,11 @@ function SettingsRouteComponent(): ReactElement | null {
           enabled: notificationState.enabled,
           getEnabled: getSystemNotificationSetting,
           onChange: setSystemNotificationEnabled,
+        }}
+        telemetry={{
+          enabled: telemetryState.enabled,
+          getEnabled: getTelemetryEnabled,
+          onChange: setTelemetryEnabled,
         }}
         version={metadataQuery.data.version}
       />

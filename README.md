@@ -28,7 +28,8 @@
 - `bifang_content_production_assistant_core` 承载任务、SOP 顺序/执行前置依赖/产物语义、版本、重试、审核和稳定错误等接口无关规则。
 - `bifang_content_production_assistant_cli` 提供只读 `sop describe`，以及对显式本地工作区的 `article list`、`article get`；排序、精确查找、脱敏投影和稳定错误由 shared core 定义。文章查询只以 SQLite read-only 模式读取现有数据库，不读取 stdin、Provider、凭据或网络，也不提供写入或批量执行入口，主体验仍位于 GUI。
 - `bifang_content_production_assistant_gui` 提供工作台、飞书式 Grid、详情审核、Prompt 模板、AI 服务配置和运行记录。GUI 的九项初始化选择、Logo、深链、快捷键空契约和 UI 标准见 [`docs/GUI_APP_PROFILE.md`](docs/GUI_APP_PROFILE.md)。
-- GUI 固定接入 system-locale、updater、window-state 和 dialog 基线；updater 未配置且零出站，dialog 仅向主窗口提供 `dialog:default`，不授予通用文件系统权限。
+- GUI 固定接入 system-locale、updater、window-state 和 dialog 基线；官方 Tauri updater 仍未配置且零出站，dialog 仅向主窗口提供 `dialog:default`，不授予通用文件系统权限。
+- GUI 已接入 CloudBase 环境 `bftoos-sh-d3ga7hahz59229f0a` 的匿名日活统计和 application-version v1 版本发现。统计默认关闭并可在设置页撤回；版本凭据缺失时保持零请求，当前仓库不保存生产 Key/Secret。
 - 已启用的通知与开机自启设置默认关闭；深链接只恢复主窗口；全局快捷键当前没有动作、默认 chord 或 OS 注册。
 
 ## 使用与开发入口
@@ -62,7 +63,7 @@ GUI 的普通运行路径使用本地 SQLite 工作区，以及用户明确保�
 
 ## MVP 交付边界
 
-当前范围以 [已批准 Product Spec](docs/product_spec/20260923_product_spec.md) 为准，完成证据汇总于 [MVP 工作计划](docs/work_plan/20260913_work_plan.md)。当前已实现任务/SOP 状态机、SOP 与文章只读 CLI、本地持久化、OpenAI-compatible 文本与图片适配器、火山方舟图片适配器、Grid 批量操作、详情审核、Prompt 模板、分阶段 AI 服务配置、运行记录，以及批次暂停/继续/取消和重启恢复。Core-first 规则要求业务逻辑进入 shared core，CLI 与 GUI 保持薄层。
+当前范围以 [已批准 Product Spec](docs/product_spec/20260929_product_spec.md) 为准，完成证据汇总于 [MVP 工作计划](docs/work_plan/20260913_work_plan.md)。当前已实现任务/SOP 状态机、SOP 与文章只读 CLI、本地持久化、OpenAI-compatible 文本与图片适配器、火山方舟图片适配器、Grid 批量操作、详情审核、Prompt 模板、分阶段 AI 服务配置、运行记录，以及批次暂停/继续/取消和重启恢复。Core-first 规则要求业务逻辑进入 shared core，CLI 与 GUI 保持薄层。
 
 OpenAI 正文链路与火山方舟图片链路已由用户在 macOS 应用中使用系统凭据库内的真实配置手动确认成功；本轮没有在证据中记录或输出密钥，也没有验证 Windows。后续如需异常 Provider/凭据库故障验证、签名/公证、发布候选、安装包、推送、tag 或渠道发布，必须由用户另行授权并进入对应门禁；开发级人工结果不能替代这些工作。
 

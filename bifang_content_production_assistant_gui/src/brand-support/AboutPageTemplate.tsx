@@ -49,6 +49,7 @@ export interface AboutPageTemplateProps {
   update: UpdatePresentation;
   releaseNotesLoader?: () => Promise<readonly LocalizedReleaseNoteEntry[]>;
   onCheckForUpdates: () => void;
+  onOpenUpdateDownload: () => void;
 }
 
 /** 展示产品事实、更新入口、共享作者、联系方式和固定免责声明。 */
@@ -62,6 +63,7 @@ export function AboutPageTemplate({
   update,
   releaseNotesLoader = loadBundledReleaseNotes,
   onCheckForUpdates,
+  onOpenUpdateDownload,
 }: AboutPageTemplateProps): ReactElement {
   const { t } = useTranslation("brandSupport");
   const [releaseNotesOpened, setReleaseNotesOpened] = useState(false);
@@ -150,6 +152,11 @@ export function AboutPageTemplate({
               >
                 {t("about.check_for_updates")}
               </Button>
+              {update.downloadReady ? (
+                <Button onClick={onOpenUpdateDownload} variant="light">
+                  {t("updater.open_download")}
+                </Button>
+              ) : null}
               <Button
                 leftSection={<IconHistory aria-hidden="true" size={18} />}
                 onClick={openReleaseNotes}
@@ -165,13 +172,15 @@ export function AboutPageTemplate({
             role={isRequiredUpdate || isUpdateFailure ? "alert" : "status"}
             title={t(statusKey)}
           >
-            {update.availableVersion
-              ? t("updater.available_version", {
-                  version: formatDisplayVersion(update.availableVersion),
-                })
-              : t("updater.current_version", {
+            <Stack gap={4}>
+              <Text>
+                {t("updater.current_version", {
                   version: formatDisplayVersion(update.currentVersion),
                 })}
+              </Text>
+              {update.title ? <Text fw={600}>{update.title}</Text> : null}
+              {update.message ? <Text>{update.message}</Text> : null}
+            </Stack>
           </Alert>
         </Stack>
       </Paper>
