@@ -47,7 +47,7 @@ sidebar_mode = compact
 ## 固定 GUI 基线
 
 - system-locale：固定启用，只由 Rust 侧探测系统语言。
-- updater：固定启用官方插件基线；继续保持 `NotConfigured`，不配置 endpoint，不发起出站请求。另由 Rust 公共服务适配器按 `ADR-20260929-001` 调用 application-version API v1 做版本发现，不自动下载或安装更新。
+- updater：固定启用官方插件基线；继续保持 `NotConfigured`，不配置 endpoint，不发起出站请求。另由 Rust 公共服务适配器按 `ADR-20260929-001` 与 `ADR-20260929-002` 调用 Kaiwhale application-version API v1 做版本发现，不自动下载或安装更新。
 - window-state：固定启用；只恢复仍与显示器相交的尺寸、位置和最大化状态，不恢复隐藏、最小化、全屏或装饰状态。
 - dialog：固定启用；Builder 注册位于 window-state 后、notification 前，主窗口 capability 精确为 `dialog:default`，不授予通用文件系统权限。
 - 系统通知和开机自启虽已安装能力，但设置开关初始均为关闭；不得因能力启用就产生通知或登录项。

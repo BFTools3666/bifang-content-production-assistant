@@ -29,7 +29,7 @@
 - `bifang_content_production_assistant_cli` 提供只读 `sop describe`，以及对显式本地工作区的 `article list`、`article get`；排序、精确查找、脱敏投影和稳定错误由 shared core 定义。文章查询只以 SQLite read-only 模式读取现有数据库，不读取 stdin、Provider、凭据或网络，也不提供写入或批量执行入口，主体验仍位于 GUI。
 - `bifang_content_production_assistant_gui` 提供工作台、飞书式 Grid、详情审核、Prompt 模板、AI 服务配置和运行记录。GUI 的九项初始化选择、Logo、深链、快捷键空契约和 UI 标准见 [`docs/GUI_APP_PROFILE.md`](docs/GUI_APP_PROFILE.md)。
 - GUI 固定接入 system-locale、updater、window-state 和 dialog 基线；官方 Tauri updater 仍未配置且零出站，dialog 仅向主窗口提供 `dialog:default`，不授予通用文件系统权限。
-- GUI 已接入 CloudBase 环境 `bftoos-sh-d3ga7hahz59229f0a` 的匿名日活统计和 application-version v1 版本发现。统计默认关闭并可在设置页撤回；版本凭据缺失时保持零请求，当前仓库不保存生产 Key/Secret。
+- GUI 已接入 CloudBase 环境 `bftoos-sh-d3ga7hahz59229f0a` 的匿名日活统计，并通过 `https://gateway.kaiwhale.com/tools/version-control/v1` 接入 application-version v1 版本发现。统计默认关闭并可在设置页撤回；非敏感 App Key 固定为 `versionControl`，App Secret 缺失时保持零版本请求，仓库不保存 Secret。
 - 已启用的通知与开机自启设置默认关闭；深链接只恢复主窗口；全局快捷键当前没有动作、默认 chord 或 OS 注册。
 
 ## 使用与开发入口

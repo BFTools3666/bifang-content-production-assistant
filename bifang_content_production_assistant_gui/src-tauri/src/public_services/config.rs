@@ -1,4 +1,4 @@
-//! CloudBase 公共路由和低权限版本凭据的失效保护配置。
+//! CloudBase 统计路由和外部版本网关凭据的失效保护配置。
 
 use bifang_content_production_assistant_core::public_services::{
     is_safe_public_https_url, validate_application_version_number,
@@ -10,9 +10,10 @@ use reqwest::{
 
 use super::{APP_ID, PublicServicesError};
 
-const CLOUD_BASE_ORIGIN: &str =
+const TELEMETRY_ORIGIN: &str =
     "https://bftoos-sh-d3ga7hahz59229f0a-1484029710.ap-shanghai.app.tcloudbase.com";
-const VERSION_BASE_PATH: &str = "/tools/version-control/v1";
+const VERSION_BASE_URL: &str = "https://gateway.kaiwhale.com/tools/version-control/v1";
+const VERSION_APP_KEY: &str = "versionControl";
 const APP_KEY_HEADER: &str = "x-app-key";
 const APP_SECRET_HEADER: &str = "x-app-secret";
 
@@ -25,7 +26,7 @@ pub(super) struct TelemetryConfig {
 impl TelemetryConfig {
     /// 从受版本控制的环境和应用事实构造端点。
     pub(super) fn registered() -> Option<Self> {
-        let endpoint = format!("{CLOUD_BASE_ORIGIN}/apps/{APP_ID}/v1/track");
+        let endpoint = format!("{TELEMETRY_ORIGIN}/apps/{APP_ID}/v1/track");
         if !is_safe_public_https_url(&endpoint) {
             return None;
         }
@@ -50,11 +51,11 @@ pub(super) struct VersionApiConfig {
 }
 
 impl VersionApiConfig {
-    /// 只从构建宿主注入两个私密值；缺失或非法时保持零 GET。
+    /// App Key 固定为已确认的客户端标识；Secret 只由构建宿主注入。
     pub(super) fn from_compile_time() -> Option<Self> {
         Self::from_values(
             release_code(),
-            option_env!("BIFANG_CONTENT_PRODUCTION_ASSISTANT_VERSION_APP_KEY"),
+            Some(VERSION_APP_KEY),
             option_env!("BIFANG_CONTENT_PRODUCTION_ASSISTANT_VERSION_APP_SECRET"),
         )
     }
@@ -106,11 +107,10 @@ fn build_version_url(code: &str, current_version: &str) -> Option<Url> {
     if !is_release_code(code) {
         return None;
     }
-    let base = format!("{CLOUD_BASE_ORIGIN}{VERSION_BASE_PATH}");
-    if !is_safe_public_https_url(&base) {
+    if !is_safe_public_https_url(VERSION_BASE_URL) {
         return None;
     }
-    let mut url = Url::parse(&base).ok()?;
+    let mut url = Url::parse(VERSION_BASE_URL).ok()?;
     {
         let mut segments = url.path_segments_mut().ok()?;
         segments
@@ -169,7 +169,7 @@ mod tests {
                 .expect("公开版本路由应有效")
                 .as_str(),
             format!(
-                "{CLOUD_BASE_ORIGIN}{VERSION_BASE_PATH}/versions/{code}/{}",
+                "{VERSION_BASE_URL}/versions/{code}/{}",
                 env!("CARGO_PKG_VERSION")
             )
         );
@@ -189,15 +189,19 @@ mod tests {
     #[test]
     fn request_uses_one_v1_path_and_sensitive_headers() {
         let code = release_code().expect("受支持目标应有发布流");
-        let config =
-            VersionApiConfig::from_values(Some(code), Some("offline-key"), Some("offline-secret"))
-                .expect("离线配置应有效");
+        let config = VersionApiConfig::from_values(
+            Some(code),
+            Some(VERSION_APP_KEY),
+            Some("offline-secret"),
+        )
+        .expect("离线配置应有效");
         let request = config
             .build_request(&reqwest::Client::new())
             .expect("请求应可构造");
         assert_eq!(request.method(), Method::GET);
         assert!(request.url().query().is_none());
         assert_eq!(request.headers().len(), 3);
+        assert_eq!(request.headers()[APP_KEY_HEADER], VERSION_APP_KEY);
         assert!(request.headers()[APP_KEY_HEADER].is_sensitive());
         assert!(request.headers()[APP_SECRET_HEADER].is_sensitive());
     }

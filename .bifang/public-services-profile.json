@@ -10,7 +10,7 @@
   "framework": "Rust 2024 shared core + Tauri 2 GUI + React/TypeScript",
   "current_version": "0.2.17",
   "version_source": "根 Cargo.toml 的 workspace.package.version；Tauri 与前端版本由版本门禁保持一致。",
-  "app_config_strategy": "Tauri app_data_dir/public-services/bifang-content-production-assistant/state.json 保存随机 install_id、默认关闭的统计同意状态与北京时间每日认领日期；公开路由固定在 Rust 可信层，低权限版本凭据只由构建宿主注入。",
+  "app_config_strategy": "Tauri app_data_dir/public-services/bifang-content-production-assistant/state.json 保存随机 install_id、默认关闭的统计同意状态与北京时间每日认领日期；CloudBase 统计路由、Kaiwhale 版本网关与非敏感 App Key 固定在 Rust 可信层，版本 App Secret 只由构建宿主注入。",
   "startup_entry": "bifang_content_production_assistant_gui/src-tauri/src/main.rs 调用 bifang_content_production_assistant_gui::run()。",
   "main_window_ready_hook": "React AppShell 挂载并取得应用元数据后调用 start_public_services；Rust 以进程级门禁启动最多一次已同意的 daily_active 尝试和一次版本检查。",
   "external_link_handler": "Rust 只保存最近一次严格校验通过的 application-version 下载 URL，并通过 Windows explorer.exe 或 macOS /usr/bin/open 以单参数打开；WebView 不能提交 URL 或路径。",
@@ -20,7 +20,7 @@
   "telemetry_endpoint": "https://bftoos-sh-d3ga7hahz59229f0a-1484029710.ap-shanghai.app.tcloudbase.com/apps/bifang-content-production-assistant/v1/track",
   "update_transport": "application-version-api-v1",
   "application_version_contract_version": "1.0.0",
-  "application_version_base_url": "https://bftoos-sh-d3ga7hahz59229f0a-1484029710.ap-shanghai.app.tcloudbase.com/tools/version-control/v1",
+  "application_version_base_url": "https://gateway.kaiwhale.com/tools/version-control/v1",
   "release_streams": [
     {
       "platform": "windows",
@@ -36,7 +36,7 @@
     }
   ],
   "version_api_auth_binding_id": "runtime-bifang-content-production-assistant",
-  "version_api_auth_status": "planned",
+  "version_api_auth_status": "ready",
   "infrastructure_version": "3.0.0",
   "infrastructure_source_commit": "fad8cc79217bd3bbead6063721ba646a4b12faa2",
   "registration_status": "verified",
@@ -50,7 +50,7 @@
     "app_registered": true,
     "cloudbase_config_reviewed": true,
     "platform_code_mapping_confirmed": true,
-    "version_api_config_reviewed": false,
+    "version_api_config_reviewed": true,
     "version_api_service_verified": false,
     "runtime_auth_ready": false,
     "function_deployed": true,
