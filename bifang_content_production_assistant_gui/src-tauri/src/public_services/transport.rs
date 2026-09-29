@@ -37,7 +37,7 @@ impl ReqwestPublicServicesTransport {
             Ok(client) => std::sync::Arc::new(Self {
                 client,
                 telemetry: TelemetryConfig::registered(),
-                version_api: VersionApiConfig::from_compile_time(),
+                version_api: VersionApiConfig::registered(),
             }),
             Err(_) => std::sync::Arc::new(DisabledPublicServicesTransport),
         }

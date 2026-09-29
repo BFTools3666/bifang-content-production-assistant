@@ -14,6 +14,7 @@ const TELEMETRY_ORIGIN: &str =
     "https://bftoos-sh-d3ga7hahz59229f0a-1484029710.ap-shanghai.app.tcloudbase.com";
 const VERSION_BASE_URL: &str = "https://gateway.kaiwhale.com/tools/version-control/v1";
 const VERSION_APP_KEY: &str = "versionControl";
+const VERSION_APP_SECRET: &str = "ef430c0a8fc8068c";
 const APP_KEY_HEADER: &str = "x-app-key";
 const APP_SECRET_HEADER: &str = "x-app-secret";
 
@@ -51,12 +52,12 @@ pub(super) struct VersionApiConfig {
 }
 
 impl VersionApiConfig {
-    /// App Key 固定为已确认的客户端标识；Secret 只由构建宿主注入。
-    pub(super) fn from_compile_time() -> Option<Self> {
+    /// 从受版本控制的固定网关、发布流与应用凭据构造请求。
+    pub(super) fn registered() -> Option<Self> {
         Self::from_values(
             release_code(),
             Some(VERSION_APP_KEY),
-            option_env!("BIFANG_CONTENT_PRODUCTION_ASSISTANT_VERSION_APP_SECRET"),
+            Some(VERSION_APP_SECRET),
         )
     }
 
@@ -124,7 +125,7 @@ fn build_version_url(code: &str, current_version: &str) -> Option<Url> {
 
 #[cfg(all(target_os = "windows", target_arch = "x86_64"))]
 fn release_code() -> Option<&'static str> {
-    Some("bifang-content-production-assistant-windows-x64")
+    Some("bifang-content-production-assistant-windows")
 }
 
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
@@ -188,13 +189,7 @@ mod tests {
 
     #[test]
     fn request_uses_one_v1_path_and_sensitive_headers() {
-        let code = release_code().expect("受支持目标应有发布流");
-        let config = VersionApiConfig::from_values(
-            Some(code),
-            Some(VERSION_APP_KEY),
-            Some("offline-secret"),
-        )
-        .expect("离线配置应有效");
+        let config = VersionApiConfig::registered().expect("固定版本配置应有效");
         let request = config
             .build_request(&reqwest::Client::new())
             .expect("请求应可构造");

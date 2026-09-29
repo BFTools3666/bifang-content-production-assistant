@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 当前版本：根 `Cargo.toml` 的 `[workspace.package].version`，当前为 `0.2.17`
+- 当前版本：根 `Cargo.toml` 的 `[workspace.package].version`，当前为 `0.2.18`
 - 当前产品状态：Product Spec 已批准，MVP 功能与 macOS 开发级 Fixture E2E 已完成；该 debug `.app` 和测试证据不是发布候选
 - `.harness/version-state.json` 只保存正式发布周期、待发布变化和 `bug-fix` 稳定 ID 去重状态，不是第二版本事实源
 - 当前尚无正式渠道发布；候选、签名、公证和 tag 以实际 Git 与 `release/` 证据为准，不以前置文档声明代替；Windows 原生安装和运行尚未验收

@@ -16,7 +16,8 @@
     "BUG-BIFANG-DMG-LICENSE-20260924",
     "BUG-LARK-CLI-FOLDER-LIST-PARAMS-20260924",
     "BUG-LARK-CLI-SYNC-FENCE-20260924",
-    "BUG-LARK-CLI-SETUP-BOUNDARY-20260924"
+    "BUG-LARK-CLI-SETUP-BOUNDARY-20260924",
+    "BUG-VERSION-WINDOWS-CODE-EMBEDDED-SECRET"
   ],
   "cycle_base_version": "0.1.0",
   "feature_bump_applied": true,
@@ -186,8 +187,13 @@
       "change_id": "FEATURE-CLOUDBASE-PUBLIC-SERVICES",
       "kind": "feature",
       "required_version": "0.2.17"
+    },
+    {
+      "change_id": "BUG-VERSION-WINDOWS-CODE-EMBEDDED-SECRET",
+      "kind": "bug-fix",
+      "required_version": "0.2.18"
     }
   ],
   "schema_version": 1,
-  "target_version": "0.2.17"
+  "target_version": "0.2.18"
 }

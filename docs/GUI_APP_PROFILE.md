@@ -11,7 +11,7 @@
 | Tauri identifier | `com.arden.bifang-content-production-assistant` |
 | CLI 二进制 | `bifang_content_production_assistant_cli` |
 | 负责人 | arden |
-| 版本 | `0.2.17` |
+| 版本 | `0.2.18` |
 | 状态 | MVP 功能与开发级 macOS Fixture E2E 已完成；未发布 |
 | 产品规格 | `Approved` |
 | 目标平台 | Windows、macOS |
