@@ -263,6 +263,23 @@ describe("batch content workbench", () => {
     ).toBeInTheDocument();
   });
 
+  /** 顶部说明准确列出缺失阶段，正文服务齐全时正文按钮仍能发起单步。 */
+  it("lists_missing_summary_and_image_while_allowing_article_generation", async () => {
+    const [provider] = await commandMocks.listProviderConfigs();
+    commandMocks.listProviderConfigs.mockResolvedValue([
+      { ...provider, defaultForSummary: false, defaultForImage: false, isTestFixture: false, kind: "openAiCompatible" },
+    ]);
+    commandMocks.generateArticleStage.mockResolvedValue({ batchId: "article-only", queuedCount: 1, queuedTaskIds: ["article-a"], skipped: [], skippedCount: 0 });
+    const user = userEvent.setup();
+    await renderWorkbench();
+    expect(await screen.findByText(/尚未配置：简介、配图/u)).toBeInTheDocument();
+    const generate = screen.getByRole("button", { name: "生成《企业知识库搭建指南》的正文" });
+    expect(generate).toBeEnabled();
+    await user.click(generate);
+    expect(commandMocks.generateArticleStage).toHaveBeenCalledWith("article-a", "article", 1, 1, false, null, null);
+    expect(commandMocks.startSelectedBatch).not.toHaveBeenCalled();
+  });
+
   /** 同一阶段按钮的同步锁在首个 Promise 完成前拒绝快速双击。 */
   it("deduplicates_rapid_stage_button_clicks", async () => {
     let finish!: (value: unknown) => void;

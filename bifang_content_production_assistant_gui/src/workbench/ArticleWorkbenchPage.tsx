@@ -553,7 +553,14 @@ export function ArticleWorkbenchPage(): ReactElement {
           icon={<IconAlertCircle aria-hidden="true" size={20} />}
         >
           <Group justify="space-between" wrap="wrap">
-            <Text>{t("workbench.provider_missing")}</Text>
+            <Text>
+              {t("workbench.provider_missing", {
+                stages: (["article", "summary", "image"] as const)
+                  .filter((stage) => !stageProviders[stage])
+                  .map((stage) => t(`workbench.grid.${stage}`))
+                  .join(t("workbench.stage_separator")),
+              })}
+            </Text>
             <Button
               onClick={() => void navigate({ to: "/providers" })}
               variant="default"

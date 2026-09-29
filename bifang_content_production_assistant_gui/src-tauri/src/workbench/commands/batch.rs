@@ -12,10 +12,7 @@ pub async fn start_selected_batch(
     }
     let _start_guard = worker.acquire_start().await;
     ensure_worker_available(&worker)?;
-    let execution = worker
-        .prepare_execution()
-        .await
-        .map_err(|message| CommandError::new("BATCH_PREPARE_FAILED", message))?;
+    let execution = worker.prepare_execution().await?;
     let batch_id = format!("batch-{}", uuid::Uuid::new_v4());
     let binding = execution.to_binding(String::new(), 0);
     let preparation = repository
@@ -61,9 +58,7 @@ pub async fn preview_selected_batch(
         return Err(CommandError::new("NO_SELECTION", "请先选择要运行的文章"));
     }
     let workspace = repository.snapshot().await;
-    worker
-        .validate_execution_configuration(&workspace)
-        .map_err(|message| CommandError::new("BATCH_PREPARE_FAILED", message))?;
+    worker.validate_execution_configuration(&workspace)?;
     let preparation = preview_batch(&workspace.articles, task_ids);
     Ok(BatchStartResult {
         batch_id: None,
@@ -212,10 +207,7 @@ pub async fn regenerate_article(
 ) -> Result<BatchStartResult, CommandError> {
     let _start_guard = worker.acquire_start().await;
     ensure_worker_available(&worker)?;
-    let execution = worker
-        .prepare_execution()
-        .await
-        .map_err(|message| CommandError::new("BATCH_PREPARE_FAILED", message))?;
+    let execution = worker.prepare_execution().await?;
     let batch_id = format!("batch-{}", uuid::Uuid::new_v4());
     let binding = execution.to_binding(String::new(), 0);
     repository

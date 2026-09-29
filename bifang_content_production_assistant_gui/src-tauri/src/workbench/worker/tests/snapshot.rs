@@ -1,5 +1,29 @@
 use super::*;
 
+/// 完整批次在读取系统密钥、写入任务或访问网络前返回可翻译的阶段错误。
+#[tokio::test]
+async fn incomplete_batch_configuration_preserves_stage_error_before_vault_access() {
+    let repository = Arc::new(WorkspaceRepository::open_database_url("sqlite::memory:").await.unwrap());
+    repository.update(|workspace| {
+        let mut provider = ProviderConfig::open_ai_compatible_draft();
+        provider.id = "article-only".into();
+        provider.article_model = Some("article-model".into());
+        provider.default_for_article = true;
+        provider.default_for_summary = false;
+        provider.default_for_image = false;
+        workspace.provider_configs = vec![provider];
+        // 此引用没有对应系统密钥；若错误地先访问凭据库，将得到不同的拒绝原因。
+        workspace.provider_credential_refs.insert("article-only".into(), "absent-batch-regression-key".into());
+        Ok(())
+    }).await.unwrap();
+    let worker = BatchWorker::new(repository.clone(), std::env::temp_dir()).unwrap();
+    let preview_error = worker.validate_execution_configuration(&repository.snapshot().await).unwrap_err();
+    let start_error = worker.prepare_execution().await.err().unwrap();
+    assert_eq!(preview_error.code, "BATCH_SUMMARY_PROVIDER_MISSING");
+    assert_eq!(start_error.code, preview_error.code);
+    assert!(repository.snapshot().await.run_history.is_empty());
+}
+
 /// 批次快照必须冻结每种 Prompt 的最新版本，而不是历史首版。
 #[test]
 fn execution_snapshot_uses_latest_prompt_versions() {
@@ -164,7 +188,7 @@ fn execution_preflight_rejects_missing_credential_reference() {
 
     let error =
         validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible)
-            .unwrap_err();
+            .unwrap_err().to_string();
 
     assert!(error.contains("正文"));
     assert!(error.contains("尚未登记 API 密钥"));

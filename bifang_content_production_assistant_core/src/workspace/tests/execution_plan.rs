@@ -1,4 +1,5 @@
 use super::*;
+use crate::PromptTemplateKind;
 
 /// 新批次选择最新 Prompt、已启用默认服务和明确的凭据引用。
 #[test]
@@ -125,6 +126,7 @@ fn new_run_preflight_rejects_template_provider_mode_and_missing_reference() {
     assert!(
         validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible)
             .unwrap_err()
+            .to_string()
             .contains("缺少正文 Prompt 模板")
     );
 
@@ -132,6 +134,7 @@ fn new_run_preflight_rejects_template_provider_mode_and_missing_reference() {
     assert!(
         validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible)
             .unwrap_err()
+            .to_string()
             .contains("正文阶段尚未选择默认 AI 服务")
     );
 
@@ -141,6 +144,7 @@ fn new_run_preflight_rejects_template_provider_mode_and_missing_reference() {
     assert!(
         validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible)
             .unwrap_err()
+            .to_string()
             .contains("已停用")
     );
 
@@ -148,11 +152,13 @@ fn new_run_preflight_rejects_template_provider_mode_and_missing_reference() {
     assert!(
         validate_execution_configuration_for_kind(&workspace, ProviderKind::Fixture)
             .unwrap_err()
+            .to_string()
             .contains("不支持当前阶段或运行模式")
     );
     assert!(
         validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible)
             .unwrap_err()
+            .to_string()
             .contains("尚未登记 API 密钥")
     );
     workspace
@@ -161,6 +167,7 @@ fn new_run_preflight_rejects_template_provider_mode_and_missing_reference() {
     assert!(
         validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible)
             .unwrap_err()
+            .to_string()
             .contains("尚未登记 API 密钥")
     );
     workspace
@@ -180,4 +187,27 @@ fn fixture_preflight_never_requires_keychain_reference() {
         validate_execution_configuration_for_kind(&workspace, ProviderKind::Fixture),
         Ok(())
     );
+}
+
+/// 仅正文服务可以单步写作，完整批次则逐项说明尚未配置的简介和配图。
+#[test]
+fn batch_preflight_identifies_missing_stages_without_blocking_article_only() {
+    let mut workspace = WorkspaceData::default();
+    let mut provider = real_provider("article-only");
+    provider.default_for_summary = false;
+    provider.default_for_image = false;
+    workspace.provider_configs.push(provider);
+    workspace.provider_credential_refs.insert("article-only".into(), "vault-ref".into());
+    let preflight = || validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible);
+    assert_eq!(preflight().unwrap_err().code(), "BATCH_SUMMARY_PROVIDER_MISSING");
+    let article = ExecutionPlan::from_workspace(&workspace, ProviderKind::OpenAiCompatible, Some(WorkflowStage::Article)).unwrap();
+    assert_eq!(article.validate_for_stage(WorkflowStage::Article), Ok(()));
+    workspace.provider_configs[0].default_for_summary = true;
+    assert_eq!(validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible).unwrap_err().code(), "BATCH_IMAGE_PROVIDER_MISSING");
+    workspace.provider_configs[0].default_for_image = true;
+    assert_eq!(validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible), Ok(()));
+    workspace.provider_credential_refs.clear();
+    assert_eq!(validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible).unwrap_err().code(), "BATCH_ARTICLE_CREDENTIAL_MISSING");
+    workspace.prompt_templates.retain(|template| template.kind != PromptTemplateKind::Summary);
+    assert_eq!(validate_execution_configuration_for_kind(&workspace, ProviderKind::OpenAiCompatible).unwrap_err().code(), "BATCH_SUMMARY_PROMPT_MISSING");
 }

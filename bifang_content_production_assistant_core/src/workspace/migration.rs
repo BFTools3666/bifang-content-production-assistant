@@ -13,6 +13,7 @@ impl WorkspaceData {
             | PRE_GENERATION_METRICS_SCHEMA_VERSION
             | PRE_CONNECTOR_SCHEMA_VERSION
             | PRE_LARK_CLI_CONNECTOR_SCHEMA_VERSION
+            | PRE_RESEARCH_SCHEMA_VERSION
             | WORKSPACE_SCHEMA_VERSION => 5,
             _ => return Err("本地工作区版本不受支持".to_string()),
         };
@@ -88,7 +89,7 @@ impl WorkspaceData {
         for article in &mut self.articles {
             changed |= article.backfill_created_at_ms();
         }
-        if source_schema_version < WORKSPACE_SCHEMA_VERSION {
+        if source_schema_version < PRE_RESEARCH_SCHEMA_VERSION {
             changed |= migrate_connector_configs_to_cli(
                 &mut self.connector_configs,
                 &mut self.connector_config_history,

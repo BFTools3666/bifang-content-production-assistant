@@ -4,6 +4,9 @@ use super::*;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceData {
+    /// 对标、风格和生成草稿；旧快照读取时使用空资产和内置指令。
+    #[serde(default)]
+    pub research: crate::research::ResearchData,
     /// 持久数据模式版本。
     pub schema_version: u32,
     /// 已处理的一次性内置初始内容修订；删除种子后仍保持不变。
@@ -49,6 +52,7 @@ pub struct WorkspaceData {
 impl Default for WorkspaceData {
     fn default() -> Self {
         Self {
+            research: crate::research::ResearchData::default(),
             schema_version: WORKSPACE_SCHEMA_VERSION,
             initial_data_revision: 0,
             articles: Vec::new(),

@@ -25,7 +25,10 @@ mod transport;
 use state::StateStore;
 use transport::{PublicServicesTransport, ReqwestPublicServicesTransport};
 
+#[cfg(not(feature = "xhs"))]
 pub(crate) const APP_ID: &str = "bifang-content-production-assistant";
+#[cfg(feature = "xhs")]
+pub(crate) const APP_ID: &str = "bifang-xiaohongshu-assistant";
 pub(crate) const STATE_SCHEMA_VERSION: u8 = 1;
 pub(crate) const MAX_TELEMETRY_BYTES: usize = 1_024;
 pub(crate) const MAX_UPDATE_BYTES: usize = 65_536;

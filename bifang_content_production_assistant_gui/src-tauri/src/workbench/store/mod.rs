@@ -31,7 +31,7 @@ impl WorkspaceRepository {
             .map_err(|_| "无法创建应用数据目录".to_string())?;
         let database_path = app_data_dir.join("content-workbench.sqlite3");
         let database_url = format!("sqlite://{}?mode=rwc", database_path.to_string_lossy());
-        Self::open_database_url_with_initial_content(&database_url, true).await
+        Self::open_database_url_with_initial_content(&database_url, !cfg!(feature = "xhs")).await
     }
 
     /// 打开明确数据库 URL；该入口也用于隔离的内存集成测试。
@@ -87,6 +87,9 @@ impl WorkspaceRepository {
         let now_ms = current_time_ms();
         let initial_content_changed = seed_initial_content
             && data.apply_initial_content(super::models::fixture_mode_enabled(), now_ms)?;
+        if is_new && cfg!(feature = "xhs") && !super::models::fixture_mode_enabled() {
+            bifang_content_production_assistant_core::research::initialize_note_workbench(&mut data);
+        }
         let recovered_tasks = recover_interrupted_articles(&mut data, now_ms);
         let recovered_runs = recover_abandoned_runs(&mut data, now_ms);
         let repository = Self {

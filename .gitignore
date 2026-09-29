@@ -5,6 +5,7 @@
 # Node.js 与前端生成物
 /node_modules/
 **/node_modules/
+**/node_modules
 /dist/
 **/dist/
 /coverage/

@@ -1,6 +1,9 @@
 use tauri_plugin_deep_link::DeepLinkExt;
 
+#[cfg(not(feature = "xhs"))]
 const APP_DEEP_LINK_RESTORE_URL: &str = "app-bifang-content-production-assistant://restore";
+#[cfg(feature = "xhs")]
+const APP_DEEP_LINK_RESTORE_URL: &str = "app-bifang-xiaohongshu-assistant://restore";
 
 /// 中性深链只允许一个无 query、fragment 或载荷的恢复 URL。
 fn validate_restore_deep_link(url: &str) -> bool {
@@ -37,7 +40,7 @@ mod tests {
     /// 恢复 URL 只从项目身份确定性派生。
     #[test]
     fn deep_link_uses_identity_derived_restore_url() {
-        let project_id = "bifang_content_production_assistant".replace('_', "-");
+        let project_id = if cfg!(feature = "xhs") { "bifang_xiaohongshu_assistant" } else { "bifang_content_production_assistant" }.replace('_', "-");
         let derived = format!("app-{project_id}://restore");
         assert_eq!(derived, APP_DEEP_LINK_RESTORE_URL);
     }

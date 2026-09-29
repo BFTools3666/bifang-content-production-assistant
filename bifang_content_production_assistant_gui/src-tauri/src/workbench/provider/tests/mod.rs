@@ -128,8 +128,21 @@ fn serve_chunked_body(body: Vec<u8>) -> String {
     let address = listener.local_addr().unwrap();
     thread::spawn(move || {
         let (mut stream, _) = listener.accept().unwrap();
-        let mut request = [0_u8; 4096];
-        let _ = stream.read(&mut request);
+        // 先读完 POST，避免关闭带有未读请求正文的套接字产生 TCP reset。
+        stream.set_read_timeout(Some(Duration::from_secs(2))).unwrap();
+        let mut request = Vec::new();
+        let mut buffer = [0_u8; 2048];
+        loop {
+            let read = stream.read(&mut buffer).unwrap_or(0);
+            if read == 0 { break; }
+            request.extend_from_slice(&buffer[..read]);
+            let Some(header_end) = request.windows(4).position(|part| part == b"\r\n\r\n") else { continue; };
+            let headers = String::from_utf8_lossy(&request[..header_end]);
+            let content_length = headers.lines().find_map(|line| {
+                line.to_ascii_lowercase().strip_prefix("content-length:").and_then(|value| value.trim().parse::<usize>().ok())
+            }).unwrap_or(0);
+            if request.len() >= header_end + 4 + content_length { break; }
+        }
         let headers = b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n";
         let _ = stream.write_all(headers);
         let _ = stream.write_all(format!("{:x}\r\n", body.len()).as_bytes());

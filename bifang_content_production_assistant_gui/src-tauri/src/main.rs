@@ -1,3 +1,5 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 /// 启动毕方内容生产助手的 Tauri 桌面应用。
 fn main() {
     let arguments = std::env::args_os().collect::<Vec<_>>();

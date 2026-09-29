@@ -16,6 +16,10 @@ import {
   IconPlugConnected,
   IconRefresh,
   IconRobot,
+  IconSearch,
+  IconBook2,
+  IconPencil,
+  IconFileText,
 } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
@@ -53,6 +57,10 @@ import {
 /** 当前中性 GUI 中可导航的固定本地路由。 */
 type AppPath =
   | "/"
+  | "/benchmarks"
+  | "/styles"
+  | "/writer"
+  | "/drafts"
   | "/prompts"
   | "/providers"
   | "/connectors"
@@ -76,6 +84,7 @@ const InterfaceLanguageContext = createContext<
 function isAppPath(path: string): path is AppPath {
   return [
     "/",
+    "/benchmarks", "/styles", "/writer", "/drafts",
     "/prompts",
     "/providers",
     "/connectors",
@@ -202,6 +211,10 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
   }
 
   const featureItems = [
+    { icon: IconSearch, id: "benchmarks", label: t("research.navigation.benchmarks"), to: "/benchmarks" },
+    { icon: IconBook2, id: "styles", label: t("research.navigation.styles"), to: "/styles" },
+    { icon: IconPencil, id: "writer", label: t("research.navigation.writer"), to: "/writer" },
+    { icon: IconFileText, id: "drafts", label: t("research.navigation.drafts"), to: "/drafts" },
     {
       icon: IconLayoutGrid,
       id: "workbench",
