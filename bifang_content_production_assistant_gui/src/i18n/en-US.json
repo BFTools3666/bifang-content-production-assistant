@@ -826,14 +826,19 @@
   },
   "settings": {
     "host_state_failed": "Some system settings could not be read. You can retry; switches will not pretend to be enabled.",
-    "language_failed": "The language preference could not be saved. The interface keeps its current language."
+    "language_failed": "The language preference could not be saved. The interface keeps its current language.",
+    "business_settings": "Writing and connections",
+    "ai_services": "AI services",
+    "feishu_connection": "Feishu and cloud documents",
+    "writing_prompts": "Writing instructions",
+    "run_history": "Run history"
   },
   "research": {
     "navigation": {
-      "benchmarks": "Benchmarks",
-      "styles": "Style library",
-      "writer": "Writing",
-      "drafts": "Drafts"
+      "benchmarks": "Find references",
+      "styles": "Styles",
+      "writer": "Write",
+      "drafts": "My articles"
     }
   }
 }

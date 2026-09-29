@@ -19,7 +19,8 @@
     "BUG-LARK-CLI-SETUP-BOUNDARY-20260924",
     "BUG-VERSION-WINDOWS-CODE-EMBEDDED-SECRET",
     "BUG-COLLECTION-KEEP-KNOWN-METRICS-20260929",
-    "BUG-BATCH-CONFIG-ERROR-DETAILS-20260929"
+    "BUG-BATCH-CONFIG-ERROR-DETAILS-20260929",
+    "BUG-AI-KEY-ONBOARDING-DISCOVERY-20260929"
   ],
   "cycle_base_version": "0.1.0",
   "feature_bump_applied": true,
@@ -209,8 +210,18 @@
       "change_id": "BUG-BATCH-CONFIG-ERROR-DETAILS-20260929",
       "kind": "bug-fix",
       "required_version": "0.2.20"
+    },
+    {
+      "change_id": "FEAT-ARTICLE-WRITING-SOP-20260929",
+      "kind": "feature",
+      "required_version": "0.2.20"
+    },
+    {
+      "change_id": "BUG-AI-KEY-ONBOARDING-DISCOVERY-20260929",
+      "kind": "bug-fix",
+      "required_version": "0.2.21"
     }
   ],
   "schema_version": 1,
-  "target_version": "0.2.20"
+  "target_version": "0.2.21"
 }

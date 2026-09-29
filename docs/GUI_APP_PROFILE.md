@@ -11,7 +11,7 @@
 | Tauri identifier | `com.arden.bifang-content-production-assistant` |
 | CLI 二进制 | `bifang_content_production_assistant_cli` |
 | 负责人 | arden |
-| 版本 | `0.2.20` |
+| 版本 | `0.2.21` |
 | 状态 | MVP 功能与开发级 macOS Fixture E2E 已完成；未发布 |
 | 产品规格 | `Approved` |
 | 目标平台 | Windows、macOS |
@@ -30,7 +30,7 @@ sponsor_page = enabled
 single_instance = enabled
 deep_link = enabled
 global_shortcut = enabled
-sidebar_mode = compact
+sidebar_mode = detailed
 ```
 
 全局快捷键能力采用 Rust-only 插件。当前 MVP 没有快捷键产品动作、默认 chord、OS 注册或快捷键界面；唯一契约为：
@@ -82,9 +82,9 @@ sidebar_mode = compact
 本项目精确命中以下稳定标准 ID：
 
 - 通用：`tauri-gui-common-v1`
-- 侧栏：`tauri-gui-sidebar-compact-80-v1`
+- 侧栏：`tauri-gui-sidebar-detailed-v1`
 
-compact 侧栏固定为 80px 宽、6px 内容内边距、36px Logo、22px 图标、11px/1.25 全宽居中名称、56px 菜单项、4px 图标与名称间距/垂直 padding、8px 区间距；不提供折叠按钮或固定 `em/ch` 名称盒。功能项从顶部增长，底部依次放置已启用赞助页、固定设置页和已启用关于页。主题与 detailed 侧栏折叠偏好分别使用 `bifang-content-production-assistant:application-color-scheme` 和 `bifang-content-production-assistant:app.sidebar.detailed.collapsed`；详细规则只读取 `docs/design_standards/README.md` 精确路由到的标准。
+按用户已确认的简洁写作预览（`ADR-20260929-006`），使用原有 detailed 模板：首次展开为 248px、72px Logo、图标和文字横排；收起为 76px、44px Logo、只显示图标并提供 Tooltip。菜单图标 22px，展开菜单最小高度 44px。宽度与主内容偏移使用原有同源常量，折叠只由明确按钮触发。主题与侧栏偏好继续使用原键，不改业务数据或凭据命名空间。
 
 主窗口在无有效保存状态时使用 1440×900、最小 960×640、居中并防止溢出。动态标题遵循 `{applicationName} v{version} {contactChannel}:{contactValue}`，固定品牌资料提供 `contactChannel=QQ`、`contactValue=2222980`；项目产品反馈渠道仍未另行定义。设置页固定提供应用/版本、中英文和浅色/深色/跟随系统主题，并显示通知、自启和匿名统计开关；匿名统计默认关闭，说明发送字段、时机和撤回方式。
 
@@ -94,9 +94,11 @@ compact 侧栏固定为 80px 宽、6px 内容内边距、36px Logo、22px 图标
 
 ### 导航
 
-- 顶部功能区依次为工作台 `/`、Prompt `/prompts`、AI 服务 `/providers`、连接器 `/connectors` 和运行记录 `/runs`。
+- 顶部业务区依次为写文章 `/`、找对标 `/benchmarks`、风格库 `/styles` 和我的文章 `/drafts`。`/writer` 保留为写作入口别名。
+- 写作首页按写作准备、生成文章、检查修改、保存导出四步展示；批量写作入口进入 `/batch`，原工作台和详情逻辑继续使用。
+- AI 服务、飞书连接、提示词和运行记录保留原路由，在相关操作及设置中进入，不要求放在一级侧栏。
 - 底部支持区依次为赞助 `/sponsor`、设置 `/settings` 和关于 `/about`；设置始终存在，赞助与关于由当前 profile 启用。
-- 导航动作和当前路由状态由各自语义化菜单项拥有，compact 模式不提供折叠控件。
+- detailed 展开/收起及偏好由 AppShell 拥有，菜单项独立拥有导航和 active 状态。
 
 ### 工作台与 Grid
 

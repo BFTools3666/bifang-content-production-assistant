@@ -105,9 +105,7 @@ pub(crate) async fn update_research_draft(id: String, title: String, body: Strin
 pub(crate) async fn export_research_draft(app: AppHandle, id: String, format: String, repository: State<'_, Arc<WorkspaceRepository>>) -> Result<bool, CommandError> {
     use tauri_plugin_dialog::DialogExt;
     let data = repository.snapshot().await;
-    let draft = data.research.drafts.iter().find(|draft| draft.id == id).ok_or_else(|| research_error("草稿不存在".into()))?;
-    let extension = if format == "markdown" { "md" } else if format == "text" { "txt" } else { return Err(research_error("导出格式不支持".into())); };
-    let text = if format == "markdown" { format!("# {}\n\n{}\n\n{}\n", draft.title, draft.body, draft.tags.iter().map(|tag| format!("#{tag}")).collect::<Vec<_>>().join(" ")) } else { format!("{}\n\n{}\n\n{}", draft.title, draft.body, draft.tags.iter().map(|tag| format!("#{tag}")).collect::<Vec<_>>().join(" ")) };
+    let (text, extension) = research_draft_document(&data.research, &id, &format).map_err(research_error)?;
     let (sender, receiver) = tokio::sync::oneshot::channel();
     app.dialog().file().add_filter("内容", &[extension]).set_file_name(format!("毕方原创草稿.{extension}")).save_file(move |path| { let _ = sender.send(path); });
     let path = receiver.await.map_err(|_| research_error("保存对话框无法打开".into()))?;
@@ -119,3 +117,9 @@ pub(crate) async fn export_research_draft(app: AppHandle, id: String, format: St
 
 /// 把领域拒绝映射为可展示的稳定协议错误，不输出原始外部响应。
 fn research_error(message: String) -> CommandError { CommandError::new("RESEARCH_VALIDATION", message) }
+
+/// 将已保存草稿交给共享 core，继续原有配图、格式和连接器工作流。
+#[tauri::command]
+pub(crate) async fn prepare_research_article_task(id: String, repository: State<'_ , Arc<WorkspaceRepository>>) -> Result<String, CommandError> {
+    repository.update(|data| prepare_research_article(data, &id, current_time_ms())).await.map_err(research_error)
+}

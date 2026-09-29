@@ -1,6 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-
-import { ArticleWorkbenchPage } from "../workbench/ArticleWorkbenchPage";
-
-/** 渲染批量 AI 内容工作台主页面。 */
-export const Route = createFileRoute("/")({ component: ArticleWorkbenchPage });
+import { WriterPage } from "../research/WriterPage";
+/** 首页直接进入运营人员的文章写作流程。 */
+export const Route = createFileRoute("/")({ component: WriterPage });

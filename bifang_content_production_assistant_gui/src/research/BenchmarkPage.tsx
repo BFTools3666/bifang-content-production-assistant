@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { getCollectionStatus, researchError, startCollection } from "./researchCommands";
-import { benchmarkSessionAtom, composerSessionAtom, metricText, platformOptions, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
+import { benchmarkSessionAtom, composerSessionAtom, writerModeAtom, writerStepAtom, writerDraftIdAtom, metricText, platformOptions, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
 import type { BenchmarkWork, ContentPlatform } from "./researchTypes";
 import { ResearchHeader } from "./ResearchHeader";
 import styles from "./ResearchPage.module.css";
@@ -17,6 +17,9 @@ export function BenchmarkPage(): ReactElement {
   const library = useResearchLibrary();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [, setWriterMode] = useAtom(writerModeAtom);
+  const [, setWriterStep] = useAtom(writerStepAtom);
+  const [, setWriterDraft] = useAtom(writerDraftIdAtom);
   const [session, setSession] = useAtom(benchmarkSessionAtom);
   const [, setComposer] = useAtom(composerSessionAtom);
   const [pageUrl, setPageUrl] = useState("");
@@ -49,7 +52,7 @@ export function BenchmarkPage(): ReactElement {
   /** 把已选择作品与关键词带入二创页，路由切换保留当前筛选。 */
   function writeSelected() {
     setComposer(previous => ({ ...previous, platform: session.platform, keyword: session.keyword || previous.keyword, sourceIds: selected.map(work => work.id), styleId: null }));
-    void navigate({to: "/writer"});
+    setWriterMode("reference"); setWriterStep(0); setWriterDraft(null); void navigate({to: "/writer"});
   }
 
   return <main className={styles.page}>

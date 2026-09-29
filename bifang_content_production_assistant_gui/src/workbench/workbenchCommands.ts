@@ -290,6 +290,11 @@ export async function newProviderConfigDraft(): Promise<ProviderConfig> {
   );
 }
 
+/** 读取共享 core 的 DeepSeek 快速接入默认值，不进行付费测试。 */
+export async function newDeepseekTextProviderDraft(): Promise<ProviderConfig> {
+  return decodeProviderConfig(await invoke<unknown>("new_deepseek_text_provider_draft"));
+}
+
 /** 读取 core 定义的火山方舟图片服务默认值。 */
 export async function newVolcengineArkImageProviderConfigDraft(): Promise<ProviderConfig> {
   return decodeProviderConfig(

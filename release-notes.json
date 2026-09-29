@@ -3,6 +3,30 @@
   "releases": [
     {
       "releaseDate": "2026-09-29",
+      "version": "v0.2.21",
+      "featureOptimizations": [
+        {
+          "zh-CN": "恢复原名毕方内容生产助手，用写作准备、生成文章、检查修改、保存导出四步完成文章。",
+          "en-US": "Restore the Bifang Content Production Assistant name and organize writing into preparation, generation, review and export."
+        },
+        {
+          "zh-CN": "保留原批量写作、AI、飞书及统计模块；文章可继续简介、配图和飞书同步。",
+          "en-US": "Keep the original batch writing, AI, Feishu and telemetry modules; continue saved articles through summaries, images and Feishu."
+        }
+      ],
+      "bugFixes": [
+        {
+          "zh-CN": "首次写作明确引导接入自己的 AI Key，配置读取失败可重试，保存不自动调用服务。",
+          "en-US": "Guide first-time writers to connect their own AI key, distinguish settings errors and avoid automatic service calls on save."
+        },
+        {
+          "zh-CN": "切换页面保留当前输入，未保存的编辑不能导出，转入批量流程时避免覆盖已有正文。",
+          "en-US": "Keep current input across pages, require saving before export and prevent overwriting divergent batch article content."
+        }
+      ]
+    },
+    {
+      "releaseDate": "2026-09-29",
       "version": "v0.2.20",
       "featureOptimizations": [
         {

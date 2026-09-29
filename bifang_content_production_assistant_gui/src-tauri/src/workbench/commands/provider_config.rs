@@ -1,5 +1,11 @@
 use super::*;
 
+/// 只读提供运营人员快速接入的领域默认值，不联网也不读取密钥。
+#[tauri::command]
+pub async fn new_deepseek_text_provider_draft() -> ProviderConfig {
+    ProviderConfig::deepseek_text_draft()
+}
+
 /// 返回由 core 定义、尚无稳定 ID 或密钥的新 Provider 表单默认值。
 #[tauri::command]
 pub async fn new_provider_config_draft() -> ProviderConfig {

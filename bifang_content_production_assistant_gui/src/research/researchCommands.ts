@@ -42,7 +42,7 @@ export async function updateDraft(id: string, title: string, body: string): Prom
 }
 
 /** 使用系统保存对话框导出已保存的原创内容。 */
-export async function exportDraft(id: string, format: "markdown" | "text"): Promise<boolean> {
+export async function exportDraft(id: string, format: "markdown" | "text" | "html"): Promise<boolean> {
   return invoke<boolean>("export_research_draft", { id, format });
 }
 
@@ -51,4 +51,9 @@ export function researchError(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (error && typeof error === "object" && "message" in error && typeof error.message === "string") return error.message;
   return "操作未完成，请检查当前配置后重试";
+}
+
+/** 原子复制已保存正文到既有文章流程，重复操作不会重复创建任务。 */
+export async function prepareDraftArticle(id: string): Promise<string> {
+  return invoke<string>("prepare_research_article_task", { id });
 }

@@ -826,14 +826,19 @@
   },
   "settings": {
     "host_state_failed": "无法读取部分系统设置；你仍可重试，开关不会伪装成已开启。",
-    "language_failed": "语言偏好未能保存，界面继续使用当前语言。"
+    "language_failed": "语言偏好未能保存，界面继续使用当前语言。",
+    "business_settings": "写作与连接设置",
+    "ai_services": "AI 服务",
+    "feishu_connection": "飞书与云文档",
+    "writing_prompts": "写作提示词",
+    "run_history": "运行记录"
   },
   "research": {
     "navigation": {
-      "benchmarks": "对标采集",
+      "benchmarks": "找对标",
       "styles": "风格库",
-      "writer": "二创写作",
-      "drafts": "原创草稿"
+      "writer": "写文章",
+      "drafts": "我的文章"
     }
   }
 }

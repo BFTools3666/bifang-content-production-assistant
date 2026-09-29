@@ -1,6 +1,6 @@
 import { Alert, Button, Center, Loader, Stack, Text } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -55,6 +55,7 @@ function useHostBooleanSnapshot(
 function SettingsRouteComponent(): ReactElement | null {
   const { t } = useTranslation("app");
   const metadataQuery = useAppMetadata();
+  const navigate = useNavigate();
   const { language, languageFailed, setLanguage } = useInterfaceLanguage();
   const notificationState = useHostBooleanSnapshot(
     getSystemNotificationSetting,
@@ -83,6 +84,29 @@ function SettingsRouteComponent(): ReactElement | null {
 
   return (
     <Stack gap="lg">
+      <Text fw={650}>{t("settings.business_settings")}</Text>
+      <Button
+        variant="default"
+        onClick={() => void navigate({ to: "/providers" })}
+      >
+        {t("settings.ai_services")}
+      </Button>
+      <Button
+        variant="default"
+        onClick={() => void navigate({ to: "/connectors" })}
+      >
+        {t("settings.feishu_connection")}
+      </Button>
+      <Button
+        variant="default"
+        onClick={() => void navigate({ to: "/prompts" })}
+      >
+        {t("settings.writing_prompts")}
+      </Button>
+      <Button variant="default" onClick={() => void navigate({ to: "/runs" })}>
+        {t("settings.run_history")}
+      </Button>
+
       {hostStateFailed ? (
         <Alert
           color="yellow"

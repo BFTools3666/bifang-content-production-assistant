@@ -7,7 +7,7 @@ import { useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { listProviderConfigs } from "../workbench/workbenchCommands";
 import { analyzeStyle, researchError, updatePrompts, updateStyle } from "./researchCommands";
-import { benchmarkSessionAtom, composerSessionAtom, platformLabel, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
+import { benchmarkSessionAtom, composerSessionAtom, writerModeAtom, writerStepAtom, writerDraftIdAtom, platformLabel, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
 import type { StyleProfile } from "./researchTypes";
 import { ResearchHeader } from "./ResearchHeader";
 import styles from "./ResearchPage.module.css";
@@ -18,6 +18,9 @@ export function StyleLibraryPage(): ReactElement {
   const library = useResearchLibrary();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [, setWriterMode] = useAtom(writerModeAtom);
+  const [, setWriterStep] = useAtom(writerStepAtom);
+  const [, setWriterDraft] = useAtom(writerDraftIdAtom);
   const [benchmark] = useAtom(benchmarkSessionAtom);
   const [, setComposer] = useAtom(composerSessionAtom);
   const providers = useQuery({queryKey:["provider-configs"],queryFn:listProviderConfigs});
@@ -48,7 +51,7 @@ export function StyleLibraryPage(): ReactElement {
   /** 一键切换目标平台与风格，将编辑交给原有进程内写作状态。 */
   function applyStyle(style: StyleProfile) {
     setComposer(previous => ({...previous, platform:style.platform, styleId:style.id, sourceIds:[], keyword:previous.keyword || benchmark.keyword}));
-    void navigate({to:"/writer"});
+    setWriterMode("style"); setWriterStep(0); setWriterDraft(null); void navigate({to:"/writer"});
   }
 
   return <main className={styles.page}>

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BatchRouteImport } from './routes/batch'
 import { Route as BenchmarksRouteImport } from './routes/benchmarks'
 import { Route as ConnectorsRouteImport } from './routes/connectors'
 import { Route as DraftsRouteImport } from './routes/drafts'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BatchRoute = BatchRouteImport.update({
+  id: '/batch',
+  path: '/batch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BenchmarksRoute = BenchmarksRouteImport.update({
@@ -86,6 +92,7 @@ const WriterRoute = WriterRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/batch': typeof BatchRoute
   '/benchmarks': typeof BenchmarksRoute
   '/connectors': typeof ConnectorsRoute
   '/drafts': typeof DraftsRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/batch': typeof BatchRoute
   '/benchmarks': typeof BenchmarksRoute
   '/connectors': typeof ConnectorsRoute
   '/drafts': typeof DraftsRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/batch': typeof BatchRoute
   '/benchmarks': typeof BenchmarksRoute
   '/connectors': typeof ConnectorsRoute
   '/drafts': typeof DraftsRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/batch'
     | '/benchmarks'
     | '/connectors'
     | '/drafts'
@@ -145,6 +155,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/batch'
     | '/benchmarks'
     | '/connectors'
     | '/drafts'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/batch'
     | '/benchmarks'
     | '/connectors'
     | '/drafts'
@@ -174,6 +186,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BatchRoute: typeof BatchRoute
   BenchmarksRoute: typeof BenchmarksRoute
   ConnectorsRoute: typeof ConnectorsRoute
   DraftsRoute: typeof DraftsRoute
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/batch': {
+      id: '/batch'
+      path: '/batch'
+      fullPath: '/batch'
+      preLoaderRoute: typeof BatchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/benchmarks': {
@@ -278,6 +298,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BatchRoute: BatchRoute,
   BenchmarksRoute: BenchmarksRoute,
   ConnectorsRoute: ConnectorsRoute,
   DraftsRoute: DraftsRoute,
