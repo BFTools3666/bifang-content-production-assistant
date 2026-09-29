@@ -3,6 +3,81 @@
 use super::*;
 use crate::{CURRENT_PROMPT_RENDERER_VERSION, PromptTemplateKind, ProviderCapability};
 
+/// 新批次预检的稳定拒绝原因，保留失败阶段供各界面给出恢复指引。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExecutionConfigurationError {
+    /// 该阶段没有可冻结的提示词。
+    PromptMissing(PromptTemplateKind),
+    /// 该阶段尚未选择默认 AI 服务。
+    ProviderMissing(PromptTemplateKind),
+    /// 该阶段默认服务已停用。
+    ProviderDisabled(PromptTemplateKind),
+    /// 默认服务不支持该阶段或当前运行模式。
+    ProviderUnsupported(PromptTemplateKind),
+    /// 默认服务没有非空凭据引用。
+    CredentialMissing(PromptTemplateKind),
+}
+
+impl ExecutionConfigurationError {
+    /// 返回发生配置问题的 AI 阶段。
+    pub const fn stage(self) -> PromptTemplateKind {
+        match self {
+            Self::PromptMissing(stage)
+            | Self::ProviderMissing(stage)
+            | Self::ProviderDisabled(stage)
+            | Self::ProviderUnsupported(stage)
+            | Self::CredentialMissing(stage) => stage,
+        }
+    }
+
+    /// 提供阶段和原因均明确的稳定错误码，不使用原始宿主错误。
+    pub fn code(self) -> String {
+        let stage = match self.stage() {
+            PromptTemplateKind::Article => "ARTICLE",
+            PromptTemplateKind::Summary => "SUMMARY",
+            PromptTemplateKind::Image => "IMAGE",
+        };
+        let reason = match self {
+            Self::PromptMissing(_) => "PROMPT_MISSING",
+            Self::ProviderMissing(_) => "PROVIDER_MISSING",
+            Self::ProviderDisabled(_) => "PROVIDER_DISABLED",
+            Self::ProviderUnsupported(_) => "PROVIDER_UNSUPPORTED",
+            Self::CredentialMissing(_) => "CREDENTIAL_MISSING",
+        };
+        format!("BATCH_{stage}_{reason}")
+    }
+}
+
+impl std::fmt::Display for ExecutionConfigurationError {
+    /// 输出只含阶段和恢复动作的配置说明。
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let stage = match self.stage() {
+            PromptTemplateKind::Article => "正文",
+            PromptTemplateKind::Summary => "简介",
+            PromptTemplateKind::Image => "配图",
+        };
+        match self {
+            Self::PromptMissing(_) => write!(
+                formatter, "缺少{stage} Prompt 模板，请前往提示词配置后重试"
+            ),
+            Self::ProviderMissing(_) => write!(
+                formatter, "{stage}阶段尚未选择默认 AI 服务，请前往 AI 服务配置后重试"
+            ),
+            Self::ProviderDisabled(_) => write!(
+                formatter, "{stage}阶段的默认 AI 服务已停用，请先启用或选择其他服务"
+            ),
+            Self::ProviderUnsupported(_) => write!(
+                formatter, "{stage}阶段的默认 AI 服务不支持当前阶段或运行模式，请选择其他服务"
+            ),
+            Self::CredentialMissing(_) => write!(
+                formatter, "{stage}阶段的默认 AI 服务尚未登记 API 密钥，请前往 AI 服务配置保存密钥后重试"
+            ),
+        }
+    }
+}
+
+impl std::error::Error for ExecutionConfigurationError {}
+
 /// 一次运行冻结的全部非秘密输入，宿主只按引用装入密钥。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExecutionPlan {
@@ -155,59 +230,51 @@ impl ExecutionPlan {
 pub fn validate_execution_configuration_for_kind(
     workspace: &WorkspaceData,
     allowed_kind: ProviderKind,
-) -> Result<(), String> {
-    for (kind, stage_name) in [
-        (PromptTemplateKind::Article, "正文"),
-        (PromptTemplateKind::Summary, "简介"),
-        (PromptTemplateKind::Image, "配图"),
+) -> Result<(), ExecutionConfigurationError> {
+    for kind in [
+        PromptTemplateKind::Article,
+        PromptTemplateKind::Summary,
+        PromptTemplateKind::Image,
     ] {
         if !workspace
             .prompt_templates
             .iter()
             .any(|template| template.kind == kind)
         {
-            return Err(format!(
-                "缺少{stage_name} Prompt 模板，请前往 Prompt 模板配置后重试"
-            ));
+            return Err(ExecutionConfigurationError::PromptMissing(kind));
         }
     }
 
-    let stages: [(&str, ProviderCapability, fn(&ProviderConfig) -> bool); 3] = [
+    let stages: [
+        (PromptTemplateKind, ProviderCapability, fn(&ProviderConfig) -> bool); 3
+    ] = [
         (
-            "正文",
+            PromptTemplateKind::Article,
             ProviderCapability::Text,
             |provider: &ProviderConfig| provider.default_for_article,
         ),
         (
-            "简介",
+            PromptTemplateKind::Summary,
             ProviderCapability::Text,
             |provider: &ProviderConfig| provider.default_for_summary,
         ),
         (
-            "配图",
+            PromptTemplateKind::Image,
             ProviderCapability::Image,
             |provider: &ProviderConfig| provider.default_for_image,
         ),
     ];
-    for (stage_name, capability, is_default) in stages {
+    for (stage, capability, is_default) in stages {
         let provider = workspace
             .provider_configs
             .iter()
             .find(|provider| is_default(provider))
-            .ok_or_else(|| {
-                format!("{stage_name}阶段尚未选择默认 AI 服务，请前往 AI 服务配置后重试")
-            })?;
+            .ok_or(ExecutionConfigurationError::ProviderMissing(stage))?;
         if !provider.enabled {
-            return Err(format!(
-                "{stage_name}阶段的默认 AI 服务“{}”已停用，请先启用或选择其他服务",
-                provider.name
-            ));
+            return Err(ExecutionConfigurationError::ProviderDisabled(stage));
         }
         if !provider_kind_allowed(provider.kind, allowed_kind, capability) {
-            return Err(format!(
-                "{stage_name}阶段的默认 AI 服务“{}”不支持当前阶段或运行模式，请选择其他服务",
-                provider.name
-            ));
+            return Err(ExecutionConfigurationError::ProviderUnsupported(stage));
         }
         if provider.kind != ProviderKind::Fixture
             && !workspace
@@ -215,10 +282,7 @@ pub fn validate_execution_configuration_for_kind(
                 .get(&provider.id)
                 .is_some_and(|reference| !reference.trim().is_empty())
         {
-            return Err(format!(
-                "{stage_name}阶段的默认 AI 服务“{}”尚未登记 API 密钥，请前往 AI 服务配置保存密钥后重试",
-                provider.name
-            ));
+            return Err(ExecutionConfigurationError::CredentialMissing(stage));
         }
     }
     Ok(())

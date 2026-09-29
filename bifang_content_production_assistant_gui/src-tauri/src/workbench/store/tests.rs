@@ -9,6 +9,24 @@ use crate::workbench::models::{
     ProviderKind, RunRecord, WORKSPACE_SCHEMA_VERSION,
 };
 
+/// 小红书首次启动和重启均不注入SEO种子，笔记提示词只初始化一次。
+#[cfg(feature = "xhs")]
+#[tokio::test]
+async fn note_edition_keeps_note_defaults_after_restart() {
+    let directory = std::env::temp_dir().join(format!("bifang-note-restart-{}", uuid::Uuid::new_v4()));
+    let first = WorkspaceRepository::open(&directory).await.unwrap();
+    let original = first.snapshot().await;
+    assert!(original.articles.is_empty());
+    assert!(original.prompt_templates.iter().any(|template| template.name == "小红书原创笔记"));
+    drop(first);
+    let second = WorkspaceRepository::open(&directory).await.unwrap();
+    let reopened = second.snapshot().await;
+    assert!(reopened.articles.is_empty());
+    assert_eq!(reopened.prompt_templates, original.prompt_templates);
+    drop(second);
+    tokio::fs::remove_dir_all(directory).await.unwrap();
+}
+
 /// 通过公开领域 API 建立一篇可批准文章，避免测试绕过状态机直接伪造成功状态。
 fn completed_article(id: &str, title: &str) -> ArticleTask {
     let mut article = ArticleTask::new(id, title, 1);

@@ -24,7 +24,7 @@
     "TITLE_TOO_LONG": "Each title can contain at most 300 characters.",
     "NO_SELECTION": "Select at least one article first.",
     "BATCH_ALREADY_RUNNING": "Another batch is already running. Wait for it to finish or cancel it first.",
-    "BATCH_PREPARE_FAILED": "The batch configuration could not be frozen. Check the prompts and AI services.",
+    "BATCH_PREPARE_FAILED": "The run configuration could not be prepared. Check the saved API keys in AI Services and the stage templates in Prompts.",
     "EXECUTION_BINDING_MISSING": "This package has no frozen prompt and AI-service binding. Use Regenerate to create a new version.",
     "BATCH_START_FAILED": "The batch did not start, and its rows were not left pretending to run.",
     "RETRY_FAILED": "The failed stage could not be queued for retry.",
@@ -163,7 +163,22 @@
     "NOT_RUNNABLE": "The article's current state does not allow a first run.",
     "NOTHING_TO_RETRY": "This article has no failed or interrupted stage to retry.",
     "DEPENDENCY_NOT_READY": "An upstream output required by this stage is not ready.",
-    "INVALID_STATE": "The article's current state does not allow this operation."
+    "INVALID_STATE": "The article's current state does not allow this operation.",
+    "BATCH_ARTICLE_PROMPT_MISSING": "The article prompt is missing. Save a article template in Prompts and try again.",
+    "BATCH_ARTICLE_PROVIDER_MISSING": "No default AI service is selected for the article stage. Open AI Services, select the article stage, and save its service, model and API key.",
+    "BATCH_ARTICLE_PROVIDER_DISABLED": "The default article AI service is disabled. Enable it or select another service in AI Services.",
+    "BATCH_ARTICLE_PROVIDER_UNSUPPORTED": "The default AI service does not support the article stage. Select a compatible service and model in AI Services.",
+    "BATCH_ARTICLE_CREDENTIAL_MISSING": "The default article AI service has no saved API key. Save the key in AI Services and try again.",
+    "BATCH_SUMMARY_PROMPT_MISSING": "The summary prompt is missing. Save a summary template in Prompts and try again.",
+    "BATCH_SUMMARY_PROVIDER_MISSING": "No default AI service is selected for the summary stage. Open AI Services, select the summary stage, and save its service, model and API key.",
+    "BATCH_SUMMARY_PROVIDER_DISABLED": "The default summary AI service is disabled. Enable it or select another service in AI Services.",
+    "BATCH_SUMMARY_PROVIDER_UNSUPPORTED": "The default AI service does not support the summary stage. Select a compatible service and model in AI Services.",
+    "BATCH_SUMMARY_CREDENTIAL_MISSING": "The default summary AI service has no saved API key. Save the key in AI Services and try again.",
+    "BATCH_IMAGE_PROMPT_MISSING": "The image prompt is missing. Save a image template in Prompts and try again.",
+    "BATCH_IMAGE_PROVIDER_MISSING": "No default AI service is selected for the image stage. Open AI Services, select the image stage, and save its service, model and API key.",
+    "BATCH_IMAGE_PROVIDER_DISABLED": "The default image AI service is disabled. Enable it or select another service in AI Services.",
+    "BATCH_IMAGE_PROVIDER_UNSUPPORTED": "The default AI service does not support the image stage. Select a compatible service and model in AI Services.",
+    "BATCH_IMAGE_CREDENTIAL_MISSING": "The default image AI service has no saved API key. Save the key in AI Services and try again."
   },
   "status": {
     "overall": {
@@ -203,7 +218,7 @@
     "load_failed": "The article workbench could not be read. Local data was not changed.",
     "refresh_failed": "The article workbench could not be refreshed. The last successfully loaded local data remains visible.",
     "fixture_notice": "The E2E test fixture is enabled (not real AI). Generated results validate the workflow only and do not represent real content quality.",
-    "provider_missing": "The article, summary, or image stage is still missing a default AI service or credential. That stage will fail safely without network access.",
+    "provider_missing": "The full batch cannot start yet. Missing stages: {{stages}}. Configure their default AI service, model and API key. Configured stages can still run individually using Generate in each article row.",
     "selected_count": "{{count}} selected",
     "metrics": {
       "total": "All tasks",
@@ -331,7 +346,8 @@
       "title": "Active batch",
       "progress_label": "Batch progress",
       "progress": "{{total}} total; {{completed}} complete, {{failed}} failed"
-    }
+    },
+    "stage_separator": ", "
   },
   "details": {
     "drawer_title": "Article details and review",
@@ -811,5 +827,13 @@
   "settings": {
     "host_state_failed": "Some system settings could not be read. You can retry; switches will not pretend to be enabled.",
     "language_failed": "The language preference could not be saved. The interface keeps its current language."
+  },
+  "research": {
+    "navigation": {
+      "benchmarks": "Benchmarks",
+      "styles": "Style library",
+      "writer": "Writing",
+      "drafts": "Drafts"
+    }
   }
 }

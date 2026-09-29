@@ -6,6 +6,7 @@ mod locale;
 mod notification;
 mod public_services;
 mod release_notes;
+mod research;
 mod tray;
 mod updater;
 mod window_state;
@@ -23,7 +24,7 @@ use tauri_plugin_window_state::StateFlags;
 
 use notification::{NotificationWorker, start_notification_worker};
 
-rust_i18n::i18n!("locales", fallback = "en-US");
+rust_i18n::i18n!("locales", fallback = "zh-CN");
 
 const E2E_DATA_DIR_PREFIX: &str = "bifang-content-production-assistant-e2e.";
 
@@ -126,6 +127,7 @@ pub fn run() {
         .manage(updater::UpdateController::not_configured())
         .manage(updater::UpdateTaskOwner::default())
         .manage(start_notification_worker())
+        .manage(research::ResearchRuntime::default())
         .setup(|app| {
             let app_handle = app.handle();
             let default_app_data_dir = app_handle.path().app_data_dir()?;
@@ -167,6 +169,15 @@ pub fn run() {
         })
         .on_window_event(|window, event| tray::handle_window_event(window, event))
         .invoke_handler(tauri::generate_handler![
+            research::commands::get_research_library,
+            research::commands::update_research_prompts,
+            research::commands::generate_research_content,
+            research::commands::analyze_research_style,
+            research::commands::update_research_style,
+            research::commands::update_research_draft,
+            research::commands::export_research_draft,
+            research::collection::start_benchmark_collection,
+            research::collection::get_collection_status,
             app_metadata::get_app_metadata,
             locale::get_system_locale,
             locale::set_interface_language,
@@ -356,7 +367,7 @@ mod tests {
         let e2e: serde_json::Value =
             serde_json::from_str(include_str!("../tauri.e2e.conf.json")).unwrap();
 
-        assert_eq!(product["productName"], "毕方内容生产助手");
+        assert_eq!(product["productName"], "毕方 SEO 文章助手");
         assert_eq!(e2e["productName"], "毕方内容生产助手 E2E");
         assert_ne!(product["identifier"], e2e["identifier"]);
         assert!(

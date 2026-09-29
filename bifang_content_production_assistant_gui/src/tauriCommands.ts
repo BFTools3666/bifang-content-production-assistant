@@ -156,7 +156,7 @@ export function synchronizeDocumentTitle(title: string): void {
   document.title = title;
 }
 
-/** 读取保存偏好优先、系统探测兜底的界面语言。 */
+/** 读取保存偏好优先、首次启动默认简体中文的界面语言。 */
 export async function getSystemLocale(): Promise<SupportedInterfaceLanguage> {
   return decodeInterfaceLanguage(await invoke<unknown>("get_system_locale"));
 }

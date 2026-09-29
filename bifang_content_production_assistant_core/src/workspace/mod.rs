@@ -55,7 +55,7 @@ pub use connector::{
 };
 pub use contract::{ImageRequestContract, PackageExecutionBinding, ProviderExecutionBinding};
 pub use execution_plan::{
-    ExecutionPlan, provider_kind_allowed, validate_execution_configuration_for_kind,
+    ExecutionConfigurationError, ExecutionPlan, provider_kind_allowed, validate_execution_configuration_for_kind,
     validate_execution_providers, validate_prompt_renderer_version,
 };
 pub use prompt::{PromptWorkspaceError, append_prompt_template_revision, latest_prompt_templates};
@@ -110,6 +110,9 @@ const PRE_CONNECTOR_SCHEMA_VERSION: u32 = 9;
 /// v10 使用 App ID/App Secret 直连飞书，尚未改用官方 CLI profile。
 const PRE_LARK_CLI_CONNECTOR_SCHEMA_VERSION: u32 = 10;
 
+/// v11 已迁移飞书CLI，尚未包含对标、风格与二创草稿。
+const PRE_RESEARCH_SCHEMA_VERSION: u32 = 11;
+
 /// 旧版把火山方舟图片端点误存成 OpenAI-compatible 根地址时使用的完整地址。
 const LEGACY_VOLCENGINE_ARK_IMAGE_ENDPOINT: &str =
     "https://ark.cn-beijing.volces.com/api/v3/images/generations";
@@ -119,7 +122,7 @@ const VOLCENGINE_ARK_API_ROOT: &str = "https://ark.cn-beijing.volces.com/api/v3"
 
 /// 当前可持久化工作区快照模式版本。
 ///
-/// v11 把飞书连接器迁移为官方 CLI 发布目标，并清理旧秘密引用。
+/// v12 增加独立对标资产；v11以下的连接器迁移阈值保持不变。
 pub const WORKSPACE_SCHEMA_VERSION: u32 = CURRENT_WORKSPACE_SCHEMA_VERSION;
 
 #[cfg(test)]

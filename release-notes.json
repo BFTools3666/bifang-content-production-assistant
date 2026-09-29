@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 2,
+  "releases": [
+    {
+      "releaseDate": "2026-09-29",
+      "version": "v0.2.20",
+      "featureOptimizations": [
+        {
+          "zh-CN": "整合关键词对标、风格库、二创写作与独立小红书工具，保留 SEO 版统计和版本发现服务。",
+          "en-US": "Integrate benchmark research, style libraries, rewriting and the separate Xiaohongshu tool while preserving SEO telemetry and version discovery."
+        },
+        {
+          "zh-CN": "小红书使用独立应用身份，独立公共服务登记前显示未配置。",
+          "en-US": "Use a separate Xiaohongshu application identity; public services remain unconfigured until independently registered."
+        }
+      ],
+      "bugFixes": [
+        {
+          "zh-CN": "重复采集时保留已经读取的互动数据，未提供的指标继续显示为缺失。",
+          "en-US": "Preserve previously observed engagement metrics during recollection and keep unavailable values marked as missing."
+        },
+        {
+          "zh-CN": "批量生成缺少 AI 服务、凭据或提示词时，明确显示出错阶段与配置原因。",
+          "en-US": "Show the affected stage and configuration cause when batch generation lacks an AI service, credential or prompt."
+        }
+      ]
+    },
+    {
+      "releaseDate": "2026-09-29",
+      "version": "v0.2.17",
+      "featureOptimizations": [
+        {
+          "zh-CN": "增加关键词对标采集、公开互动数据筛选及选定作品二创。",
+          "en-US": "Add keyword benchmark collection, public engagement filters and writing from selected works."
+        },
+        {
+          "zh-CN": "增加多作者风格库、可编辑内置提示词和一键应用风格。",
+          "en-US": "Add a multi-author style library, editable built-in prompts and one-click style application."
+        },
+        {
+          "zh-CN": "提供独立的 SEO 文章与小红书笔记工具，沿用用户自行配置的 AI API。",
+          "en-US": "Provide separate SEO article and Xiaohongshu note tools using user-configured AI APIs."
+        }
+      ],
+      "bugFixes": [
+        {
+          "zh-CN": "首次启动默认中文，Windows 安装向导使用简体中文。",
+          "en-US": "Use Chinese on first launch and Simplified Chinese in the Windows installer."
+        }
+      ]
+    }
+  ]
+}

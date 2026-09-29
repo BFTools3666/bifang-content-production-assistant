@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::{ArticleTask, OverallStatus, ReviewStatus, StageStates};
 
 /// 当前可被产品适配器读取的工作区快照模式版本。
-pub const CURRENT_WORKSPACE_SCHEMA_VERSION: u32 = 11;
+pub const CURRENT_WORKSPACE_SCHEMA_VERSION: u32 = 12;
 
 /// CLI 等只读适配器从持久层载入的最窄工作区快照。
 ///

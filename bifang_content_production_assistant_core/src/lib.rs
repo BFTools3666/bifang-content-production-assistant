@@ -10,6 +10,7 @@ mod model;
 mod prompt;
 mod provider;
 pub mod public_services;
+pub mod research;
 mod sop;
 mod workflow;
 mod workspace;
@@ -66,7 +67,7 @@ pub use workflow::{
 pub use workspace::{
     AddedArticleTitles, ArkProbePlan, ArticleTitleError, BindingProviderError,
     ConnectorSelectionError, DeletedProviderCredentialState, DocumentSyncSelection,
-    DocumentUploadSizeError, ExecutionPlan, ImageProbePlan, ImageRequestContract,
+    DocumentUploadSizeError, ExecutionConfigurationError, ExecutionPlan, ImageProbePlan, ImageRequestContract,
     MAX_FEISHU_FILE_BYTES, PackageExecutionBinding, PromptWorkspaceError, ProviderExecutionBinding,
     ProviderProbeError, RunRecord, RunStatus, StageClaim, StageExecutionPlan,
     StageGenerationParameters, StageQueueError, StageRequestError, TextProbePlan,

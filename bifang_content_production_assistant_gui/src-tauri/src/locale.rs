@@ -165,16 +165,15 @@ pub fn normalize_bcp47_locale(locale: &str) -> String {
     match normalized.as_str() {
         "zh" | "zh-cn" | "zh-hans" => "zh-CN".to_string(),
         "en" | "en-us" => "en-US".to_string(),
-        _ => "en-US".to_string(),
+        _ => "zh-CN".to_string(),
     }
 }
 
-/// 用户偏好优先，否则只从官方 os 插件读取系统语言并回退英文。
+/// 用户偏好优先；两个面向中文创作者的发行版首次启动固定简体中文。
 pub fn resolve_system_locale(saved_language: Option<String>) -> String {
     let selected = saved_language
         .filter(|language| !language.trim().is_empty())
-        .or_else(|| tauri_plugin_os::locale())
-        .unwrap_or_else(|| "en-US".to_string());
+        .unwrap_or_else(|| "zh-CN".to_string());
     normalize_bcp47_locale(&selected)
 }
 
@@ -204,11 +203,11 @@ pub async fn set_interface_language(
 mod tests {
     use super::*;
 
-    /// 系统探测入口固定来自官方 os 插件解析函数。
+    /// 首次启动不受宿主系统语言影响，默认简体中文。
     #[test]
-    fn system_locale_uses_tauri_plugin_os() {
-        let source_contract = stringify!(tauri_plugin_os::locale);
-        assert!(source_contract.contains("tauri_plugin_os"));
+    fn new_install_defaults_to_simplified_chinese() {
+        assert_eq!(resolve_system_locale(None), "zh-CN");
+        assert_eq!(resolve_system_locale(Some(String::new())), "zh-CN");
     }
 
     /// 常见下划线、小写和语言短码只经过一处归一化。
@@ -220,14 +219,14 @@ mod tests {
         }
     }
 
-    /// 未支持或空语言稳定回退英文。
+    /// 未支持或空语言稳定回退简体中文。
     #[test]
-    fn system_locale_falls_back_to_english() {
+    fn system_locale_falls_back_to_chinese() {
         let observed = ["", "fr-FR", "und"]
             .map(normalize_bcp47_locale)
             .into_iter()
             .collect::<Vec<_>>();
-        assert_eq!(observed, vec!["en-US", "en-US", "en-US"]);
+        assert_eq!(observed, vec!["zh-CN", "zh-CN", "zh-CN"]);
         assert!(decode_locale_preference(b"broken-json").is_err());
     }
 
@@ -238,8 +237,9 @@ mod tests {
         state
             .set_saved_language("zh-CN".to_string())
             .expect("state should be writable");
-        let resolved = normalize_bcp47_locale(state.saved_language().as_deref().unwrap_or("en-US"));
+        let resolved = resolve_system_locale(state.saved_language());
         assert_eq!(resolved, "zh-CN");
+        assert_eq!(resolve_system_locale(Some("en-US".into())), "en-US");
     }
 
     /// 设备偏好文档真实写入、复读，并拒绝未知 schema。

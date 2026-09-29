@@ -1,6 +1,9 @@
 use serde::Serialize;
 
-const APPLICATION_NAME: &str = "毕方内容生产助手";
+#[cfg(not(feature = "xhs"))]
+const APPLICATION_NAME: &str = "毕方 SEO 文章助手";
+#[cfg(feature = "xhs")]
+const APPLICATION_NAME: &str = "毕方小红书笔记助手";
 const CONTACT_CHANNEL: &str = "QQ";
 const CONTACT_VALUE: &str = "2222980";
 
@@ -49,7 +52,7 @@ mod tests {
     #[test]
     fn metadata_title_uses_packaged_identity() {
         let metadata = get_app_metadata();
-        assert_eq!(metadata.application_name, "毕方内容生产助手");
+        assert_eq!(metadata.application_name, APPLICATION_NAME);
         let expected = format!(
             "{} v{} {}:{}",
             metadata.application_name,

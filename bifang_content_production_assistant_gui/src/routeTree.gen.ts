@@ -11,12 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BenchmarksRouteImport } from './routes/benchmarks'
 import { Route as ConnectorsRouteImport } from './routes/connectors'
+import { Route as DraftsRouteImport } from './routes/drafts'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ProvidersRouteImport } from './routes/providers'
 import { Route as RunsRouteImport } from './routes/runs'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SponsorRouteImport } from './routes/sponsor'
+import { Route as StylesRouteImport } from './routes/styles'
+import { Route as WriterRouteImport } from './routes/writer'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,9 +32,19 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BenchmarksRoute = BenchmarksRouteImport.update({
+  id: '/benchmarks',
+  path: '/benchmarks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConnectorsRoute = ConnectorsRouteImport.update({
   id: '/connectors',
   path: '/connectors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DraftsRoute = DraftsRouteImport.update({
+  id: '/drafts',
+  path: '/drafts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromptsRoute = PromptsRouteImport.update({
@@ -58,80 +72,118 @@ const SponsorRoute = SponsorRouteImport.update({
   path: '/sponsor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StylesRoute = StylesRouteImport.update({
+  id: '/styles',
+  path: '/styles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WriterRoute = WriterRouteImport.update({
+  id: '/writer',
+  path: '/writer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/benchmarks': typeof BenchmarksRoute
   '/connectors': typeof ConnectorsRoute
+  '/drafts': typeof DraftsRoute
   '/prompts': typeof PromptsRoute
   '/providers': typeof ProvidersRoute
   '/runs': typeof RunsRoute
   '/settings': typeof SettingsRoute
   '/sponsor': typeof SponsorRoute
+  '/styles': typeof StylesRoute
+  '/writer': typeof WriterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/benchmarks': typeof BenchmarksRoute
   '/connectors': typeof ConnectorsRoute
+  '/drafts': typeof DraftsRoute
   '/prompts': typeof PromptsRoute
   '/providers': typeof ProvidersRoute
   '/runs': typeof RunsRoute
   '/settings': typeof SettingsRoute
   '/sponsor': typeof SponsorRoute
+  '/styles': typeof StylesRoute
+  '/writer': typeof WriterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/benchmarks': typeof BenchmarksRoute
   '/connectors': typeof ConnectorsRoute
+  '/drafts': typeof DraftsRoute
   '/prompts': typeof PromptsRoute
   '/providers': typeof ProvidersRoute
   '/runs': typeof RunsRoute
   '/settings': typeof SettingsRoute
   '/sponsor': typeof SponsorRoute
+  '/styles': typeof StylesRoute
+  '/writer': typeof WriterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/benchmarks'
     | '/connectors'
+    | '/drafts'
     | '/prompts'
     | '/providers'
     | '/runs'
     | '/settings'
     | '/sponsor'
+    | '/styles'
+    | '/writer'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/benchmarks'
     | '/connectors'
+    | '/drafts'
     | '/prompts'
     | '/providers'
     | '/runs'
     | '/settings'
     | '/sponsor'
+    | '/styles'
+    | '/writer'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/benchmarks'
     | '/connectors'
+    | '/drafts'
     | '/prompts'
     | '/providers'
     | '/runs'
     | '/settings'
     | '/sponsor'
+    | '/styles'
+    | '/writer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BenchmarksRoute: typeof BenchmarksRoute
   ConnectorsRoute: typeof ConnectorsRoute
+  DraftsRoute: typeof DraftsRoute
   PromptsRoute: typeof PromptsRoute
   ProvidersRoute: typeof ProvidersRoute
   RunsRoute: typeof RunsRoute
   SettingsRoute: typeof SettingsRoute
   SponsorRoute: typeof SponsorRoute
+  StylesRoute: typeof StylesRoute
+  WriterRoute: typeof WriterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -150,11 +202,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/benchmarks': {
+      id: '/benchmarks'
+      path: '/benchmarks'
+      fullPath: '/benchmarks'
+      preLoaderRoute: typeof BenchmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/connectors': {
       id: '/connectors'
       path: '/connectors'
       fullPath: '/connectors'
       preLoaderRoute: typeof ConnectorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/drafts': {
+      id: '/drafts'
+      path: '/drafts'
+      fullPath: '/drafts'
+      preLoaderRoute: typeof DraftsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prompts': {
@@ -192,18 +258,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SponsorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/styles': {
+      id: '/styles'
+      path: '/styles'
+      fullPath: '/styles'
+      preLoaderRoute: typeof StylesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/writer': {
+      id: '/writer'
+      path: '/writer'
+      fullPath: '/writer'
+      preLoaderRoute: typeof WriterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BenchmarksRoute: BenchmarksRoute,
   ConnectorsRoute: ConnectorsRoute,
+  DraftsRoute: DraftsRoute,
   PromptsRoute: PromptsRoute,
   ProvidersRoute: ProvidersRoute,
   RunsRoute: RunsRoute,
   SettingsRoute: SettingsRoute,
   SponsorRoute: SponsorRoute,
+  StylesRoute: StylesRoute,
+  WriterRoute: WriterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

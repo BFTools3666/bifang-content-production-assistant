@@ -1,6 +1,9 @@
 //! v11 迁移后仅用于幂等清理遗留飞书 App Secret 的系统凭据库边界。
 
+#[cfg(not(feature = "xhs"))]
 const KEYRING_SERVICE: &str = "com.arden.bifang-content-production-assistant.connector";
+#[cfg(feature = "xhs")]
+const KEYRING_SERVICE: &str = "com.arden.bifang-xiaohongshu-assistant.connector";
 
 /// 只在 Rust 侧清理遗留飞书 App Secret 的独立凭据库适配器。
 #[derive(Debug, Clone, Default)]

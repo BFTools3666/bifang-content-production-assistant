@@ -26,6 +26,32 @@ async function translator(locale: "en-US" | "zh-CN") {
 }
 
 describe("localized workbench failures", () => {
+  /** 批次配置拒绝必须明确指出阶段和恢复入口，不回显原始凭据错误。 */
+  it("explains_each_missing_batch_stage_and_its_configuration_entry", async () => {
+    const zh = await translator("zh-CN");
+    const en = await translator("en-US");
+    for (const [stage, chinese, english] of [
+      ["ARTICLE", "正文", "article"],
+      ["SUMMARY", "简介", "summary"],
+      ["IMAGE", "配图", "image"],
+    ]) {
+      const error = {
+        code: `BATCH_${stage}_PROVIDER_MISSING`,
+        message: "raw secret must never be displayed",
+      };
+      expect(localizedCommandError(error, zh)).toContain(chinese);
+      expect(localizedCommandError(error, zh)).toContain("AI 服务");
+      expect(localizedCommandError(error, en)).toContain(english);
+      expect(localizedCommandError(error, en)).not.toContain("raw secret");
+    }
+    expect(
+      localizedCommandError({ code: "BATCH_IMAGE_CREDENTIAL_MISSING" }, zh),
+    ).toContain("API Key");
+    expect(
+      localizedCommandError({ code: "BATCH_SUMMARY_PROMPT_MISSING" }, zh),
+    ).toContain("提示词");
+  });
+
   /** 英文界面只依据稳定 code 翻译，不显示后端固定的中文 message。 */
   it("does_not_leak_backend_chinese_into_the_english_ui", async () => {
     const t = await translator("en-US");

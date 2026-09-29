@@ -16,6 +16,10 @@ path = "src/main.rs"
 [build-dependencies]
 tauri-build = { workspace = true }
 
+[features]
+default = []
+xhs = []
+
 [dependencies]
 base64 = { workspace = true }
 bifang_content_production_assistant_core = { workspace = true }

@@ -11,7 +11,7 @@
 | Tauri identifier | `com.arden.bifang-content-production-assistant` |
 | CLI 二进制 | `bifang_content_production_assistant_cli` |
 | 负责人 | arden |
-| 版本 | `0.2.18` |
+| 版本 | `0.2.20` |
 | 状态 | MVP 功能与开发级 macOS Fixture E2E 已完成；未发布 |
 | 产品规格 | `Approved` |
 | 目标平台 | Windows、macOS |
@@ -46,7 +46,7 @@ sidebar_mode = compact
 
 ## 固定 GUI 基线
 
-- system-locale：固定启用，只由 Rust 侧探测系统语言。
+- system-locale：保留官方 OS 插件和 Rust 窄命令；两个创作者发行版首次启动默认简体中文，已保存偏好优先，见 `ADR-20260929-004`。
 - updater：固定启用官方插件基线；继续保持 `NotConfigured`，不配置 endpoint，不发起出站请求。另由 Rust 公共服务适配器按 `ADR-20260929-001` 与 `ADR-20260929-002` 调用 Kaiwhale application-version API v1 做版本发现，不自动下载或安装更新。
 - window-state：固定启用；只恢复仍与显示器相交的尺寸、位置和最大化状态，不恢复隐藏、最小化、全屏或装饰状态。
 - dialog：固定启用；Builder 注册位于 window-state 后、notification 前，主窗口 capability 精确为 `dialog:default`，不授予通用文件系统权限。
@@ -143,3 +143,7 @@ compact 侧栏固定为 80px 宽、6px 内容内边距、36px Logo、22px 图标
 - 批次运行与恢复由 Tauri/Rust 适配器驱动。测试夹具只允许在显式开启的 debug E2E 模式和独立临时数据目录中出现，不能作为真实 Provider、正式数据或内容质量验证。
 
 上述既有工作台实现已由从 `9dd96eb47fd85d5ed4da58722470e021ec0882a6` 全新构建的 macOS arm64 debug Tauri `.app` 在隔离 Fixture 数据库中完成 16/16 个必需真实窗口场景；最终 35 张独立 JPEG 的文件名、字节、尺寸和 SHA-256 与清单逐项一致，其中同一 80 条批次明确显示暂停 `11/80` 后恢复运行并推进到 `73/80`。配图基础编辑器在此提交中只执行 core、Rust 适配器和 React 自动化，不继承该早期真实窗口结论。现有结论仅限开发级 macOS Fixture E2E，不代表发布候选、Windows 验证、真实 AI 联网、签名、公证或渠道发布已经完成；强制制造系统剪贴板拒绝为非阻断 `NOT RUN`。
+
+### 创作者发行版公共服务边界
+
+SEO 版保持公司已登记的统计和版本发现协议；小红书版使用独立应用身份，在独立公共服务尚未登记前保持 `not-configured`，不请求 SEO 版的统计或更新路由，见 `ADR-20260929-005`。

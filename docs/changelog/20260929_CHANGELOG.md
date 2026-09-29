@@ -8,3 +8,11 @@
 - 当前仓库不包含运行时版本凭据；未注入应用专属 Key/Secret 的构建明确显示“未配置”并且不会发起版本请求。
 - 版本发现出口改为 `https://gateway.kaiwhale.com/tools/version-control/v1`，App Key 固定为 `versionControl`，App Secret 继续由构建宿主安全注入；基址与 Windows x64 完整版本路径的在线探针均得到约定的 HTTP 400。
 - `BUG-VERSION-WINDOWS-CODE-EMBEDDED-SECRET`（所需版本 `0.2.18`）：Windows 发布流 code 修正为 `bifang-content-production-assistant-windows`；按负责人明确要求将 App Secret 固定到 Rust 可信层，并取消构建环境变量依赖。
+
+## 创作者工具整合
+
+- `FEAT-BENCHMARK-STYLE-DUAL-EDITION-20260928`（整合所需版本 `0.2.18`）：新增公开作品关键词采集、作品链接与互动指标筛选、作者作品采集、可编辑二创提示词、风格库、多风格应用和草稿导出。SEO 与小红书发行版使用独立应用标识、数据目录和安装程序，首次启动及 Windows 安装向导默认简体中文。
+- SEO 保留公司既有公共服务协议。小红书公共服务尚未登记，生产配置保持未配置，避免误用 SEO 版的统计身份或下载地址；具体决定见 `ADR-20260929-005`。
+- `BUG-COLLECTION-KEEP-KNOWN-METRICS-20260929`（所需版本 `0.2.19`）：重复采集页面未提供指标时，保留此前观测值；页面明确提供的零值仍可覆盖旧值。
+- `BUG-BATCH-CONFIG-ERROR-DETAILS-20260929`（所需版本 `0.2.20`）：批量预检、冻结配置和单阶段生成保留阶段与具体配置错误，缺少默认服务或凭据时提供阶段提示。
+- 合并源码版本为 `0.2.20`。源码回归和 GitHub 合并不代替安装包验收；本版本尚未构建 Windows 安装包，也未完成 RPA002/RPA005 真实完整流程测试。

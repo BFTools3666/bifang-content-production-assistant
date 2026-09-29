@@ -27,6 +27,10 @@ pub(super) struct TelemetryConfig {
 impl TelemetryConfig {
     /// 从受版本控制的环境和应用事实构造端点。
     pub(super) fn registered() -> Option<Self> {
+        // 小红书发行版尚未登记独立公共服务，不能使用 SEO 版的服务身份。
+        if cfg!(feature = "xhs") {
+            return None;
+        }
         let endpoint = format!("{TELEMETRY_ORIGIN}/apps/{APP_ID}/v1/track");
         if !is_safe_public_https_url(&endpoint) {
             return None;
@@ -54,6 +58,10 @@ pub(super) struct VersionApiConfig {
 impl VersionApiConfig {
     /// 从受版本控制的固定网关、发布流与应用凭据构造请求。
     pub(super) fn registered() -> Option<Self> {
+        // 小红书发行版尚未登记独立公共服务，不能使用 SEO 版的服务身份。
+        if cfg!(feature = "xhs") {
+            return None;
+        }
         Self::from_values(
             release_code(),
             Some(VERSION_APP_KEY),
@@ -155,6 +163,7 @@ fn is_release_code(value: &str) -> bool {
 mod tests {
     use super::*;
 
+    #[cfg(not(feature = "xhs"))]
     #[test]
     fn public_routes_match_registered_cloudbase_resources() {
         assert_eq!(
@@ -176,6 +185,17 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "xhs")]
+    #[test]
+    fn xhs_does_not_use_seo_public_service_routes() {
+        assert_eq!(APP_ID, "bifang-xiaohongshu-assistant");
+        assert!(TelemetryConfig::registered().is_none());
+        assert!(VersionApiConfig::registered().is_none());
+        let transport = super::super::transport::ReqwestPublicServicesTransport::create();
+        assert!(!transport.telemetry_configured());
+        assert!(!transport.updates_configured());
+    }
+
     #[test]
     fn missing_or_invalid_credentials_disable_version_requests() {
         let code = release_code().expect("受支持目标应有发布流");
@@ -187,6 +207,7 @@ mod tests {
         );
     }
 
+    #[cfg(not(feature = "xhs"))]
     #[test]
     fn request_uses_one_v1_path_and_sensitive_headers() {
         let config = VersionApiConfig::registered().expect("固定版本配置应有效");

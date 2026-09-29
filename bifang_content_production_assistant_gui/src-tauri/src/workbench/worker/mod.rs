@@ -31,7 +31,7 @@ use tokio::time::Instant;
 
 use super::{
     models::{
-        ImageRequestContract, PackageExecutionBinding, ProviderConfig, ProviderExecutionBinding,
+        CommandError, ImageRequestContract, PackageExecutionBinding, ProviderConfig, ProviderExecutionBinding,
         ProviderKind, RunStatus, WorkspaceData, fixture_mode_enabled,
     },
     provider::{CredentialVault, OpenAiCompatibleClient, OpenAiProviderSession, ProviderCallError},
@@ -317,10 +317,13 @@ impl BatchWorker {
     }
 
     /// 在任何任务进入队列前冻结模板、Provider 修订和密钥。
-    pub(crate) async fn prepare_execution(&self) -> Result<ExecutionSnapshot, String> {
+    pub(crate) async fn prepare_execution(&self) -> Result<ExecutionSnapshot, CommandError> {
         let workspace = self.repository.snapshot().await;
-        let snapshot = ExecutionSnapshot::from_workspace(&workspace, &self.credential_vault)?;
-        snapshot.validate_for_new_run()?;
+        self.validate_execution_configuration(&workspace)?;
+        let snapshot = ExecutionSnapshot::from_workspace(&workspace, &self.credential_vault)
+            .map_err(|message| CommandError::new("BATCH_PREPARE_FAILED", message))?;
+        snapshot.validate_for_new_run()
+            .map_err(|message| CommandError::new("BATCH_PREPARE_FAILED", message))?;
         Ok(snapshot)
     }
 
@@ -357,13 +360,14 @@ impl BatchWorker {
     pub(crate) fn validate_execution_configuration(
         &self,
         workspace: &WorkspaceData,
-    ) -> Result<(), String> {
+    ) -> Result<(), CommandError> {
         let allowed_kind = if fixture_mode_enabled() {
             ProviderKind::Fixture
         } else {
             ProviderKind::OpenAiCompatible
         };
         validate_execution_configuration_for_kind(workspace, allowed_kind)
+            .map_err(|error| CommandError::new(error.code(), error.to_string()))
     }
 
     /// 从指定文章包的持久绑定恢复 Prompt、Provider 修订与凭据值。

@@ -1,7 +1,7 @@
 {
   "navigation": {
     "workbench": "工作台",
-    "prompts": "Prompt",
+    "prompts": "提示词",
     "providers": "AI 服务",
     "connectors": "连接器",
     "runs": "运行记录"
@@ -24,7 +24,7 @@
     "TITLE_TOO_LONG": "单个标题最多 300 个字符。",
     "NO_SELECTION": "请先选择要处理的文章。",
     "BATCH_ALREADY_RUNNING": "已有批次正在运行，请等待结束或先取消。",
-    "BATCH_PREPARE_FAILED": "无法冻结本次批次配置，请检查 Prompt 与 AI 服务。",
+    "BATCH_PREPARE_FAILED": "本次运行配置未能准备完成。请到“AI 服务”检查已保存的 API Key，并到“提示词”检查对应阶段模板。",
     "EXECUTION_BINDING_MISSING": "当前文章包缺少冻结的 Prompt/AI 服务绑定，请使用重新生成创建新版本。",
     "BATCH_START_FAILED": "批次未能启动，文章状态没有被伪装为运行中。",
     "RETRY_FAILED": "失败阶段未能进入重试队列。",
@@ -163,7 +163,22 @@
     "NOT_RUNNABLE": "当前文章状态不允许首次运行。",
     "NOTHING_TO_RETRY": "这条文章没有可重试的失败或中断阶段。",
     "DEPENDENCY_NOT_READY": "当前阶段的上游产物尚未准备好。",
-    "INVALID_STATE": "文章当前状态不允许此操作。"
+    "INVALID_STATE": "文章当前状态不允许此操作。",
+    "BATCH_ARTICLE_PROMPT_MISSING": "缺少正文提示词。请到“提示词”页面保存正文模板后重试。",
+    "BATCH_ARTICLE_PROVIDER_MISSING": "正文尚未选择默认 AI 服务。请到“AI 服务 → 正文”选择服务，填写对应模型并保存 API Key。",
+    "BATCH_ARTICLE_PROVIDER_DISABLED": "正文的默认 AI 服务已停用。请到“AI 服务 → 正文”启用该服务或选择其他服务。",
+    "BATCH_ARTICLE_PROVIDER_UNSUPPORTED": "正文的默认 AI 服务不支持该阶段。请到“AI 服务 → 正文”选择兼容服务及模型。",
+    "BATCH_ARTICLE_CREDENTIAL_MISSING": "正文的默认 AI 服务尚未保存 API Key。请到“AI 服务 → 正文”保存密钥后重试。",
+    "BATCH_SUMMARY_PROMPT_MISSING": "缺少简介提示词。请到“提示词”页面保存简介模板后重试。",
+    "BATCH_SUMMARY_PROVIDER_MISSING": "简介尚未选择默认 AI 服务。请到“AI 服务 → 简介”选择服务，填写对应模型并保存 API Key。只生成正文时，可点击文章行内“正文 → 生成”。",
+    "BATCH_SUMMARY_PROVIDER_DISABLED": "简介的默认 AI 服务已停用。请到“AI 服务 → 简介”启用该服务或选择其他服务。",
+    "BATCH_SUMMARY_PROVIDER_UNSUPPORTED": "简介的默认 AI 服务不支持该阶段。请到“AI 服务 → 简介”选择兼容服务及模型。",
+    "BATCH_SUMMARY_CREDENTIAL_MISSING": "简介的默认 AI 服务尚未保存 API Key。请到“AI 服务 → 简介”保存密钥后重试。",
+    "BATCH_IMAGE_PROMPT_MISSING": "缺少配图提示词。请到“提示词”页面保存配图模板后重试。",
+    "BATCH_IMAGE_PROVIDER_MISSING": "配图尚未选择默认 AI 服务。请到“AI 服务 → 配图”选择服务，填写对应模型并保存 API Key。只生成正文时，可点击文章行内“正文 → 生成”。",
+    "BATCH_IMAGE_PROVIDER_DISABLED": "配图的默认 AI 服务已停用。请到“AI 服务 → 配图”启用该服务或选择其他服务。",
+    "BATCH_IMAGE_PROVIDER_UNSUPPORTED": "配图的默认 AI 服务不支持该阶段。请到“AI 服务 → 配图”选择兼容服务及模型。",
+    "BATCH_IMAGE_CREDENTIAL_MISSING": "配图的默认 AI 服务尚未保存 API Key。请到“AI 服务 → 配图”保存密钥后重试。"
   },
   "status": {
     "overall": {
@@ -203,7 +218,7 @@
     "load_failed": "文章工作台暂时无法读取；本地数据没有被改动。",
     "refresh_failed": "刷新文章工作台失败；仍显示上次成功读取的本地数据。",
     "fixture_notice": "当前启用了 E2E 测试夹具（非真实 AI）。生成结果只用于验证流程，不代表真实内容质量。",
-    "provider_missing": "正文、简介或配图仍缺少默认 AI 服务或凭据。缺失阶段会安全失败且不会发出网络请求。",
+    "provider_missing": "完整批次暂不能启动，尚未配置：{{stages}}。请配置对应阶段的默认 AI 服务、模型和 API Key。已配置的阶段可点击文章行内“生成”单独运行。",
     "selected_count": "已选 {{count}} 条",
     "metrics": {
       "total": "全部任务",
@@ -331,7 +346,8 @@
       "title": "当前批次",
       "progress_label": "批次处理进度",
       "progress": "共 {{total}} 条；已完成 {{completed}} 条，失败 {{failed}} 条"
-    }
+    },
+    "stage_separator": "、"
   },
   "details": {
     "drawer_title": "文章详情与审核",
@@ -811,5 +827,13 @@
   "settings": {
     "host_state_failed": "无法读取部分系统设置；你仍可重试，开关不会伪装成已开启。",
     "language_failed": "语言偏好未能保存，界面继续使用当前语言。"
+  },
+  "research": {
+    "navigation": {
+      "benchmarks": "对标采集",
+      "styles": "风格库",
+      "writer": "二创写作",
+      "drafts": "原创草稿"
+    }
   }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "毕方内容生产助手",
-  "version": "0.2.18",
+  "productName": "毕方 SEO 文章助手",
+  "version": "0.2.20",
   "identifier": "com.arden.bifang-content-production-assistant",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -16,7 +16,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "毕方内容生产助手",
+        "title": "毕方 SEO 文章助手",
         "width": 1440,
         "height": 900,
         "minWidth": 960,
@@ -30,7 +30,17 @@
   "bundle": {
     "active": true,
     "category": "Utility",
-    "icon": ["icons/32x32.png"],
+    "icon": [
+      "icons/32x32.png"
+    ],
+    "windows": {
+      "nsis": {
+        "languages": [
+          "SimpChinese"
+        ],
+        "displayLanguageSelector": false
+      }
+    },
     "macOS": {
       "files": {
         "Resources/Legal/LICENSE.zh-CN.md": "../../LICENSE.zh-CN.md",
@@ -67,7 +77,9 @@
     },
     "deep-link": {
       "desktop": {
-        "schemes": ["app-bifang-content-production-assistant"]
+        "schemes": [
+          "app-bifang-content-production-assistant"
+        ]
       }
     }
   }

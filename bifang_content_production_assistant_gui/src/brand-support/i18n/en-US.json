@@ -28,7 +28,7 @@
   "settings": {
     "title": "Settings",
     "language_title": "Interface language",
-    "language_description": "Your choice is stored locally and overrides the detected system language.",
+    "language_description": "New installations default to Simplified Chinese. Your language choice is saved locally and restored after restarting.",
     "language_zh_cn": "中文",
     "language_en_us": "English",
     "theme_title": "Appearance",
