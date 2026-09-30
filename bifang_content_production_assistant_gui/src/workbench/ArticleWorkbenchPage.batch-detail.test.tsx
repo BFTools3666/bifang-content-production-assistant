@@ -308,12 +308,12 @@ describe("batch content workbench", () => {
     expect(screen.getAllByText("0 Token · 本地处理").length).toBeGreaterThan(0);
     expect(screen.getByText(/run-retry-1/)).toBeInTheDocument();
 
-    const approve = screen.getByRole("button", { name: "批准内容包" });
+    const approve = screen.getByRole("button", { name: "批准文章包" });
     approve.focus();
     await user.keyboard("{Enter}");
     expect(commandMocks.approveArticle).toHaveBeenCalledWith("article-a");
     expect(
-      await screen.findByText("当前内容包已经批准并保存为不可变历史。"),
+      await screen.findByText("当前文章包已经批准并保存为不可变历史。"),
     ).toBeInTheDocument();
   });
 
@@ -371,7 +371,7 @@ describe("batch content workbench", () => {
       }),
     );
 
-    expect(screen.getByRole("textbox", { name: "内容简介" })).toHaveValue(
+    expect(screen.getByRole("textbox", { name: "文章简介" })).toHaveValue(
       "文章简介",
     );
     const saveSummary = screen.getByRole("button", {
@@ -414,7 +414,7 @@ describe("batch content workbench", () => {
       }),
     );
     const drawer = await screen.findByRole("dialog", {
-      name: "内容详情与审核",
+      name: "文章详情与审核",
     });
     const saveSummary = within(drawer).getByRole("button", {
       name: "保存简介修改",
@@ -432,7 +432,7 @@ describe("batch content workbench", () => {
     for (const name of [
       "重新生成整篇",
       "退回修改",
-      "批准内容包",
+      "批准文章包",
       "重新生成《企业知识库搭建指南》的简介",
     ]) {
       const action = within(drawer).getByRole("button", { name });
@@ -448,7 +448,7 @@ describe("batch content workbench", () => {
     expect(commandMocks.updateArticleContent).toHaveBeenCalledOnce();
   });
 
-  /** 旧内容动作稍后完成时，不得把结果提示串到新打开的内容详情。 */
+  /** 旧文章动作稍后完成时，不得把结果提示串到新打开的文章详情。 */
   it("keeps_a_pending_detail_action_feedback_scoped_to_its_article", async () => {
     const first = pendingArticle();
     const second = pendingArticle();
@@ -486,7 +486,7 @@ describe("batch content workbench", () => {
         name: /打开《内容营销趋势》的简介进行编辑/,
       }),
     );
-    expect(screen.getByRole("textbox", { name: "内容简介" })).toHaveValue(
+    expect(screen.getByRole("textbox", { name: "文章简介" })).toHaveValue(
       "第二篇简介",
     );
 
@@ -500,7 +500,7 @@ describe("batch content workbench", () => {
     expect(
       screen.queryByText("简介已保存，依赖配图已标记为过期。"),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: "内容简介" })).toHaveValue(
+    expect(screen.getByRole("textbox", { name: "文章简介" })).toHaveValue(
       "第二篇简介",
     );
   });
@@ -733,7 +733,7 @@ describe("batch content workbench", () => {
       }),
     );
 
-    const details = screen.getByRole("dialog", { name: "内容详情与审核" });
+    const details = screen.getByRole("dialog", { name: "文章详情与审核" });
     await user.click(
       within(details).getByRole("button", {
         name: "重新生成《企业知识库搭建指南》的配图",

@@ -72,7 +72,7 @@ function artifacts(overrides: Record<string, unknown> = {}) {
   };
 }
 
-/** 创建一行包含新追溯字段的有效内容视图。 */
+/** 创建一行包含新追溯字段的有效文章视图。 */
 function articleView(overrides: Record<string, unknown> = {}) {
   return {
     article: {
@@ -119,7 +119,7 @@ function runRecord(overrides: Record<string, unknown> = {}) {
 }
 
 describe("workbench IPC runtime validation", () => {
-  /** 聚合视图递归校验内容、运行记录和新增追溯字段。 */
+  /** 聚合视图递归校验文章、运行记录和新增追溯字段。 */
   it("decodes_a_complete_workbench_view", () => {
     const value = {
       activeRun: runRecord(),
@@ -904,12 +904,12 @@ describe("workbench IPC runtime validation", () => {
     ).toThrow("larkCliSetupInspection.selectedProfileAuthorized");
   });
 
-  /** 同步结果绑定内容包和连接器修订，并拒绝响应夹带远端 URL 或令牌。 */
+  /** 同步结果绑定文章包和连接器修订，并拒绝响应夹带远端 URL 或令牌。 */
   it("binds_connector_sync_results_to_the_requested_versions", () => {
     const result = {
       connectorId: "connector-feishu",
       connectorRevision: 4,
-      fileName: "内容-v3.html",
+      fileName: "文章-v3.html",
       fileToken: "file_test",
       format: "html",
       packageVersion: 3,

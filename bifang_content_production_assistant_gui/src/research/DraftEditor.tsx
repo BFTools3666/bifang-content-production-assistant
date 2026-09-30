@@ -56,6 +56,7 @@ export function DraftEditor({
   const [checks, setChecks] = useState([false, false, false]);
   const [edits, setEdits] = useAtom(draftEditsAtom);
   const { title, body } = edits[draft.id] ?? draft;
+  const isNote = draft.platform === "xiaohongshu";
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   useEffect(() => {
@@ -126,7 +127,7 @@ export function DraftEditor({
       await navigator.clipboard.writeText(
         `${title}\n\n${body}\n\n${draft.tags.map((tag) => `#${tag}`).join(" ")}`,
       );
-      setMessage(t("标题和正文已复制"));
+      setMessage(t(isNote ? "标题和笔记文字已复制" : "标题和正文已复制"));
       setError("");
     } catch {
       setError(t("剪贴板写入失败，请保存或导出文件"));
@@ -170,7 +171,7 @@ export function DraftEditor({
           }
         />
         <Textarea
-          label={t("正文／笔记")}
+          label={t(isNote ? "笔记文字" : "文章正文")}
           disabled={busy || mode === "export"}
           autosize
           minRows={14}
@@ -190,7 +191,7 @@ export function DraftEditor({
             <Divider label={t("保存前核对")} />
             {[
               "事实、数字与引用有依据",
-              "标题和正文讲的是同一件事",
+              isNote ? "标题和笔记文字讲的是同一件事" : "标题和正文讲的是同一件事",
               "表达符合自己的口吻",
             ].map((label, index) => (
               <Checkbox
@@ -274,7 +275,8 @@ export function DraftEditor({
         ) : null}
         {mode !== "review" ? (
           <Stack gap="xs">
-            <Divider label={t("飞书与后续制作")} />
+            <Divider label={t(isNote ? "配图与发布准备" : "飞书与后续制作")} />
+            {isNote ? <Text size="sm" c="dimmed">{t("笔记文字已保存。下一步先生成简介，再制作配图；当前导出只包含文字。")}</Text> : null}
             <Text size="sm" c="dimmed">
               {connectors.isPending
                 ? t("正在读取飞书连接")
@@ -291,7 +293,7 @@ export function DraftEditor({
                 loading={delivery.isPending}
                 onClick={() => delivery.mutate()}
               >
-                {t("继续简介、配图与飞书同步")}
+                {t(isNote ? "继续制作图文笔记" : "继续简介、配图与飞书同步")}
               </Button>
               <Button
                 variant="subtle"
@@ -304,11 +306,11 @@ export function DraftEditor({
                 variant="subtle"
                 onClick={() => void navigate({ to: "/drafts" })}
               >
-                {t("查看我的文章")}
+                {t(isNote ? "查看我的笔记草稿" : "查看我的文章")}
               </Button>
             </Group>
             <Text size="xs" c="dimmed">
-              {t("正文将保留并交给原批量流程；飞书写入仍需另行确认。")}
+              {t(isNote ? "在图文制作工作台依次完成简介和配图；飞书同步仍需确认。" : "正文将保留并交给原批量流程；飞书写入仍需另行确认。")}
             </Text>
           </Stack>
         ) : null}

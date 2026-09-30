@@ -11,7 +11,7 @@
 | Tauri identifier | `com.arden.bifang-content-production-assistant` |
 | CLI 二进制 | `bifang_content_production_assistant_cli` |
 | 负责人 | arden |
-| 版本 | `0.2.23` |
+| 版本 | `0.2.24` |
 | 状态 | MVP 功能与开发级 macOS Fixture E2E 已完成；未发布 |
 | 产品规格 | `Approved` |
 | 目标平台 | Windows、macOS |
@@ -94,8 +94,8 @@ sidebar_mode = detailed
 
 ### 导航
 
-- 顶部业务区依次为内容生产 `/`、找对标 `/benchmarks`、风格库 `/styles` 和我的内容 `/drafts`。`/writer` 保留为写作入口别名。
-- 内容生产首页按生产准备、生成内容、检查修改、保存导出四步展示；批量生产入口进入 `/batch`，原工作台和详情逻辑继续使用。
+- 顶部业务区依次为内容生产 `/`、找对标 `/benchmarks`、风格库 `/styles` 和草稿 `/drafts`。主工具显示“我的文章”，独立小红书版显示“我的笔记”；`/writer` 保留为入口别名。
+- 主工具只提供 CSDN 与百家号技术文章平台；独立小红书版只提供小红书图文笔记。四步分别呈现准备、生成文章或笔记文字、检查修改、保存导出；小红书草稿继续进入原工作台，先完成简介再制作配图。原工作台和详情逻辑保留。
 - AI 服务、飞书连接、提示词和运行记录保留原路由，在相关操作及设置中进入，不要求放在一级侧栏。
 - 底部支持区依次为赞助 `/sponsor`、设置 `/settings` 和关于 `/about`；设置始终存在，赞助与关于由当前 profile 启用。
 - detailed 展开/收起及偏好由 AppShell 拥有，菜单项独立拥有导航和 active 状态。

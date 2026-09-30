@@ -36,7 +36,7 @@ export function useResearchLibrary() {
 
 /** 返回当前发行版允许的生成和采集平台。 */
 export function platformOptions() {
-  return IS_XHS_EDITION ? [{ value: "xiaohongshu", label: "小红书" }] : [{ value: "csdn", label: "CSDN" }, { value: "baijiahao", label: "百家号" }, { value: "xiaohongshu", label: "小红书" }];
+  return IS_XHS_EDITION ? [{ value: "xiaohongshu", label: "小红书" }] : [{ value: "csdn", label: "CSDN" }, { value: "baijiahao", label: "百家号" }];
 }
 
 /** 用户界面显示平台名称，不显示内部协议标识。 */

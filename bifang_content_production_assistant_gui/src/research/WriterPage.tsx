@@ -29,6 +29,7 @@ import {
   writerProviderIdAtom,
   writerStepAtom,
   writerModeAtom,
+  IS_XHS_EDITION,
   platformOptions,
   RESEARCH_QUERY_KEY,
   useResearchLibrary,
@@ -57,6 +58,7 @@ export function WriterPage(): ReactElement {
   const [setup, setSetup] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const isNote = input.platform === "xiaohongshu";
   const draft = library.data?.drafts.find((item) => item.id === draftId);
   const textProviders = (providers.data ?? []).filter(
     (item) =>
@@ -91,7 +93,7 @@ export function WriterPage(): ReactElement {
     onSuccess: (result) => {
       setDraftId(result.id);
       setError("");
-      setMessage(t("标题与正文已生成并保存"));
+      setMessage(t(isNote ? "笔记文字已生成并保存" : "技术文章已生成并保存"));
       void client.invalidateQueries({ queryKey: RESEARCH_QUERY_KEY });
     },
     onError: (failure) => setError(researchError(failure)),
@@ -122,14 +124,14 @@ export function WriterPage(): ReactElement {
     styleReady &&
     (mode !== "reference" || input.sourceIds.length > 0) &&
     (mode !== "style" || Boolean(input.styleId));
-  const steps = ["写作准备", "生成文章", "检查修改", "保存导出"];
+  const steps = ["生产准备", isNote ? "生成笔记文字" : "生成技术文章", "检查修改", "保存导出"];
   return (
     <main className={styles.page}>
       <Group justify="space-between" align="flex-start" mb="lg">
         <div>
           <h1 className={styles.title}>{t("写一篇文章")}</h1>
           <Text c="dimmed" size="sm">
-            {t("选一种写法，补充自己的材料，生成后再检查和导出。")}
+            {t(isNote ? "先生成笔记文字，检查后继续制作简介和配图。" : "选择 CSDN 或百家号，写出有步骤、有依据的技术文章。")}
           </Text>
         </div>
         <Button
@@ -138,7 +140,7 @@ export function WriterPage(): ReactElement {
           disabled={generation.isPending}
           onClick={() => void navigate({ to: "/batch" })}
         >
-          {t("批量写作")}
+          {t(IS_XHS_EDITION ? "图文制作工作台" : "批量文章工作台")}
         </Button>
       </Group>
       <div className={styles.writingSteps} aria-label={t("写作步骤")}>
@@ -211,13 +213,13 @@ export function WriterPage(): ReactElement {
             <Group justify="space-between" align="flex-start">
               <div>
                 <Text fw={650} size="lg">
-                  {t("这篇文章怎么写？")}
+                  {t("选择内容来源")}
                 </Text>
                 <Text c="dimmed" size="sm" mt="xs">
                   {t("找对标、建风格库都按需要使用。")}
                 </Text>
               </div>
-              <Select
+              {IS_XHS_EDITION ? <Badge variant="light">{t("小红书图文笔记")}</Badge> : <Select
                 label={t("计划发布的平台")}
                 data={platformOptions()}
                 value={input.platform}
@@ -232,7 +234,7 @@ export function WriterPage(): ReactElement {
                       promptOverride: "",
                     });
                 }}
-              />
+              />}
             </Group>
             <div className={styles.modeChoices}>
               {(
@@ -271,7 +273,7 @@ export function WriterPage(): ReactElement {
               ))}
             </div>
             <TextInput
-              label={t("这次想写什么？")}
+              label={t(isNote ? "这篇图文笔记的主题" : "这篇技术文章的主题")}
               placeholder={t("输入主题、关键词，或读者想解决的问题")}
               value={input.keyword}
               maxLength={200}
@@ -356,7 +358,7 @@ export function WriterPage(): ReactElement {
                   setStep(1);
                 }}
               >
-                {t("开始写作")}
+                {t(isNote ? "下一步：生成笔记文字" : "下一步：生成文章")}
               </Button>
             </Group>
           </Stack>
@@ -446,7 +448,7 @@ export function WriterPage(): ReactElement {
                 generation.mutate();
               }}
             >
-              {generation.isPending ? t("正在生成并保存") : t("生成文章")}
+              {generation.isPending ? t("正在生成并保存") : t(isNote ? "生成笔记文字" : "生成技术文章")}
             </Button>
             {draft ? (
               <Button
@@ -482,7 +484,7 @@ export function WriterPage(): ReactElement {
           onSaved={() => setStep(3)}
         />
       ) : (
-        <Alert>{t("先生成文章，再检查和导出。")}</Alert>
+        <Alert>{t(isNote ? "先生成笔记文字，再检查，随后制作简介和配图。" : "先生成文章，再检查和导出。")}</Alert>
       )}
       <AiSetupModal opened={setup} onClose={() => setSetup(false)} />
     </main>

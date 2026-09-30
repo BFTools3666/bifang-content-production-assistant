@@ -68,14 +68,14 @@ async function renderViewer(
     active: true,
     formatReady: true,
     hasImage: true,
-    html: "<h1>内容标题</h1><p>正文</p>",
+    html: "<h1>文章标题</h1><p>正文</p>",
     imageRefreshKey: "1:0:attempt-image-1",
-    markdown: "# 内容标题\n\n正文",
+    markdown: "# 文章标题\n\n正文",
     onCopy,
     packageVersion: 3,
     rowVersion: 7,
     taskId: "article-a",
-    title: "内容标题",
+    title: "文章标题",
     ...overrides,
   };
   const view = (): React.ReactElement => (
@@ -156,7 +156,7 @@ describe("article format viewer", () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "复制 Markdown" }));
     expect(onCopy).toHaveBeenLastCalledWith(
-      `# 内容标题\n\n![内容标题](${IMAGE})\n\n正文`,
+      `# 文章标题\n\n![文章标题](${IMAGE})\n\n正文`,
       "Markdown",
     );
 
@@ -164,7 +164,7 @@ describe("article format viewer", () => {
     expect(screen.getByRole("radio", { name: "源码" })).toBeChecked();
     await user.click(screen.getByRole("button", { name: "复制 HTML" }));
     expect(onCopy).toHaveBeenLastCalledWith(
-      `<h1>内容标题</h1>\n<figure><img src="${IMAGE}" alt="内容标题"><figcaption>内容标题</figcaption></figure>\n<p>正文</p>`,
+      `<h1>文章标题</h1>\n<figure><img src="${IMAGE}" alt="文章标题"><figcaption>文章标题</figcaption></figure>\n<p>正文</p>`,
       "HTML",
     );
   });
@@ -177,7 +177,7 @@ describe("article format viewer", () => {
     expect(commandMocks.loadArticleImage).not.toHaveBeenCalled();
     await user.click(screen.getByRole("radio", { name: "源码" }));
     await user.click(screen.getByRole("button", { name: "复制 Markdown" }));
-    expect(onCopy).toHaveBeenCalledWith("# 内容标题\n\n正文", "Markdown");
+    expect(onCopy).toHaveBeenCalledWith("# 文章标题\n\n正文", "Markdown");
   });
 
   /** 配图读取失败时不得静默复制缺图内容，重新读取仍只调用读取命令。 */
@@ -216,7 +216,7 @@ describe("article format viewer", () => {
     expect(nextProgramStore.get(articleFormatViewAtom)).toBe("rendered");
   });
 
-  /** 用户确认后只同步当前格式，并把内容与连接器乐观锁完整交给后端。 */
+  /** 用户确认后只同步当前格式，并把文章与连接器乐观锁完整交给后端。 */
   it("syncs_the_selected_format_to_an_enabled_connector_after_confirmation", async () => {
     commandMocks.listConnectorConfigs.mockResolvedValue([
       {
@@ -235,7 +235,7 @@ describe("article format viewer", () => {
     commandMocks.syncArticleToConnector.mockResolvedValue({
       connectorId: "connector-feishu",
       connectorRevision: 4,
-      fileName: "内容标题-v3.md",
+      fileName: "文章标题-v3.md",
       fileToken: "file_test",
       format: "markdown",
       packageVersion: 3,
@@ -251,7 +251,7 @@ describe("article format viewer", () => {
     });
     await waitFor(() => expect(syncButton).toBeEnabled());
     await user.click(syncButton);
-    expect(screen.getByText(/将《内容标题》的 Markdown/)).toBeInTheDocument();
+    expect(screen.getByText(/将《文章标题》的 Markdown/)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "确认上传" }));
 
     await waitFor(() =>
@@ -264,7 +264,7 @@ describe("article format viewer", () => {
         4,
       ),
     );
-    expect(await screen.findByText(/内容标题-v3\.md/)).toBeInTheDocument();
+    expect(await screen.findByText(/文章标题-v3\.md/)).toBeInTheDocument();
   });
 
   /** 确认弹窗冻结用户当时看到的版本；刷新后的新包不能借用旧确认上传。 */
@@ -286,7 +286,7 @@ describe("article format viewer", () => {
     commandMocks.syncArticleToConnector.mockResolvedValue({
       connectorId: "connector-feishu",
       connectorRevision: 4,
-      fileName: "内容标题-v3.md",
+      fileName: "文章标题-v3.md",
       fileToken: "file_test",
       format: "markdown",
       packageVersion: 3,
@@ -304,7 +304,7 @@ describe("article format viewer", () => {
     await user.click(syncButton);
     rerenderViewer({ packageVersion: 4, rowVersion: 8, title: "刷新后的标题" });
 
-    expect(screen.getByText(/将《内容标题》的 Markdown/)).toBeInTheDocument();
+    expect(screen.getByText(/将《文章标题》的 Markdown/)).toBeInTheDocument();
     expect(screen.queryByText(/刷新后的标题/)).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "确认上传" }));
     await waitFor(() =>

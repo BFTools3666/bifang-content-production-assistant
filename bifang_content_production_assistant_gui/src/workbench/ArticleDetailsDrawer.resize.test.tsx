@@ -41,7 +41,7 @@ vi.mock("./workbenchCommands", () => ({
   loadArticleImageEditor: loadEditorMock,
 }));
 
-const RESIZE_HANDLE_NAME = "调整内容详情抽屉宽度";
+const RESIZE_HANDLE_NAME = "调整文章详情抽屉宽度";
 const VIEWPORT_WIDTH_PX = 1_200;
 
 /** 为 Mantine 测试提供不执行真实测量的观察器。 */
@@ -67,7 +67,7 @@ function emptyStage(): StageProgress {
   };
 }
 
-/** 创建足以展示完整详情控件的草稿内容。 */
+/** 创建足以展示完整详情控件的草稿文章。 */
 function draftArticle(): ArticleView {
   return {
     article: {
@@ -269,7 +269,7 @@ describe("resizable article details drawer", () => {
   it("portals_the_drawer_and_keeps_all_controls_inside_bounded_layouts", async () => {
     const rendered = await renderDrawer({ mantineEnvironment: "default" });
     const dialog = await screen.findByRole("dialog", {
-      name: "内容详情与审核",
+      name: "文章详情与审核",
     });
 
     expect(dialog.closest('[data-portal="true"]')).not.toBeNull();
@@ -316,7 +316,7 @@ describe("resizable article details drawer", () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
     await renderDrawer({ activeTab: "image", article, onClose });
-    const details = screen.getByRole("dialog", { name: "内容详情与审核" });
+    const details = screen.getByRole("dialog", { name: "文章详情与审核" });
     expect(
       within(details).queryByRole("button", { name: "右转 90°" }),
     ).not.toBeInTheDocument();

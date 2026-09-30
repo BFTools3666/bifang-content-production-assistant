@@ -2,7 +2,7 @@
 
 ## 项目使命
 
-本仓库是终端下游项目“毕方内容生产助手”（Bifang Content Production Assistant，项目 ID：`bifang_content_production_assistant`）。当前版本 `0.2.23`，负责人 `arden`，目标平台为 Windows、macOS，接口为 CLI、GUI。批量 AI 内容工作台 Product Spec 已批准；当前 MVP 仍须以真实可观察产物和对应验证结论声明完成程度。
+本仓库是终端下游项目“毕方内容生产助手”（Bifang Content Production Assistant，项目 ID：`bifang_content_production_assistant`）。当前版本 `0.2.24`，负责人 `arden`，目标平台为 Windows、macOS，接口为 CLI、GUI。批量 AI 内容工作台 Product Spec 已批准；当前 MVP 仍须以真实可观察产物和对应验证结论声明完成程度。
 
 本项目不得再实例化、初始化或派生其他项目；不存在的派生入口不得重建。工程层升级只能使用 `$desktop-upgrade-harness`，且默认先预览并保护产品代码、身份、策略、许可证和项目记忆。
 

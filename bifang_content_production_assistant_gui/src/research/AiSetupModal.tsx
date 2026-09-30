@@ -20,6 +20,7 @@ import {
 } from "../workbench/workbenchCommands";
 import type { ProviderConfig } from "../workbench/workbenchTypes";
 import { researchError } from "./researchCommands";
+import { IS_XHS_EDITION } from "./researchState";
 
 /** 首次写作的快速接入向导，复用原保存命令和系统凭据库，不自动发起测试。 */
 export function AiSetupModal({
@@ -76,7 +77,7 @@ export function AiSetupModal({
     >
       <Stack>
         <Text size="sm">
-          {t("文章由你自己的 AI 服务生成。首次接入一次，以后直接写作。")}
+          {t(IS_XHS_EDITION ? "笔记文字由你的 AI 服务生成；配图在后续步骤制作。" : "文章由你自己的 AI 服务生成。首次接入一次，以后直接写作。")}
         </Text>
         <Text fw={600}>DeepSeek</Text>
         <Text size="sm" c="dimmed">

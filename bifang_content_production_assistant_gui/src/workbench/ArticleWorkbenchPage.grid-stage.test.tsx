@@ -511,11 +511,11 @@ describe("batch content workbench", () => {
     });
     addButton.focus();
     await user.keyboard("{Enter}");
-    await screen.findByRole("dialog", { name: "批量添加内容标题" });
-    const input = screen.getByRole("textbox", { name: "内容标题列表" });
+    await screen.findByRole("dialog", { name: "批量添加文章标题" });
+    const input = screen.getByRole("textbox", { name: "文章标题列表" });
     expect(input).toHaveFocus();
     await user.type(input, keyboardText);
-    const submit = screen.getByRole("button", { name: "创建内容任务" });
+    const submit = screen.getByRole("button", { name: "创建文章任务" });
     submit.focus();
     await user.keyboard("{Enter}");
 
@@ -643,9 +643,9 @@ describe("batch content workbench", () => {
     commandMocks.getWorkbench.mockResolvedValue({
       activeRun: null,
       articles: [
-        draftArticle("article-visible-a", "目标内容 A"),
-        draftArticle("article-hidden", "无关内容"),
-        draftArticle("article-visible-b", "目标内容 B"),
+        draftArticle("article-visible-a", "目标文章 A"),
+        draftArticle("article-hidden", "无关文章"),
+        draftArticle("article-visible-b", "目标文章 B"),
       ],
       runHistory: [],
     });
@@ -668,13 +668,13 @@ describe("batch content workbench", () => {
 
     await user.clear(search);
     expect(
-      screen.getByRole("checkbox", { name: "选择《目标内容 A》" }),
+      screen.getByRole("checkbox", { name: "选择《目标文章 A》" }),
     ).toBeChecked();
     expect(
-      screen.getByRole("checkbox", { name: "选择《目标内容 B》" }),
+      screen.getByRole("checkbox", { name: "选择《目标文章 B》" }),
     ).toBeChecked();
     expect(
-      screen.getByRole("checkbox", { name: "选择《无关内容》" }),
+      screen.getByRole("checkbox", { name: "选择《无关文章》" }),
     ).not.toBeChecked();
 
     await user.click(screen.getByRole("button", { name: "运行所选（2）" }));

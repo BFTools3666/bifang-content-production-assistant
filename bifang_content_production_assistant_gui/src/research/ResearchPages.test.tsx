@@ -55,9 +55,11 @@ import { BenchmarkPage } from "./BenchmarkPage";
 import { StyleLibraryPage } from "./StyleLibraryPage";
 import { WriterPage } from "./WriterPage";
 import { DraftEditor } from "./DraftEditor";
+import { articleDetailsTabAtom } from "../workbench/workbenchState";
 import {
   benchmarkSessionAtom,
   composerSessionAtom,
+  platformOptions,
   writerStepAtom,
 } from "./researchState";
 
@@ -162,6 +164,9 @@ afterEach(() => {
 });
 
 describe("研究页面契约", () => {
+  it("offers CSDN and Baijiahao in the technical article edition", () => {
+    expect(platformOptions().map(({ value }) => value)).toEqual(["csdn", "baijiahao"]);
+  });
   it("行和单元格不代理勾选，最低指标排除缺失值", async () => {
     await renderPage(<BenchmarkPage />);
     const checkbox = await screen.findByRole("checkbox", {
@@ -212,11 +217,11 @@ describe("研究页面契约", () => {
     });
     const writer = await renderPage(<WriterPage />, store);
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "开始内容生产" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "开始内容生产" }));
+    fireEvent.click(screen.getByRole("button", { name: "下一步：生成文章" }));
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "生成内容" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "生成技术文章" })).toBeEnabled(),
     );
     writer.unmount();
     writer.client.clear();
@@ -244,10 +249,10 @@ describe("研究页面契约", () => {
     ]);
     await renderPage(<WriterPage />);
     await screen.findByText("先接入 AI，再开始内容生产");
-    fireEvent.change(screen.getByLabelText(/这次想生成什么内容/), {
+    fireEvent.change(screen.getByLabelText(/这篇技术文章的主题/), {
       target: { value: "运营主题" },
     });
-    expect(screen.getByRole("button", { name: "开始内容生产" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "接入 AI" }));
     expect(await screen.findByLabelText("你的 API Key")).toBeInTheDocument();
@@ -261,7 +266,7 @@ describe("研究页面契约", () => {
     await renderPage(<WriterPage />);
     await screen.findByText("AI 设置读取失败，请重试。原有配置不会被清空。");
     expect(screen.queryByText("先接入 AI，再开始内容生产")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "开始内容生产" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
   });
 
@@ -275,10 +280,10 @@ describe("研究页面契约", () => {
     mocks.generateContent.mockRejectedValue(new Error("quota"));
     await renderPage(<WriterPage />, store);
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "开始内容生产" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "开始内容生产" }));
-    fireEvent.click(screen.getByRole("button", { name: "生成内容" }));
+    fireEvent.click(screen.getByRole("button", { name: "下一步：生成文章" }));
+    fireEvent.click(screen.getByRole("button", { name: "生成技术文章" }));
     await screen.findByRole("alert");
     expect(mocks.generateContent).toHaveBeenCalledTimes(1);
     expect(store.get(composerSessionAtom).userMaterial).toBe("用户的真实材料");
@@ -287,13 +292,13 @@ describe("研究页面契约", () => {
 
   it("retains_preparation_and_step_when_returning_from_settings", async () => {
     const first = await renderPage(<WriterPage />);
-    fireEvent.change(screen.getByLabelText(/这次想生成什么内容/), {
+    fireEvent.change(screen.getByLabelText(/这篇技术文章的主题/), {
       target: { value: "运营主题" },
     });
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "开始内容生产" })).toBeEnabled(),
+      expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "开始内容生产" }));
+    fireEvent.click(screen.getByRole("button", { name: "下一步：生成文章" }));
     first.unmount();
     first.client.clear();
     const second = await renderPage(<WriterPage />, first.store);
@@ -302,7 +307,7 @@ describe("研究页面契约", () => {
     second.unmount();
     second.client.clear();
     await renderPage(<WriterPage />);
-    expect(screen.getByLabelText(/这次想生成什么内容/)).toHaveValue("");
+    expect(screen.getByLabelText(/这篇技术文章的主题/)).toHaveValue("");
   });
 
   it("retains_unsaved_edits_and_blocks_export_until_saved", async () => {
@@ -323,7 +328,7 @@ describe("研究页面契约", () => {
       tokenUsage: null,
     };
     const first = await renderPage(<DraftEditor draft={draft} mode="review" />);
-    fireEvent.change(screen.getByLabelText("正文／笔记"), {
+    fireEvent.change(screen.getByLabelText("文章正文"), {
       target: { value: "用户尚未保存的修改" },
     });
     first.unmount();
@@ -332,7 +337,7 @@ describe("研究页面契约", () => {
       <DraftEditor draft={draft} mode="export" />,
       first.store,
     );
-    expect(screen.getByLabelText("正文／笔记")).toHaveValue(
+    expect(screen.getByLabelText("文章正文")).toHaveValue(
       "用户尚未保存的修改",
     );
     expect(
@@ -346,6 +351,32 @@ describe("研究页面契约", () => {
     expect(mocks.prepareDraftArticle).not.toHaveBeenCalled();
     second.unmount();
     second.client.clear();
+  });
+
+  it("guides a Xiaohongshu note through summary before image production", async () => {
+    const note: ResearchDraft = {
+      id: "note-test",
+      platform: "xiaohongshu",
+      keyword: "图文主题",
+      title: "笔记标题",
+      titles: ["笔记标题"],
+      body: "已保存的笔记文字",
+      tags: ["图文"],
+      sourceIds: [],
+      styleId: null,
+      prompt: "原创笔记指令",
+      providerId: "text-provider",
+      model: "test-model",
+      createdAtMs: 100,
+      tokenUsage: null,
+    };
+    mocks.prepareDraftArticle.mockResolvedValue("article-note");
+    const page = await renderPage(<DraftEditor draft={note} />);
+    expect(screen.getByLabelText("笔记文字")).toHaveValue(note.body);
+    expect(screen.getByText("笔记文字已保存。下一步先生成简介，再制作配图；当前导出只包含文字。")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "继续制作图文笔记" }));
+    await waitFor(() => expect(mocks.prepareDraftArticle).toHaveBeenCalledWith(note.id));
+    await waitFor(() => expect(page.store.get(articleDetailsTabAtom)).toBe("summary"));
   });
 
   it("saves_a_key_without_automatically_calling_the_provider", async () => {

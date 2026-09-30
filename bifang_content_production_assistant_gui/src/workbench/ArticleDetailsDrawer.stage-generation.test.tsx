@@ -56,7 +56,7 @@ function stage(
   };
 }
 
-/** 创建可逐步补齐产物的详情内容。 */
+/** 创建可逐步补齐产物的详情文章。 */
 function article(): ArticleView {
   return {
     article: {

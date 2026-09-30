@@ -41,8 +41,8 @@ export async function initializeI18n(): Promise<SupportedInterfaceLanguage> {
       ns: ["app", "brandSupport", "research"],
       defaultNS: "app",
       resources: {
-        "en-US": { app: editionMessages(appEnUS), brandSupport: brandEnUS, research: researchEnUS },
-        "zh-CN": { app: editionMessages(appZhCN), brandSupport: brandZhCN, research: researchZhCN },
+        "en-US": { app: editionMessages(appEnUS), brandSupport: brandEnUS, research: editionMessages(researchEnUS) },
+        "zh-CN": { app: editionMessages(appZhCN), brandSupport: brandZhCN, research: editionMessages(researchZhCN) },
       },
       returnNull: false,
     });

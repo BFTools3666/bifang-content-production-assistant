@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { getCollectionStatus, researchError, startCollection } from "./researchCommands";
-import { benchmarkSessionAtom, composerSessionAtom, writerModeAtom, writerStepAtom, writerDraftIdAtom, metricText, platformOptions, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
+import { benchmarkSessionAtom, composerSessionAtom, writerModeAtom, writerStepAtom, writerDraftIdAtom, metricText, platformOptions, IS_XHS_EDITION, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
 import type { BenchmarkWork, ContentPlatform } from "./researchTypes";
 import { ResearchHeader } from "./ResearchHeader";
 import styles from "./ResearchPage.module.css";
@@ -58,8 +58,8 @@ export function BenchmarkPage(): ReactElement {
   return <main className={styles.page}>
     <ResearchHeader title={t("对标作品研究台")} description={t("先看作品表现，再决定研究谁。链接、指标、正文和采集时间都保留。")} />
     <div className={styles.toolbar}>
-      <Select label={t("来源平台")} data={platformOptions()} value={session.platform} allowDeselect={false} onChange={value => setSession({...session, platform: value as ContentPlatform, selected: [], authorUrl: ""})} w={150}/>
-      <TextInput className={styles.search} label={t("指定关键词")} placeholder={t("例如：Python自动化、AI办公效率")} value={session.keyword} onChange={event => setSession({...session, keyword:event.currentTarget.value})} onKeyDown={event => {if(event.key === "Enter" && session.keyword.trim()) start.mutate(null);}}/>
+      {IS_XHS_EDITION ? <Badge variant="light">{t("小红书图文笔记")}</Badge> : <Select label={t("来源平台")} data={platformOptions()} value={session.platform} allowDeselect={false} onChange={value => setSession({...session, platform: value as ContentPlatform, selected: [], authorUrl: ""})} w={150}/>}
+      <TextInput className={styles.search} label={t("指定关键词")} placeholder={t(IS_XHS_EDITION ? "例如：办公效率、工具体验、操作步骤" : "例如：Python自动化、AI办公效率")} value={session.keyword} onChange={event => setSession({...session, keyword:event.currentTarget.value})} onKeyDown={event => {if(event.key === "Enter" && session.keyword.trim()) start.mutate(null);}}/>
       <Button leftSection={<IconSearch size={18}/>} loading={start.isPending} disabled={!session.keyword.trim()} onClick={() => start.mutate(null)}>{t("搜索并采集")}</Button>
     </div>
     <div className={styles.toolbar}>
