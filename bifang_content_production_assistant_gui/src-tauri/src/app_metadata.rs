@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 #[cfg(not(feature = "xhs"))]
-const APPLICATION_NAME: &str = "毕方 SEO 文章助手";
+const APPLICATION_NAME: &str = "毕方内容生产助手";
 #[cfg(feature = "xhs")]
 const APPLICATION_NAME: &str = "毕方小红书笔记助手";
 const CONTACT_CHANNEL: &str = "QQ";

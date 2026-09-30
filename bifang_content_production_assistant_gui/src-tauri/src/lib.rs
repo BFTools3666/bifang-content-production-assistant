@@ -170,6 +170,7 @@ pub fn run() {
         .on_window_event(|window, event| tray::handle_window_event(window, event))
         .invoke_handler(tauri::generate_handler![
             research::commands::get_research_library,
+            research::commands::prepare_research_article_task,
             research::commands::update_research_prompts,
             research::commands::generate_research_content,
             research::commands::analyze_research_style,
@@ -217,6 +218,7 @@ pub fn run() {
             workbench::commands::prompts::save_prompt_template,
             workbench::commands::prompts::preview_prompt_template,
             workbench::commands::provider_config::new_provider_config_draft,
+            workbench::commands::provider_config::new_deepseek_text_provider_draft,
             workbench::commands::provider_config::new_volcengine_ark_image_provider_config_draft,
             workbench::commands::provider_config::list_provider_configs,
             workbench::commands::provider_config::save_provider_config,
@@ -367,7 +369,7 @@ mod tests {
         let e2e: serde_json::Value =
             serde_json::from_str(include_str!("../tauri.e2e.conf.json")).unwrap();
 
-        assert_eq!(product["productName"], "毕方 SEO 文章助手");
+        assert_eq!(product["productName"], "毕方内容生产助手");
         assert_eq!(e2e["productName"], "毕方内容生产助手 E2E");
         assert_ne!(product["identifier"], e2e["identifier"]);
         assert!(

@@ -12,7 +12,7 @@ describe("中文界面启动", () => {
     expect(await initializeI18n()).toBe("zh-CN");
     expect(document.documentElement.lang).toBe("zh-CN");
     expect(i18n.t("navigation.workbench")).toBe("工作台");
-    expect(i18n.t("research.navigation.benchmarks")).toBe("对标采集");
+    expect(i18n.t("research.navigation.benchmarks")).toBe("找对标");
     expect(i18n.t("research.navigation.styles")).toBe("风格库");
   });
 

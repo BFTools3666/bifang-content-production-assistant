@@ -10,12 +10,7 @@ import {
 } from "@mantine/core";
 import {
   IconAlertCircle,
-  IconHistory,
-  IconLayoutGrid,
-  IconMessageCode,
-  IconPlugConnected,
   IconRefresh,
-  IconRobot,
   IconSearch,
   IconBook2,
   IconPencil,
@@ -39,7 +34,9 @@ import { useTranslation } from "react-i18next";
 import { interfaceLanguageAtom } from "./appState";
 import {
   APP_SIDEBAR_LOGO_PATH,
-  APP_SIDEBAR_WIDTHS,
+  detailedSidebarNavbarWidth,
+  readDetailedSidebarCollapsed,
+  persistDetailedSidebarCollapsed,
   AppSidebarTemplate,
 } from "./brand-support/AppSidebarTemplate";
 import { MandatoryUpdateGateTemplate } from "./brand-support/MandatoryUpdateGateTemplate";
@@ -56,6 +53,7 @@ import {
 
 /** 当前中性 GUI 中可导航的固定本地路由。 */
 type AppPath =
+  | "/batch"
   | "/"
   | "/benchmarks"
   | "/styles"
@@ -83,8 +81,12 @@ const InterfaceLanguageContext = createContext<
 /** 判断侧栏回调是否给出了当前应用允许的本地路由。 */
 function isAppPath(path: string): path is AppPath {
   return [
+    "/batch",
     "/",
-    "/benchmarks", "/styles", "/writer", "/drafts",
+    "/benchmarks",
+    "/styles",
+    "/writer",
+    "/drafts",
     "/prompts",
     "/providers",
     "/connectors",
@@ -137,6 +139,8 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
   });
   const [language, setLanguage] = useAtom(interfaceLanguageAtom);
   const [languageFailed, setLanguageFailed] = useState(false);
+  const [collapsed, setCollapsed] = useState(readDetailedSidebarCollapsed);
+  const sidebarWidth = detailedSidebarNavbarWidth(collapsed);
 
   useEffect(() => {
     if (!metadataQuery.data) return;
@@ -211,39 +215,29 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
   }
 
   const featureItems = [
-    { icon: IconSearch, id: "benchmarks", label: t("research.navigation.benchmarks"), to: "/benchmarks" },
-    { icon: IconBook2, id: "styles", label: t("research.navigation.styles"), to: "/styles" },
-    { icon: IconPencil, id: "writer", label: t("research.navigation.writer"), to: "/writer" },
-    { icon: IconFileText, id: "drafts", label: t("research.navigation.drafts"), to: "/drafts" },
     {
-      icon: IconLayoutGrid,
-      id: "workbench",
-      label: t("navigation.workbench"),
+      icon: IconPencil,
+      id: "writer",
+      label: t("research.navigation.writer"),
       to: "/",
     },
     {
-      icon: IconMessageCode,
-      id: "prompts",
-      label: t("navigation.prompts"),
-      to: "/prompts",
+      icon: IconSearch,
+      id: "benchmarks",
+      label: t("research.navigation.benchmarks"),
+      to: "/benchmarks",
     },
     {
-      icon: IconRobot,
-      id: "providers",
-      label: t("navigation.providers"),
-      to: "/providers",
+      icon: IconBook2,
+      id: "styles",
+      label: t("research.navigation.styles"),
+      to: "/styles",
     },
     {
-      icon: IconPlugConnected,
-      id: "connectors",
-      label: t("navigation.connectors"),
-      to: "/connectors",
-    },
-    {
-      icon: IconHistory,
-      id: "runs",
-      label: t("navigation.runs"),
-      to: "/runs",
+      icon: IconFileText,
+      id: "drafts",
+      label: t("research.navigation.drafts"),
+      to: "/drafts",
     },
   ];
 
@@ -268,18 +262,23 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
         update={update}
       >
         <MantineAppShell
-          data-mode="compact"
-          data-navbar-width={APP_SIDEBAR_WIDTHS.compact}
+          data-mode="detailed"
+          data-navbar-width={sidebarWidth}
           data-testid="app-shell"
-          navbar={{ breakpoint: "sm", width: APP_SIDEBAR_WIDTHS.compact }}
+          navbar={{ breakpoint: "sm", width: sidebarWidth }}
         >
           <MantineAppShell.Navbar p={0}>
             <AppSidebarTemplate
-              activePath={activePath}
+              activePath={activePath === "/writer" ? "/" : activePath}
               applicationName={metadataQuery.data.applicationName}
               featureItems={featureItems}
               logoSrc={APP_SIDEBAR_LOGO_PATH}
-              mode="compact"
+              mode="detailed"
+              detailedCollapsed={collapsed}
+              onCollapsedChange={(value) => {
+                setCollapsed(value);
+                persistDetailedSidebarCollapsed(value);
+              }}
               onNavigate={handleNavigate}
               supportPages={{ aboutPage: true, sponsorPage: true }}
               version={metadataQuery.data.version}

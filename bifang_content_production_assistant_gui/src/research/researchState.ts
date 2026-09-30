@@ -25,6 +25,8 @@ export const benchmarkSessionAtom = atom<BenchmarkSession>({ platform: DEFAULT_P
 export const writerDraftIdAtom = atom<string | null>(null);
 export const writerProviderIdAtom = atom<string | null>(null);
 export const historyDraftIdAtom = atom<string | null>(null);
+/** 尚未提交的标题和正文是表单输入；路由切换保留，保存成功后删除。 */
+export const draftEditsAtom = atom<Record<string, { title: string; body: string }>>({});
 export const composerSessionAtom = atom<GenerationInput>({ platform: DEFAULT_PLATFORM, keyword: "", sourceIds: [], styleId: null, userMaterial: "", promptOverride: "" });
 
 /** 从统一Query缓存读取当前业务资产，路由切换不重复建立数据库镜像。 */
@@ -46,3 +48,8 @@ export function platformLabel(platform: ContentPlatform): string {
 export function metricText(value: number | null): string {
   return value === null ? "未提供" : value.toLocaleString();
 }
+
+/** 四步写作的视图进度由进程内会话保存，业务资产仍归原有 core。 */
+export const writerStepAtom = atom<0 | 1 | 2 | 3>(0);
+/** 本次写作方式只决定展示；输入和风格由 core 最终校验。 */
+export const writerModeAtom = atom<"topic" | "reference" | "style">("topic");

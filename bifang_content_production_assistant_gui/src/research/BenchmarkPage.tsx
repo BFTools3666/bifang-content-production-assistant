@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { getCollectionStatus, researchError, startCollection } from "./researchCommands";
-import { benchmarkSessionAtom, composerSessionAtom, metricText, platformOptions, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
+import { benchmarkSessionAtom, composerSessionAtom, writerModeAtom, writerStepAtom, writerDraftIdAtom, metricText, platformOptions, IS_XHS_EDITION, RESEARCH_QUERY_KEY, useResearchLibrary } from "./researchState";
 import type { BenchmarkWork, ContentPlatform } from "./researchTypes";
 import { ResearchHeader } from "./ResearchHeader";
 import styles from "./ResearchPage.module.css";
@@ -17,6 +17,9 @@ export function BenchmarkPage(): ReactElement {
   const library = useResearchLibrary();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [, setWriterMode] = useAtom(writerModeAtom);
+  const [, setWriterStep] = useAtom(writerStepAtom);
+  const [, setWriterDraft] = useAtom(writerDraftIdAtom);
   const [session, setSession] = useAtom(benchmarkSessionAtom);
   const [, setComposer] = useAtom(composerSessionAtom);
   const [pageUrl, setPageUrl] = useState("");
@@ -49,14 +52,14 @@ export function BenchmarkPage(): ReactElement {
   /** 把已选择作品与关键词带入二创页，路由切换保留当前筛选。 */
   function writeSelected() {
     setComposer(previous => ({ ...previous, platform: session.platform, keyword: session.keyword || previous.keyword, sourceIds: selected.map(work => work.id), styleId: null }));
-    void navigate({to: "/writer"});
+    setWriterMode("reference"); setWriterStep(0); setWriterDraft(null); void navigate({to: "/writer"});
   }
 
   return <main className={styles.page}>
     <ResearchHeader title={t("对标作品研究台")} description={t("先看作品表现，再决定研究谁。链接、指标、正文和采集时间都保留。")} />
     <div className={styles.toolbar}>
-      <Select label={t("来源平台")} data={platformOptions()} value={session.platform} allowDeselect={false} onChange={value => setSession({...session, platform: value as ContentPlatform, selected: [], authorUrl: ""})} w={150}/>
-      <TextInput className={styles.search} label={t("指定关键词")} placeholder={t("例如：Python自动化、AI办公效率")} value={session.keyword} onChange={event => setSession({...session, keyword:event.currentTarget.value})} onKeyDown={event => {if(event.key === "Enter" && session.keyword.trim()) start.mutate(null);}}/>
+      {IS_XHS_EDITION ? <Badge variant="light">{t("小红书图文笔记")}</Badge> : <Select label={t("来源平台")} data={platformOptions()} value={session.platform} allowDeselect={false} onChange={value => setSession({...session, platform: value as ContentPlatform, selected: [], authorUrl: ""})} w={150}/>}
+      <TextInput className={styles.search} label={t("指定关键词")} placeholder={t(IS_XHS_EDITION ? "例如：办公效率、工具体验、操作步骤" : "例如：Python自动化、AI办公效率")} value={session.keyword} onChange={event => setSession({...session, keyword:event.currentTarget.value})} onKeyDown={event => {if(event.key === "Enter" && session.keyword.trim()) start.mutate(null);}}/>
       <Button leftSection={<IconSearch size={18}/>} loading={start.isPending} disabled={!session.keyword.trim()} onClick={() => start.mutate(null)}>{t("搜索并采集")}</Button>
     </div>
     <div className={styles.toolbar}>

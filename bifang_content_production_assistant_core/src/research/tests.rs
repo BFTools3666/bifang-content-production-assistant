@@ -134,3 +134,49 @@ fn legacy_workspace_migration_preserves_existing_assets() {
     let mut note = restored.clone(); initialize_note_workbench(&mut note);
     assert!(note.prompt_templates.iter().any(|prompt|prompt.content.contains("小红书")));
 }
+
+/// 快速接入不配置图片服务，也不会覆盖已有图片阶段的默认值。
+#[test]
+fn deepseek_onboarding_preserves_image_configuration() {
+    let config = crate::ProviderConfig::deepseek_text_draft();
+    assert_eq!(config.base_url, "https://api.deepseek.com");
+    assert_eq!(config.article_model(), "deepseek-flash");
+    assert!(!config.default_for_image);
+    assert!(config.image_model.is_empty());
+    assert!(config.validate_stage_configuration().is_ok());
+}
+
+/// 使用隔离草稿验证正文衔接，不触发网络、凭据或真实工作区。
+#[test]
+fn draft_handoff_keeps_body_and_is_idempotent() {
+    let mut workspace = crate::WorkspaceData::default();
+    let draft = ResearchDraft {
+        id: "handoff-test".into(), platform: ContentPlatform::Csdn, keyword: "主题".into(),
+        source_ids: vec![], style_id: None, titles: vec!["标题一".into(),"标题二".into(),"标题三".into()],
+        title: "标题一".into(), body: "已检查的真实正文".into(), tags: vec!["关键词".into()],
+        prompt: "本次提示词".into(), provider_id: "existing-provider".into(), model: "configured-model".into(),
+        token_usage: None, created_at_ms: 1,
+    };
+    workspace.research.drafts.push(draft);
+    let existing_count = workspace.articles.len();
+    let id = prepare_research_article(&mut workspace, "handoff-test", 10).unwrap();
+    assert_eq!(prepare_research_article(&mut workspace, "handoff-test", 11).unwrap(), id);
+    assert_eq!(workspace.articles.len(), existing_count + 1);
+    let task = workspace.articles.iter().find(|item| item.id == id).unwrap();
+    assert_eq!(task.artifacts.markdown.as_deref(), Some("已检查的真实正文"));
+    assert_eq!(task.stages.article.status, crate::StageStatus::Succeeded);
+    assert_eq!(task.stages.summary.status, crate::StageStatus::NotStarted);
+    workspace.research.drafts[0].body = "修改后的正文".into();
+    assert!(prepare_research_article(&mut workspace, "handoff-test", 12).is_err());
+    assert_eq!(workspace.articles.len(), existing_count + 1);
+    assert_eq!(workspace.articles.iter().find(|item| item.id == id).unwrap().artifacts.markdown.as_deref(), Some("已检查的真实正文"));
+    assert!(prepare_research_article(&mut workspace, "missing", 12).is_err());
+    let (html, extension) = research_draft_document(&workspace.research, "handoff-test", "html").unwrap();
+    assert_eq!(extension, "html");
+    assert!(html.contains("修改后的正文"));
+    workspace.research.drafts[0].body = "<script>alert(1)</script>".into();
+    let (html, _) = research_draft_document(&workspace.research, "handoff-test", "html").unwrap();
+    assert!(!html.contains("<script>"));
+    assert!(html.contains("&lt;script&gt;"));
+    assert!(research_draft_document(&workspace.research, "handoff-test", "unsupported").is_err());
+}

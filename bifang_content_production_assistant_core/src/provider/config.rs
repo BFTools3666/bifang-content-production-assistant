@@ -49,6 +49,18 @@ pub struct ProviderConfig {
 }
 
 impl ProviderConfig {
+    /// 运营人员首次接入 DeepSeek 时只需提供自己的密钥；仍使用原有文本协议。
+    pub fn deepseek_text_draft() -> Self {
+        let mut config = Self::open_ai_compatible_draft();
+        config.name = "DeepSeek".into();
+        config.base_url = "https://api.deepseek.com".into();
+        config.text_model = "deepseek-flash".into();
+        config.article_model = Some(config.text_model.clone());
+        config.summary_model = Some(config.text_model.clone());
+        config.default_for_image = false;
+        config
+    }
+
     /// 建立新表单使用的 OpenAI-compatible 领域默认配置，不包含稳定 ID 或密钥。
     pub fn open_ai_compatible_draft() -> Self {
         Self {
