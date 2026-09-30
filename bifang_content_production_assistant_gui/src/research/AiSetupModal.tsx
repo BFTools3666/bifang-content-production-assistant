@@ -69,7 +69,9 @@ export function AiSetupModal({
       onClose={() => {
         if (!save.isPending) onClose();
       }}
-      title={t("接入 AI 后开始写作")}
+      title={t(
+        IS_XHS_EDITION ? "接入 AI，生成笔记文字" : "接入 AI，生成技术文章",
+      )}
       size="md"
       closeOnClickOutside={!save.isPending}
       closeOnEscape={!save.isPending}
@@ -77,11 +79,15 @@ export function AiSetupModal({
     >
       <Stack>
         <Text size="sm">
-          {t(IS_XHS_EDITION ? "笔记文字由你的 AI 服务生成；配图在后续步骤制作。" : "文章由你自己的 AI 服务生成。首次接入一次，以后直接写作。")}
+          {t(
+            IS_XHS_EDITION
+              ? "这里接入文字 AI；制作配图时需要另行配置图片服务。"
+              : "填入自己的 AI 服务后，就能生成 CSDN 或百家号的技术文章。",
+          )}
         </Text>
         <Text fw={600}>DeepSeek</Text>
         <Text size="sm" c="dimmed">
-          {t("接口和默认模型已填好。粘贴你自己的 Key 即可保存。")}
+          {t("接口地址和模型已填好，粘贴你的 API Key 即可。")}
         </Text>
         {error || defaults.error ? (
           <Alert color="red" role="alert">
@@ -96,7 +102,7 @@ export function AiSetupModal({
         <PasswordInput
           label={t("你的 API Key")}
           description={t(
-            "只保存到系统凭据库，不会回显，也不会随源码和安装包发送。",
+            "密钥只保存在这台电脑的系统凭据库，导出的文件不会包含它。",
           )}
           value={key}
           onChange={(event) => setKey(event.currentTarget.value)}

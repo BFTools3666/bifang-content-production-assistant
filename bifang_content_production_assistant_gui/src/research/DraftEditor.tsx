@@ -191,7 +191,9 @@ export function DraftEditor({
             <Divider label={t("保存前核对")} />
             {[
               "事实、数字与引用有依据",
-              isNote ? "标题和笔记文字讲的是同一件事" : "标题和正文讲的是同一件事",
+              isNote
+                ? "标题和笔记文字讲的是同一件事"
+                : "标题和正文讲的是同一件事",
               "表达符合自己的口吻",
             ].map((label, index) => (
               <Checkbox
@@ -219,7 +221,7 @@ export function DraftEditor({
               disabled={busy || delivery.isPending}
               onClick={() => save.mutate()}
             >
-              {mode === "review" ? t("保存并准备导出") : t("保存修改")}
+              {mode === "review" ? t("保存修改，继续下一步") : t("保存修改")}
             </Button>
           ) : null}
           <Button
@@ -227,7 +229,7 @@ export function DraftEditor({
             leftSection={<IconCopy size={16} />}
             onClick={() => void copyContent()}
           >
-            {t("复制内容")}
+            {t(isNote ? "复制标题和笔记文字" : "复制标题和正文")}
           </Button>
           {mode !== "review" ? (
             <>
@@ -275,8 +277,16 @@ export function DraftEditor({
         ) : null}
         {mode !== "review" ? (
           <Stack gap="xs">
-            <Divider label={t(isNote ? "配图与发布准备" : "飞书与后续制作")} />
-            {isNote ? <Text size="sm" c="dimmed">{t("笔记文字已保存。下一步先生成简介，再制作配图；当前导出只包含文字。")}</Text> : null}
+            <Divider
+              label={t(isNote ? "继续制作图文笔记" : "后续制作与飞书")}
+            />
+            {isNote ? (
+              <Text size="sm" c="dimmed">
+                {t(
+                  "文字已保存。要完成图文笔记，请继续制作简介和配图；现在导出的文件只有文字。",
+                )}
+              </Text>
+            ) : null}
             <Text size="sm" c="dimmed">
               {connectors.isPending
                 ? t("正在读取飞书连接")
@@ -293,7 +303,7 @@ export function DraftEditor({
                 loading={delivery.isPending}
                 onClick={() => delivery.mutate()}
               >
-                {t(isNote ? "继续制作图文笔记" : "继续简介、配图与飞书同步")}
+                {t(isNote ? "继续制作图文笔记" : "继续制作简介和配图")}
               </Button>
               <Button
                 variant="subtle"
@@ -310,7 +320,11 @@ export function DraftEditor({
               </Button>
             </Group>
             <Text size="xs" c="dimmed">
-              {t(isNote ? "在图文制作工作台依次完成简介和配图；飞书同步仍需确认。" : "正文将保留并交给原批量流程；飞书写入仍需另行确认。")}
+              {t(
+                isNote
+                  ? "进入图文工作台后，先做简介，再做配图；同步飞书前还需确认。"
+                  : "已保存的正文会带到制作工作台；同步飞书前还需确认。",
+              )}
             </Text>
           </Stack>
         ) : null}

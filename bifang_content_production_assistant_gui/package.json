@@ -1,7 +1,7 @@
 {
   "name": "bifang-content-production-assistant-gui",
   "private": true,
-  "version": "0.2.24",
+  "version": "0.2.25",
   "type": "module",
   "engines": {
     "node": "^24.15.0 || >=26.0.0",

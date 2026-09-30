@@ -165,7 +165,10 @@ afterEach(() => {
 
 describe("研究页面契约", () => {
   it("offers CSDN and Baijiahao in the technical article edition", () => {
-    expect(platformOptions().map(({ value }) => value)).toEqual(["csdn", "baijiahao"]);
+    expect(platformOptions().map(({ value }) => value)).toEqual([
+      "csdn",
+      "baijiahao",
+    ]);
   });
   it("行和单元格不代理勾选，最低指标排除缺失值", async () => {
     await renderPage(<BenchmarkPage />);
@@ -217,11 +220,17 @@ describe("研究页面契约", () => {
     });
     const writer = await renderPage(<WriterPage />, store);
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeEnabled(),
+      expect(
+        screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      ).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "下一步：生成文章" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+    );
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "生成技术文章" })).toBeEnabled(),
+      expect(
+        screen.getByRole("button", { name: "生成技术文章" }),
+      ).toBeEnabled(),
     );
     writer.unmount();
     writer.client.clear();
@@ -248,11 +257,13 @@ describe("研究页面契约", () => {
       },
     ]);
     await renderPage(<WriterPage />);
-    await screen.findByText("先接入 AI，再开始内容生产");
+    await screen.findByText("先接入 AI，才能生成技术文章");
     fireEvent.change(screen.getByLabelText(/这篇技术文章的主题/), {
       target: { value: "运营主题" },
     });
-    expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+    ).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "接入 AI" }));
     expect(await screen.findByLabelText("你的 API Key")).toBeInTheDocument();
@@ -265,8 +276,12 @@ describe("研究页面契约", () => {
     mocks.listProviderConfigs.mockRejectedValue(new Error("offline"));
     await renderPage(<WriterPage />);
     await screen.findByText("AI 设置读取失败，请重试。原有配置不会被清空。");
-    expect(screen.queryByText("先接入 AI，再开始内容生产")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeDisabled();
+    expect(
+      screen.queryByText("先接入 AI，才能生成技术文章"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+    ).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
   });
 
@@ -280,9 +295,13 @@ describe("研究页面契约", () => {
     mocks.generateContent.mockRejectedValue(new Error("quota"));
     await renderPage(<WriterPage />, store);
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeEnabled(),
+      expect(
+        screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      ).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "下一步：生成文章" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+    );
     fireEvent.click(screen.getByRole("button", { name: "生成技术文章" }));
     await screen.findByRole("alert");
     expect(mocks.generateContent).toHaveBeenCalledTimes(1);
@@ -296,9 +315,13 @@ describe("研究页面契约", () => {
       target: { value: "运营主题" },
     });
     await waitFor(() =>
-      expect(screen.getByRole("button", { name: "下一步：生成文章" })).toBeEnabled(),
+      expect(
+        screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      ).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "下一步：生成文章" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+    );
     first.unmount();
     first.client.clear();
     const second = await renderPage(<WriterPage />, first.store);
@@ -337,15 +360,13 @@ describe("研究页面契约", () => {
       <DraftEditor draft={draft} mode="export" />,
       first.store,
     );
-    expect(screen.getByLabelText("文章正文")).toHaveValue(
-      "用户尚未保存的修改",
-    );
+    expect(screen.getByLabelText("文章正文")).toHaveValue("用户尚未保存的修改");
     expect(
       screen.getByRole("combobox", { name: "选择二次标题" }),
     ).toBeDisabled();
     expect(screen.getByRole("button", { name: "HTML" })).toBeDisabled();
     expect(
-      screen.getByRole("button", { name: "继续简介、配图与飞书同步" }),
+      screen.getByRole("button", { name: "继续制作简介和配图" }),
     ).toBeDisabled();
     expect(mocks.exportDraft).not.toHaveBeenCalled();
     expect(mocks.prepareDraftArticle).not.toHaveBeenCalled();
@@ -373,10 +394,18 @@ describe("研究页面契约", () => {
     mocks.prepareDraftArticle.mockResolvedValue("article-note");
     const page = await renderPage(<DraftEditor draft={note} />);
     expect(screen.getByLabelText("笔记文字")).toHaveValue(note.body);
-    expect(screen.getByText("笔记文字已保存。下一步先生成简介，再制作配图；当前导出只包含文字。")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "文字已保存。要完成图文笔记，请继续制作简介和配图；现在导出的文件只有文字。",
+      ),
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "继续制作图文笔记" }));
-    await waitFor(() => expect(mocks.prepareDraftArticle).toHaveBeenCalledWith(note.id));
-    await waitFor(() => expect(page.store.get(articleDetailsTabAtom)).toBe("summary"));
+    await waitFor(() =>
+      expect(mocks.prepareDraftArticle).toHaveBeenCalledWith(note.id),
+    );
+    await waitFor(() =>
+      expect(page.store.get(articleDetailsTabAtom)).toBe("summary"),
+    );
   });
 
   it("saves_a_key_without_automatically_calling_the_provider", async () => {

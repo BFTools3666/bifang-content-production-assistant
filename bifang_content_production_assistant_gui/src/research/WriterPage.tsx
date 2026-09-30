@@ -124,14 +124,23 @@ export function WriterPage(): ReactElement {
     styleReady &&
     (mode !== "reference" || input.sourceIds.length > 0) &&
     (mode !== "style" || Boolean(input.styleId));
-  const steps = ["生产准备", isNote ? "生成笔记文字" : "生成技术文章", "检查修改", "保存导出"];
+  const steps = [
+    isNote ? "选主题和参考" : "选平台和主题",
+    isNote ? "生成笔记文字" : "生成技术文章",
+    isNote ? "检查笔记文字" : "检查标题和正文",
+    isNote ? "导出文字或制作配图" : "导出或继续制作",
+  ];
   return (
     <main className={styles.page}>
       <Group justify="space-between" align="flex-start" mb="lg">
         <div>
           <h1 className={styles.title}>{t("写一篇文章")}</h1>
           <Text c="dimmed" size="sm">
-            {t(isNote ? "先生成笔记文字，检查后继续制作简介和配图。" : "选择 CSDN 或百家号，写出有步骤、有依据的技术文章。")}
+            {t(
+              isNote
+                ? "为小红书制作图文笔记：先生成笔记文字，核对后继续做配图。"
+                : "为 CSDN 或百家号生产技术类长文章：定主题、选参考、核对后再导出。",
+            )}
           </Text>
         </div>
         <Button
@@ -196,10 +205,18 @@ export function WriterPage(): ReactElement {
           </Button>
         </Alert>
       ) : !provider ? (
-        <Alert color="blue" title={t("先接入 AI，再开始写作")} mb="lg">
+        <Alert
+          color="blue"
+          title={t(
+            isNote
+              ? "先接入 AI，才能生成笔记文字"
+              : "先接入 AI，才能生成技术文章",
+          )}
+          mb="lg"
+        >
           <Text size="sm">
             {t(
-              "文章需要你自己的 AI 服务。已有 Key 可以直接填写；没有 Key 可以先查看申请方法。",
+              "填入自己的 API Key，设置一次后就能直接使用；还没有 Key 可查看申请步骤。",
             )}
           </Text>
           <Button mt="sm" onClick={() => setSetup(true)}>
@@ -213,39 +230,55 @@ export function WriterPage(): ReactElement {
             <Group justify="space-between" align="flex-start">
               <div>
                 <Text fw={650} size="lg">
-                  {t("选择内容来源")}
+                  {t("这次用哪种方式生成？")}
                 </Text>
                 <Text c="dimmed" size="sm" mt="xs">
-                  {t("找对标、建风格库都按需要使用。")}
+                  {t(
+                    "第一次使用，选“从主题生成”即可；有对标作品或保存过风格时再切换。",
+                  )}
                 </Text>
               </div>
-              {IS_XHS_EDITION ? <Badge variant="light">{t("小红书图文笔记")}</Badge> : <Select
-                label={t("计划发布的平台")}
-                data={platformOptions()}
-                value={input.platform}
-                allowDeselect={false}
-                onChange={(value) => {
-                  if (value)
-                    setInput({
-                      ...input,
-                      platform: value as ContentPlatform,
-                      sourceIds: [],
-                      styleId: null,
-                      promptOverride: "",
-                    });
-                }}
-              />}
+              {IS_XHS_EDITION ? (
+                <Badge variant="light">{t("小红书图文笔记")}</Badge>
+              ) : (
+                <Select
+                  label={t("计划发布的平台")}
+                  data={platformOptions()}
+                  value={input.platform}
+                  allowDeselect={false}
+                  onChange={(value) => {
+                    if (value)
+                      setInput({
+                        ...input,
+                        platform: value as ContentPlatform,
+                        sourceIds: [],
+                        styleId: null,
+                        promptOverride: "",
+                      });
+                  }}
+                />
+              )}
             </Group>
             <div className={styles.modeChoices}>
               {(
                 [
-                  ["topic", "按主题写", "给出主题和自己的材料，让 AI 帮你写。"],
+                  [
+                    "topic",
+                    "从主题生成",
+                    isNote
+                      ? "输入主题和自己的资料，生成笔记文字。"
+                      : "输入主题和自己的资料，生成技术文章。",
+                  ],
                   [
                     "reference",
-                    "参考对标写",
-                    "选一篇对标作品，结合自己的材料重新组织。",
+                    "参考对标作品生成",
+                    "选择已采集正文的对标作品，结合自己的资料重新组织。",
                   ],
-                  ["style", "按风格写", "选择保存的风格，再写这次的新主题。"],
+                  [
+                    "style",
+                    "使用风格库生成",
+                    "选择已保存的风格，再输入这次的新主题。",
+                  ],
                 ] as const
               ).map(([value, title, note]) => (
                 <button
@@ -331,7 +364,7 @@ export function WriterPage(): ReactElement {
               </Stack>
             ) : null}
             <Textarea
-              label={t("自己的材料（可选）")}
+              label={t("你自己的资料（选填）")}
               description={t(
                 "填写真实步骤、案例、产品信息或观点，生成后仍需核对事实。",
               )}
@@ -358,7 +391,7 @@ export function WriterPage(): ReactElement {
                   setStep(1);
                 }}
               >
-                {t(isNote ? "下一步：生成笔记文字" : "下一步：生成文章")}
+                {t(isNote ? "下一步：生成笔记文字" : "下一步：生成技术文章")}
               </Button>
             </Group>
           </Stack>
@@ -372,7 +405,7 @@ export function WriterPage(): ReactElement {
               disabled={generation.isPending}
               onClick={() => setStep(0)}
             >
-              {t("修改写作准备")}
+              {t("返回修改主题和参考")}
             </Button>
           </Group>
           <Group align="flex-end">
@@ -401,10 +434,12 @@ export function WriterPage(): ReactElement {
           </Text>
           <Accordion>
             <Accordion.Item value="prompt">
-              <Accordion.Control>{t("查看和修改写作要求")}</Accordion.Control>
+              <Accordion.Control>
+                {t("查看或修改生成要求（选填）")}
+              </Accordion.Control>
               <Accordion.Panel>
                 <Textarea
-                  label={t("本次二创指令")}
+                  label={t("这次给 AI 的要求")}
                   value={input.promptOverride || builtInPrompt || ""}
                   onChange={(event) =>
                     setInput({
@@ -424,14 +459,14 @@ export function WriterPage(): ReactElement {
                     disabled={!library.data || generation.isPending}
                     onClick={() => savePrompt.mutate()}
                   >
-                    {t("保存为内置默认")}
+                    {t("保存为默认要求")}
                   </Button>
                   <Button
                     variant="subtle"
                     disabled={generation.isPending}
                     onClick={() => setInput({ ...input, promptOverride: "" })}
                   >
-                    {t("使用库内默认")}
+                    {t("恢复默认要求")}
                   </Button>
                 </Group>
               </Accordion.Panel>
@@ -448,7 +483,9 @@ export function WriterPage(): ReactElement {
                 generation.mutate();
               }}
             >
-              {generation.isPending ? t("正在生成并保存") : t(isNote ? "生成笔记文字" : "生成技术文章")}
+              {generation.isPending
+                ? t("正在生成并保存")
+                : t(isNote ? "生成笔记文字" : "生成技术文章")}
             </Button>
             {draft ? (
               <Button
@@ -484,7 +521,13 @@ export function WriterPage(): ReactElement {
           onSaved={() => setStep(3)}
         />
       ) : (
-        <Alert>{t(isNote ? "先生成笔记文字，再检查，随后制作简介和配图。" : "先生成文章，再检查和导出。")}</Alert>
+        <Alert>
+          {t(
+            isNote
+              ? "先生成笔记文字，再检查，随后制作简介和配图。"
+              : "先生成文章，再检查和导出。",
+          )}
+        </Alert>
       )}
       <AiSetupModal opened={setup} onClose={() => setSetup(false)} />
     </main>

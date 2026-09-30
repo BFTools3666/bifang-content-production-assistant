@@ -3,6 +3,22 @@
   "releases": [
     {
       "releaseDate": "2026-09-30",
+      "version": "v0.2.25",
+      "featureOptimizations": [
+        {
+          "zh-CN": "内容生产首页按运营人员的操作顺序说明技术类长文章和小红书图文笔记各自怎么做，对标与风格库入口也直接说明下一步。",
+          "en-US": "Explain the article and Xiaohongshu note workflows in the order operators use them, with clearer reference and style actions."
+        }
+      ],
+      "bugFixes": [
+        {
+          "zh-CN": "小红书明确提示文字 AI 与配图服务分别配置，草稿导出只有文字；继续制作按钮不再暗示已同步飞书。",
+          "en-US": "Clarify separate text and image AI setup, text-only note exports, and that continuing production does not itself sync to Feishu."
+        }
+      ]
+    },
+    {
+      "releaseDate": "2026-09-30",
       "version": "v0.2.24",
       "featureOptimizations": [
         {
