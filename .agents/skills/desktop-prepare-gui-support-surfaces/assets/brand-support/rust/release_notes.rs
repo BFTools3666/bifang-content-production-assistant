@@ -5,7 +5,7 @@ use tauri::{Manager, path::BaseDirectory};
 
 const RELEASE_NOTES_RESOURCE_PATH: &str = "release-notes.json";
 const RELEASE_NOTES_SCHEMA_VERSION: u8 = 2;
-const MAX_RELEASE_NOTE_VERSIONS: usize = 5;
+const MAX_RELEASE_NOTE_VERSIONS: usize = 10;
 const MAX_RELEASE_NOTE_ITEMS: usize = 10;
 const MAX_RELEASE_NOTES_BYTES: u64 = 1024 * 1024;
 
@@ -81,7 +81,7 @@ fn parse_release_notes(bytes: &[u8]) -> Result<ReleaseNotesDocument, ReleaseNote
     Ok(document)
 }
 
-/// 校验近五版、十条上限、唯一版本和最新在前的发布事实。
+/// 校验近十版、每类十条上限、唯一版本和最新在前的发布事实。
 fn validate_release_notes(document: &ReleaseNotesDocument) -> Result<(), ReleaseNotesLoadError> {
     if document.schema_version != RELEASE_NOTES_SCHEMA_VERSION
         || document.releases.is_empty()
@@ -113,7 +113,11 @@ fn validate_release_notes(document: &ReleaseNotesDocument) -> Result<(), Release
 
 /// 判断单个语言字段非空、没有空白包围且在该分类下唯一。
 fn is_clean_unique_text<'a>(text: &'a str, seen: &mut HashSet<&'a str>) -> bool {
-    !text.is_empty() && text.trim() == text && seen.insert(text)
+    !text.is_empty()
+        && text.trim() == text
+        && !text.starts_with('\u{feff}')
+        && !text.ends_with('\u{feff}')
+        && seen.insert(text)
 }
 
 /// 要求每个翻译对非空、没有空白包围且同分类逐语言去重。
@@ -213,6 +217,43 @@ mod tests {
         assert_eq!(document.releases[0].version, "v1.2.3");
     }
 
+    /// 十个实际发布版本应可读取，第十一个版本必须在资源边界失败关闭。
+    #[test]
+    fn accepts_ten_release_versions_and_rejects_eleven() {
+        let mut document = ReleaseNotesDocument {
+            schema_version: RELEASE_NOTES_SCHEMA_VERSION,
+            releases: (0..10)
+                .map(|index| ReleaseNoteEntry {
+                    release_date: format!("2026-08-{:02}", 31 - index),
+                    version: format!("v1.0.{index}"),
+                    feature_optimizations: vec![LocalizedReleaseNoteItem {
+                        zh_cn: "功能优化".to_owned(),
+                        en_us: "Feature optimization".to_owned(),
+                    }],
+                    bug_fixes: vec![],
+                })
+                .collect(),
+        };
+        let ten_versions = serde_json::to_vec(&document).expect("valid document should serialize");
+        assert!(parse_release_notes(&ten_versions).is_ok());
+
+        document.releases.push(ReleaseNoteEntry {
+            release_date: "2026-08-21".to_owned(),
+            version: "v1.0.10".to_owned(),
+            feature_optimizations: vec![LocalizedReleaseNoteItem {
+                zh_cn: "功能优化".to_owned(),
+                en_us: "Feature optimization".to_owned(),
+            }],
+            bug_fixes: vec![],
+        });
+        let eleven_versions =
+            serde_json::to_vec(&document).expect("valid document should serialize");
+        assert!(matches!(
+            parse_release_notes(&eleven_versions),
+            Err(ReleaseNotesLoadError::Invalid)
+        ));
+    }
+
     /// major 接受 Cargo u64 边界；Minor/Patch 固定 0..99，不兼容历史 100，任一越界都失败关闭。
     #[test]
     fn accepts_u64_major_and_rejects_lower_100_with_no_compatibility() {
@@ -238,6 +279,10 @@ mod tests {
                 Err(ReleaseNotesLoadError::Invalid)
             ));
         }
+        assert!(!has_unique_non_empty_items(&[LocalizedReleaseNoteItem {
+            zh_cn: "\u{feff}前缀".to_owned(),
+            en_us: "prefix".to_owned(),
+        }]));
     }
 
     /// 日期必须有效且按最新在前排列，不能仅满足字符串外形。

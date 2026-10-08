@@ -67,7 +67,7 @@ compact AppShell 必须把 `mode="compact"` 接入实际 `AppSidebarTemplate`，
 - `APP_SIDEBAR_LOGO_SIZES.detailedCollapsed = 44`
 - `APP_SIDEBAR_NAV_ICON_SIZE_PX = 22`
 - `DEFAULT_DETAILED_SIDEBAR_COLLAPSED = false`
-- `APP_SIDEBAR_COLLAPSED_STORAGE_KEY = "bifang-content-production-assistant:app.sidebar.detailed.collapsed"`
+- `APP_SIDEBAR_COLLAPSED_STORAGE_KEY = "app.sidebar.detailed.collapsed"`
 
 折叠状态属于设备级展示偏好。`readDetailedSidebarCollapsed()` 只有在独立 localStorage 键的值严格等于字符串 `"true"` 时返回收起；键缺失、非法、存储不可用或服务端渲染环境一律展开。它不得进入 Jotai 页面会话 store、URL、TanStack Query、shared core 或业务持久化。
 
@@ -86,9 +86,9 @@ compact AppShell 必须把 `mode="compact"` 接入实际 `AppSidebarTemplate`，
 
 ## 偏离与验证
 
-- 只有用户明确批准的产品特殊需求可以偏离像素或结构。实施前必须把标准标识、精确差异和关联 ADR 写入该产品的 `docs/GUI_APP_PROFILE.md`；没有 profile/ADR 的当前实现不得自行偏离。
+- 只有用户明确批准的产品特殊需求可以偏离像素或结构。实施前必须把标准标识、精确差异和关联 ADR 写入该产品的 `docs/GUI_APP_PROFILE.md`；没有 profile/ADR 的中性初始化不得自行偏离。
 - compact 组件回归锁定所有表格数值、无折叠控件、无固定 `em/ch` 盒、完整 `aria-label`、NavLink 自身 active 与点击，以及 Logo/图标/文字的全宽居中样式。
 - AppShell/结构门禁按 profile 锁定实际 `mode`、Navbar 同源宽度、Navbar padding `0`、fixed/`100dvh`/右边框、可滚动功能区和支持项顺序。
 - detailed AppShell 回归锁定默认 `data-mode=detailed`、侧栏宽度与 `data-navbar-width` 均为 `248`、可见名称、`icon-with-label` 和“收起侧栏”按钮；点击身份区父级不得变化，点击 ActionIcon 后两处宽度同步为 `76`、名称节点消失、布局变为 `icon-only` 且偏好值为 `"true"`。
 - detailed 模板回归同时覆盖 Tooltip 的 `right`/零延迟语义和重挂载后恢复收起偏好；compact 变更不得改写这些断言。
-- 适用的 GUI 真实宿主验收在本机窗口复核当前模式：详细展开为图标+文字横排，收起后主内容立即扩展且名称进入 Tooltip；同时复核中心线、裁切、active/键盘行为和未选支持页缺席。组件单元测试不能替代可见像素复核。
+- GUI 初始化 E2E 在真实本机窗口复核当前模式：详细展开为图标+文字横排，收起后主内容立即扩展且名称进入 Tooltip；同时复核中心线、裁切、active/键盘行为和未选支持页缺席。模板单元测试不能替代可见像素复核。

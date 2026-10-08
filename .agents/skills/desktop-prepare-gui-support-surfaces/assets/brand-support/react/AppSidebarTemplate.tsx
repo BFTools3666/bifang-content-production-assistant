@@ -35,7 +35,7 @@ export const DEFAULT_DETAILED_SIDEBAR_COLLAPSED = false;
 
 /** 详细模式折叠状态使用独立设备偏好键，不与页面会话状态混用。 */
 export const APP_SIDEBAR_COLLAPSED_STORAGE_KEY =
-  "bifang-content-production-assistant:app.sidebar.detailed.collapsed";
+  "app.sidebar.detailed.collapsed";
 
 /** 侧栏身份只能引用 GUI bundle 中批准的应用 Logo。 */
 export const APP_SIDEBAR_LOGO_PATH = "/app-identity/logo.png";

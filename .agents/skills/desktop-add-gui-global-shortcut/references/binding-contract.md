@@ -4,7 +4,7 @@
 
 ## Profile contract
 
-保留九字段 `gui-initialization-config` 中的 `global_shortcut = enabled|disabled`。启用时，`docs/GUI_APP_PROFILE.md` 还必须有且只有一个 JSON 围栏：
+新建 GUI 初始化时，保留九字段 `gui-initialization-config` 中的 `global_shortcut = enabled|disabled`。新建项目启用本标准能力，或既有项目明确批准迁移到本标准能力时，`docs/GUI_APP_PROFILE.md` 还必须有且只有一个 JSON 围栏。既有 GUI 首次接入 Harness 时先如实记录原有快捷键动作、绑定和保存机制；不能把可编辑的既有绑定虚写为空 contract，也不因原实现缺少初始化代码块而判为未安装：
 
 ````markdown
 ```gui-global-shortcut-contract
@@ -15,7 +15,7 @@
 ```
 ````
 
-当前 Draft 中性基线固定保留空 `actions`，不得借维护宿主能力接收未批准的产品业务动作。产品范围批准后，每项动作使用以下闭合 schema：
+中性初始化固定写入空 `actions`，不得借初始化接收产品业务动作。产品范围批准后，每项动作使用以下闭合 schema：
 
 ```json
 {

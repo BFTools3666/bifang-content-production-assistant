@@ -5,7 +5,7 @@ description: 为已选择 GUI 开机自启能力的下游安装官方插件、Ru
 
 # 增加 GUI 开机自启
 
-只在 `docs/GUI_APP_PROFILE.md` 的 `autostart = enabled`，或当前产品范围明确批准新增开机自启时使用。该选择表示应用提供可发现的设置能力，不表示替用户注册登录项。
+只在 `docs/GUI_APP_PROFILE.md` 的 `autostart = enabled`，或初始化后产品范围明确批准开机自启时使用。该选择表示应用提供可发现的设置能力，不表示初始化时替用户注册登录项。
 
 ## 固定依赖与边界
 

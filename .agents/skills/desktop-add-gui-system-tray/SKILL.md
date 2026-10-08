@@ -5,7 +5,7 @@ description: 为已选择 GUI 系统托盘能力的下游安装 tray-icon、双�
 
 # 增加 GUI 系统托盘
 
-只在 `docs/GUI_APP_PROFILE.md` 的 `system_tray = enabled`，或当前产品范围明确批准新增系统托盘时使用。
+只在 `docs/GUI_APP_PROFILE.md` 的 `system_tray = enabled`，或初始化后产品范围明确批准系统托盘时使用。
 
 ## 固定契约
 

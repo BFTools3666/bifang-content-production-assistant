@@ -20,13 +20,15 @@
 | 定义或改变产品目标、边界、约束、成功标准 | `docs/product_spec/`（若存在）与相关最新 ADR | `$desktop-define-product` |
 | 范围清楚的实现、修复或用户可感知优化 | `docs/ENGINEERING_RULES.md`、所选接口事实、版本状态 | `$desktop-implement-change`、`$desktop-manage-version` |
 | Rust core 或 CLI | `docs/RUST_CLI_TEMPLATE.md`、`docs/CLI_CONTRACT.md` | `$desktop-add-cli-adapter` 或 `$desktop-implement-change` |
-| GUI 展示、交互或桌面能力 | `docs/GUI_APP_PROFILE.md`、`docs/design_standards/README.md` 后只读命中的标准、`docs/RUST_CLI_TEMPLATE.md` | 精确命中的 GUI Skill |
+| GUI 展示、交互或桌面能力 | `docs/GUI_APP_PROFILE.md`、`docs/design_standards/README.md` 后只读命中的标准、`docs/RUST_CLI_TEMPLATE.md`；列表页、数据表格、后台列表、搜索结果页及已有列表审查另读 `$mantine-list-view` | 精确命中的 GUI Skill；列表任务即使未明说表格也必须使用 `$mantine-list-view` |
 | 新功能、Bug 修复、推送或发布 | `docs/AGENT_POLICY.md` 的 Git 生命周期；发布时读 `docs/RELEASE.md` | `$desktop-manage-git-lifecycle` |
+| 切换未来发布后动作 | `docs/AGENT_POLICY.md` 的发布后动作字段；已有发布事实只读 | `$desktop-switch-post-release-action` |
 | 创建或检查用户可见 Task | `docs/AGENT_POLICY.md` 的“用户可见 Task 开关、粒度与创建门禁” | Codex 项目/Task 工具；策略启用或用户明确要求时调用 |
 | 当前 Task 内显式并行 | `docs/AGENT_POLICY.md` 的内部 Subagent/Worktree 规则 | `$desktop-run-parallel-worktrees` |
 | 恢复、重要阻断或跨会话交接 | `docs/project_status/README.md` 与存在时的最新状态；存在活动计划时再读最新 Work Plan | `$desktop-plan-change` 仅在触发时使用 |
 | Windows GUI 本地试包 | 根 Cargo 平台/接口元数据 | `$desktop-build-tauri-local-install` |
 | 显式构建、发布候选或完整验收 | `docs/RELEASE.md` 与当次候选事实 | 精确命中的构建、测试或验收 Skill |
+| 回顾开发沿革、决策变化或未来方向 | 当前项目对应记忆索引与最新文件；有 Git 时按范围查历史 | `$desktop-summarize-development-history`（只读） |
 | 工程层升级 | 当前项目事实、来源锁（若存在）与升级 Skill | `$desktop-upgrade-harness`，默认预览 |
 
 ## 始终生效的边界
@@ -36,6 +38,7 @@
 - Core-first 是硬规则：接口无关的领域类型、值域、跨字段关系、业务默认值、状态转换、用例和稳定错误属于 core；CLI/GUI 只负责协议、展示、交互、宿主能力与映射。
 - 日常开发只运行本次需要的非空测试；不得因任务复杂自动增加持久计划、全仓检查、构建、冒烟、E2E、Verification 或人工复核。
 - 版本只通过 `$desktop-manage-version` 管理。根 `Cargo.toml` 是当前版本事实源，`.harness/version-state.json` 是受保护的周期与稳定 ID 去重状态。Minor/Patch 固定为 `0..99`；历史下位分量 `100` 不再兼容，出现时版本门禁失败关闭。
+- 新功能或独立 Bug 修复首次写入前由 `$desktop-manage-git-lifecycle` 创建并登记 `feature-*` 分支。Git 发布以登记分支合并到本地默认主分支并创建、复读指向同一 HEAD 的版本 tag 为结束；`release` 不自动 fetch、push、打包或清理资源。发布后只按 `docs/AGENT_POLICY.md` 中已确认的动作进入本地打包，或同步远端默认主分支、小写 `release` 分支与 tag。
 - 对“完成、可用、已验证”的声明必须来自真实可观察结果；中性 scaffold、Mock、源码片段或开发预览不能替代候选验收。
 - 安全/隐私、数据迁移、破坏性操作、生产/付费/凭据副作用、外部兼容契约、签名、发布和跨平台最终候选必须进入对应专用门禁。
 - Product Spec、ADR、Changelog、Product Status、Work Plan 与 Verification 只在各自独立事件触发时创建；当前不存在不是缺陷。范围外问题记录到 `docs/TECH_DEBT.md`。
@@ -52,9 +55,9 @@
 
 项目 Skills 位于 `.agents/skills/`；命中后完整读取对应 `SKILL.md` 与其精确引用。
 
-- 产品与开发：`$desktop-define-product`、`$desktop-plan-change`、`$desktop-implement-change`、`$desktop-refactor-code`、`$desktop-manage-version`、`$desktop-manage-git-lifecycle`、`$desktop-configure-git-commits`、`$desktop-run-parallel-worktrees`、`$desktop-rename-project-identity`、`$desktop-upgrade-harness`。
-- CLI/GUI：`$desktop-add-cli-adapter`、`$desktop-add-gui-adapter`、`$desktop-add-gui-system-locale`、`$desktop-add-gui-updater`、`$desktop-add-gui-window-state`、`$desktop-add-gui-dialog`、`$desktop-add-gui-system-tray`、`$desktop-add-gui-system-notifications`、`$desktop-add-gui-autostart`、`$desktop-add-gui-single-instance`、`$desktop-add-gui-deep-link`、`$desktop-add-gui-global-shortcut`、`$desktop-prepare-gui-app-identity`、`$desktop-prepare-gui-support-surfaces`、`$desktop-extract-i18n-strings`。
-- 构建与验收：`$desktop-build-rust-release`、`$desktop-build-tauri-local-install`、`$desktop-build-tauri-release`、`$desktop-prepare-cross-platform-release`、`$desktop-collect-release-artifacts`、`$desktop-prepare-release`、`$desktop-test-gui-release-performance`、`$desktop-test-final-artifact-e2e`、`$desktop-verify-delivery`。
+- 产品与开发：`$desktop-define-product`、`$desktop-plan-change`、`$desktop-implement-change`、`$desktop-refactor-code`、`$desktop-manage-version`、`$desktop-manage-git-lifecycle`、`$desktop-switch-post-release-action`、`$desktop-configure-git-commits`、`$desktop-run-parallel-worktrees`、`$desktop-summarize-development-history`、`$desktop-rename-project-identity`、`$desktop-upgrade-harness`。
+- CLI/GUI：`$desktop-add-cli-adapter`、`$desktop-add-gui-adapter`、`$mantine-list-view`、`$desktop-add-gui-system-locale`、`$desktop-add-gui-updater`、`$desktop-add-gui-window-state`、`$desktop-add-gui-dialog`、`$desktop-add-gui-system-tray`、`$desktop-add-gui-system-notifications`、`$desktop-add-gui-autostart`、`$desktop-add-gui-single-instance`、`$desktop-add-gui-deep-link`、`$desktop-add-gui-global-shortcut`、`$desktop-prepare-gui-app-identity`、`$desktop-prepare-gui-support-surfaces`、`$desktop-extract-i18n-strings`。
+- 构建与验收：`$desktop-build-rust-release`、`$desktop-build-tauri-local-install`、`$desktop-build-tauri-release`、`$desktop-prepare-cross-platform-release`、`$desktop-collect-release-artifacts`、`$desktop-prepare-release`、`$desktop-test-final-artifact-e2e`、`$desktop-verify-delivery`。
 - 环境：`$desktop-check-development-environment` 只在受管环境真实失败恢复或精确触发时使用，不例行重跑。
 
 ## 约束地图
@@ -62,7 +65,7 @@
 | 约束或事实 | 唯一来源 |
 |---|---|
 | 产品身份、初始状态与未知渠道 | `README.md` |
-| Agent 能力、用户可见 Task 开关/标题/创建门禁与 Git 生命周期 | `docs/AGENT_POLICY.md` |
+| Agent 能力、用户可见 Task 开关/标题/创建门禁、Git 生命周期与发布后动作 | `docs/AGENT_POLICY.md` |
 | 平台、接口与当前版本 | 根 `Cargo.toml` 的 workspace package/metadata |
 | 版本周期与稳定 ID 状态 | `.harness/version-state.json`（受保护） |
 | 工程、Core-first、依赖、测试与记录触发 | `docs/ENGINEERING_RULES.md`、`docs/RUST_CLI_TEMPLATE.md` |
@@ -72,8 +75,8 @@
 | 构建与发布 | `docs/RELEASE.md`；活动候选证据只在忽略的 `release/` |
 | 当前进度与下一步 | `docs/project_status/README.md` 及存在时的最新日期状态 |
 | 技术债与已知限制 | `docs/TECH_DEBT.md` |
-| 开发分支、Worktree 与发布周期资源 | Git common-dir 的生命周期清单；它不是 tracked 资产 |
-| 当前发布选择 | `.harness/release-context.json`，仅由 `$desktop-prepare-release` 在真实发布时创建 |
+| 开发分支、Worktree、Git 发布与发布后资源 | Git common-dir 的生命周期清单；它不是 tracked 资产 |
+| 当前发布上下文 | `.harness/release-context.json`，仅由 `$desktop-prepare-release` 在真实发布时创建 |
 | 工程层来源与升级 | `.harness/upstream-lock.json`（若存在）与 `$desktop-upgrade-harness` |
 | 商业许可 | `LICENSE.zh-CN.md`、`LICENSE.en.md` |
 

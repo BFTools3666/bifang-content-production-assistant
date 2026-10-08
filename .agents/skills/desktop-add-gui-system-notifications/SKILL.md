@@ -5,7 +5,7 @@ description: 为已选择 GUI 系统通知能力的下游安装并接入跨平�
 
 # 增加 GUI 系统通知
 
-只在 `docs/GUI_APP_PROFILE.md` 的 `system_notification = enabled`，或当前产品范围明确批准新增系统通知时使用。该选择只安装通知基础设施并在设置页提供入口，不批准任何产品通知触发器、标题、正文、动作或业务默认值。
+只在 `docs/GUI_APP_PROFILE.md` 的 `system_notification = enabled`，或初始化后产品范围明确批准系统通知时使用。该选择只安装通知基础设施并在设置页提供入口，不批准任何产品通知触发器、标题、正文、动作或业务默认值。
 
 ## 固定依赖与边界
 

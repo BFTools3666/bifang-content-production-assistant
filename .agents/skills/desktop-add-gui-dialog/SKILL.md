@@ -14,7 +14,7 @@ description: 为所有 GUI 基线安装官方 dialog 插件并向主 WebView 开
 3. 在中央 Tauri Builder 中恰好注册一次 `.plugin(tauri_plugin_dialog::init())`。固定顺序是 window-state 注册之后、notification 注册之前；notification 未启用时仍保持 dialog 紧随 window-state，不为缺席的条件插件写占位注册。
 4. 主窗口/WebView capability 的 `permissions` 数组以 `dialog:default` 作为唯一 dialog 权限项。该默认集合就是本基线批准的全部官方对话框类型；不得再展开子权限、单列已弃用的 ask/confirm 权限，也不得加入任何 `dialog:deny-*`。
 5. dialog 返回的路径只代表用户在原生对话框中的选择结果。该权限不安装或授权 fs 插件，不授予通用文件读取、写入、枚举、删除或路径遍历能力；产品需要处理所选文件时，必须另走对应产品事实、最小文件能力和安全边界。
-6. 运行 `dialog_dependencies_are_fixed`、`dialog_plugin_is_registered_once_in_fixed_order`、`dialog_default_permission_covers_all_dialog_types`、`dialog_baseline_does_not_grant_filesystem_access` 四个非空回归。相关结构检查还必须确认生产依赖位置、主窗口 capability 精确权限和 Builder 顺序；不得用仅匹配某个依赖字符串代替完整契约。
+6. 运行 `dialog_dependencies_are_fixed`、`dialog_plugin_is_registered_once_in_fixed_order`、`dialog_default_permission_covers_all_dialog_types`、`dialog_baseline_does_not_grant_filesystem_access` 四个非空回归。初始化结构检查还必须确认生产依赖位置、主窗口 capability 精确权限和 Builder 顺序；不得用仅匹配某个依赖字符串代替完整契约。
 
 ## 边界
 

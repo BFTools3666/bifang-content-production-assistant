@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-# 只读挂载最终 DMG，确认 Finder 布局、更新日志和双语许可真实写入候选字节。
+# 只读挂载最终 DMG，确认 Finder 拖拽安装布局已经真实写入候选字节。
 PROBE_PATH=${AFH_PREREQ_PATH:-${PATH}}
 TEST_PLATFORM=${AFH_TEST_PLATFORM:-}
 
@@ -55,16 +55,9 @@ layout_failure() {
 
 dmg_path=$1
 release_notes_path=$2
-license_root=$(dirname "$release_notes_path")
-license_zh_path=$license_root/LICENSE.zh-CN.md
-license_en_path=$license_root/LICENSE.en.md
 [ -f "$dmg_path" ] && [ ! -L "$dmg_path" ] || layout_failure "dmg-not-regular-file"
 [ -f "$release_notes_path" ] && [ ! -L "$release_notes_path" ] ||
     layout_failure "release-notes-source-not-regular-file"
-[ -f "$license_zh_path" ] && [ ! -L "$license_zh_path" ] ||
-    layout_failure "license-zh-source-not-regular-file"
-[ -f "$license_en_path" ] && [ ! -L "$license_en_path" ] ||
-    layout_failure "license-en-source-not-regular-file"
 hdiutil_path=$(find_tool hdiutil 2>/dev/null || true)
 [ -n "$hdiutil_path" ] || layout_failure "hdiutil-missing"
 
@@ -109,16 +102,6 @@ done
     layout_failure "release-notes-resource-missing"
 cmp -s "$release_notes_path" "$bundled_app_path/Contents/Resources/release-notes.json" ||
     layout_failure "release-notes-resource-mismatch"
-[ -f "$bundled_app_path/Contents/Resources/Legal/LICENSE.zh-CN.md" ] &&
-    [ ! -L "$bundled_app_path/Contents/Resources/Legal/LICENSE.zh-CN.md" ] ||
-    layout_failure "license-zh-resource-missing"
-[ -f "$bundled_app_path/Contents/Resources/Legal/LICENSE.en.md" ] &&
-    [ ! -L "$bundled_app_path/Contents/Resources/Legal/LICENSE.en.md" ] ||
-    layout_failure "license-en-resource-missing"
-cmp -s "$license_zh_path" "$bundled_app_path/Contents/Resources/Legal/LICENSE.zh-CN.md" ||
-    layout_failure "license-zh-resource-mismatch"
-cmp -s "$license_en_path" "$bundled_app_path/Contents/Resources/Legal/LICENSE.en.md" ||
-    layout_failure "license-en-resource-mismatch"
 
 "$hdiutil_path" detach "$device" >/dev/null 2>&1 || layout_failure "readonly-detach-failed"
 device=
@@ -126,4 +109,3 @@ printf '%s\n' "gate.macos_dmg_layout.status=passed"
 printf '%s\n' "gate.macos_dmg_layout.reason=final-volume-layout-present"
 printf 'gate.macos_dmg_layout.app_count=%s\n' "$app_count"
 printf '%s\n' "gate.macos_dmg_layout.release_notes=byte-identical"
-printf '%s\n' "gate.macos_dmg_layout.licenses=byte-identical"

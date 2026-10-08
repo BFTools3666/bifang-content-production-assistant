@@ -31,16 +31,17 @@
 - `$desktop-prepare-gui-support-surfaces` 维护产品家族共享的固定本地页面/媒体依赖资产；固定赞助档位/价格、作者、品牌联系人、免责声明、支付二维码、更新 banner 与小图是经项目负责人批准的封闭例外。每个媒体文件必须有可审计清单、尺寸、摘要、用途、来源与许可责任。支付二维码必须标记为敏感支付材料，只有 `sponsor_page = enabled` 时随完整 `media/sponsor/*` 进入 GUI bundle；未选择赞助页时不得进入运行时 bundle。携带或展示支付材料不授权订单、权益、账户或自动支付逻辑。updater banner 只有选择更新视觉时才进入 bundle；视频必须本地打包、提供 controls、字幕轨和文字稿并禁止 autoplay 与远程追踪。
 - GUI 前端固定直接依赖 `@tabler/icons-react`，并以命名组件提供菜单、操作、状态、空态和图表周边图标；存在适用 Tabler 图标时不得引入其他图标库、手写 SVG、字符或 emoji。图表绘制能力仍按真实数据可视化需求单独选择。两种侧栏都必须把 Logo、当前渲染图标与可见文字沿同一中心线居中且无裁切，保留完整可访问名称；仅详细模式收起后允许 Tooltip 补充被隐藏的可见名称。
 - GUI 交互事件必须绑定在实际拥有该动作的语义元素本身。按钮、链接、`Switch`、`Checkbox`、菜单项等控件的动作不得由祖先 `div`、Card、`Table.Tr` 或 `Table.Td` 代理；例如表格中的 `Switch` 只能在用户操作该 `Switch` 时切换，点击所在行或单元格不得切换。设置卡中的 `Switch` 同样只能在用户操作该 `Switch` 时切换，点击所在 Card、标题或说明不得切换。标题与说明从控件视觉结构中拆出时，仍必须用稳定 ID 和 `aria-labelledby`/`aria-describedby` 与 `Switch` 建立程序化关联，不得只保留脱离说明的泛化 `aria-label`。父级确有独立动作时只执行父级自身语义，并在事件传播会冲突时明确隔离；不得从父级直接调用、模拟点击或修改子控件动作。相关回归必须分别点击控件和其周围父级区域，并核对可访问名称与说明关联，证明只有控件触发目标状态变化。
-- GUI 中用于恢复页面工作上下文的纯交互状态必须在当前应用进程内跨路由保留，包括活动选项卡、已应用查询/筛选、排序、分页页码与每页数量，以及产品明确需要恢复的视图选择。状态由应用根 Jotai store 中的页面级 atom 持有，atom 在页面模块顶层稳定创建，不能放在会随 route unmount 重建的组件或局部 Provider 中；关闭隐藏、切换页面或单实例唤醒不得清空，真正退出应用后自然回到默认值。此类页面会话状态不得接入 `atomWithStorage`、localStorage、sessionStorage、IndexedDB、Tauri Store、配置文件或数据库，也不得写入 URL 形成跨进程恢复；语言、主题等已明确批准的设备级偏好不属于此限制。TanStack Query 继续拥有异步数据和缓存，core/持久业务状态保持权威，atom 只保存查询控件和值，不镜像结果数据。
-- 查询条件、活动数据范围或每页数量发生变化时，页面会话状态必须把页码重置为 1。路由返回后按已保存条件发起查询；只有查询成功、当前页码大于 1 且该页结果为空时，才原子回退到第 1 页并以新 query key 重新查询一次。加载中、取消、超时或错误不得被解释为空数据，第 1 页为空不得形成重试循环。恢复时失效的枚举选择按当前可用项回到安全默认，不得用陈旧界面选择修改 core 结果。
+- 未命中 `$mantine-list-view` 的普通 GUI 页面，其可恢复工作状态继续只在当前应用进程内跨路由保留：应用根 Jotai store 的页面级 atom 持有活动选项卡、查询/筛选、排序、分页和产品明确要求的视图选择，不能在 route unmount 时重建；关闭隐藏、切换页面或单实例唤醒不得清空，真正退出后回到默认。普通页面会话不得接入 `atomWithStorage`、localStorage、sessionStorage、IndexedDB、Tauri Store、配置文件、数据库或 URL。TanStack Query 继续拥有异步数据和缓存，atom 不镜像结果或 core 权威状态。普通页面查询范围或每页数量变化时页码归 1；只有查询成功、当前页大于 1 且该页为空时才回退第 1 页，加载、取消、超时、错误和第 1 页空结果不回退。
+- 命中 `$mantine-list-view` 的列表页采用已批准的封闭例外：页码、页大小、排序和已应用搜索/筛选以类型化 URL 为运行时权威，URL 完全不含本列表参数时才从按稳定 `listId` 隔离的 sessionStorage 快照恢复；显式 URL 的缺失或非法字段使用默认值，不混入本机旧会话。业务行和总数只由 TanStack Query 以 `listId + scope + 查询条件 + 排序 + page + pageSize` 独立 key 缓存；列显隐/顺序以稳定 `app namespace + listId + 非 PII 偏好 scope` key 写入 localStorage，逐列表 schemaVersion 只保存在 payload 并通过显式迁移升级，其他数据不得进入该偏好。列表查询成功后越界页回落末页，总页数为零时归一到第 1 页，加载、错误和 placeholder 期间不纠正页码。完整契约只由 [`docs/design_standards/mantine_list_view.md`](design_standards/mantine_list_view.md) 与 `$mantine-list-view` 承载，不扩大到普通页面。
 - 所有用户可见版本号必须在展示边界先移除已有 `v`/`V` 前缀，再添加且只添加一个小写 `v`，覆盖窗口标题、侧栏、设置/关于页、更新状态、强更提示、CLI `--version`、发布物名称和更新日志。Cargo、JSON/协议、`.harness/version-state.json` 与 manifest 的机器 `version` 字段继续使用不带展示前缀的原始版本；只有明确命名的 `releaseNotesVersion` 保存带 `v` 展示值。
 - GUI 变化只运行本次需要的非空单元与回归测试；正式候选的真实宿主场景由对应构建与验收 Skills 按当前九项 profile 和 shortcut contract 验证。system-locale/updater/window-state/dialog 是固定基线，条件能力只按当前 profile 验证；需要打包才能证明的 macOS 深链接 OS 注册在普通开发中明确为 `Not verified`。不得把未运行、无法观察或无法恢复的宿主场景报告为通过。
 - 依赖方向必须清晰：每个适配器直接依赖 core；core 不得直接或通过 workspace 中间 crate 反向到达 CLI、GUI、终端 I/O、进程状态或接口框架；适配器彼此不得直接或通过 workspace 中间 crate 依赖、启动或解析输出。
 - 程序入口和接口处理器只负责建立运行环境、装配依赖、委托调用和映射终止结果，不得承载业务规则。
 - 只有独立发布、独立生命周期、独立权限或由工具链强制要求的依赖边界才能新增 crate/包。新增时记录它为什么不能只是现有模块。
-- 直接依赖和受管工具的清单必须表达经过验证的最低兼容范围。新增或主动更新时先选择官方 registry 当前最新非预发布候选，验证 Rust 1.95、peer、平台和实际 API/feature 后，把通过的最高兼容稳定版写成完整下界；清单不得写 `latest`、tag、通配符或无下界范围。已安装工具处于支持范围内时直接复用。
-- 受管开发环境恢复不得通过修改项目兼容要求迁就旧宿主：工具缺失时安装，可证明低于最低下界时按当前宿主的受管路线自动升级，范围内稳定版原样复用；Node.js 25.x 按低于下一段允许下界 26.0.0 处理。存在显式上界时，高于上界仍阻断；预发布、无法解析或损坏状态同样失败关闭。只读检查必须保持零写入并明确报告 `upgrade-required`。不得降低门禁、回退依赖或锁文件、注入 shim、改用旧版工具，或寻找替代工具链来适配旧环境。
-- 锁文件与兼容要求职责分离：根锁文件固定当前真实解析结果，不是最低兼容事实。每个新增或提高的直接下界都必须在声明的最低 Rust/Node.js/pnpm 工具链完成最低直接版本解析和非空测试；最新候选不兼容时按版本从新到旧选择第一个通过者并记录原因。
+- 直接依赖和受管工具的清单必须用完整三段表达可验证的兼容下界。新增或主动更新时先选择官方 registry 当前最新非预发布候选，再以项目声明的 Rust 1.95、Node.js/pnpm、peer、平台和实际 API/feature 解析及非空测试决定下界；清单不得写 `latest`、tag、通配符或无下界范围。已安装工具处于支持范围内时直接复用。
+- 当前下游的 Harness 工程 helper 统一使用 Node.js 标准库；Node.js 是 CLI/GUI 组合的受管工程运行时，pnpm 仍只在 GUI/前端确有需要时适用。项目业务可以按自身需要使用其他脚本语言，新增第三方运行时依赖须说明必要性、获得用户同意、在项目内显式声明并隔离，且不得假设全局包已经安装。
+- 受管开发环境恢复不得通过修改项目兼容要求迁就旧宿主：工具缺失时安装，可证明低于最低下界时按当前宿主路线自动升级，范围内稳定版原样复用。存在显式上界时，高于上界仍阻断；预发布、无法解析或损坏状态同样失败关闭。只读检查必须保持零写入并明确报告 `upgrade-required`。不得降低门禁、回退清单依赖、注入 shim、改用旧版工具，或寻找替代工具链来适配旧环境。
+- 根 Cargo 元数据中的 `dependency-lock-policy` 缺省或为 `ignored` 时沿用忽略锁文件的工程分支，不以项目锁文件作门禁；显式为 `tracked` 时，根工作区和声明的独立 Rust 工作区须跟踪各自 `Cargo.lock`，已选 GUI 根须跟踪 `pnpm-lock.yaml`，安装、测试和构建使用冻结解析。未知值、错误类型或重复键失败关闭，`pnpm-package.lock` 不充当标准锁文件。兼容下界仍由清单和真实检查证明；锁策略、`.gitignore` 和项目锁文件只能在独立产品变更中调整，Harness 升级不得代改。
 - 应用发布版本、协议/模式版本、Rust edition、平台目标三元组、资产摘要和按安全要求钉住的 CI action commit 不属于依赖兼容范围，不得为了形式统一改写成依赖版本范围。
 - 自动生成代码、内嵌的第三方代码和人工维护代码必须明确隔离。不得直接修改生成物或内嵌的第三方内容。
 
@@ -121,11 +122,11 @@
 - 产品目标、边界、约束或成功标准变化时更新日期最新的 Product Spec；长期重要、难以逆转的决定和硬规则例外写入当日 ADR。范围清楚的日常实现不为每项需求创建 ADR。Product Spec、ADR、Changelog 或 Work Plan 被自身事件独立触发时，必须记录相关稳定 `change_id` 与 `$desktop-manage-version` 只读计算或提交结果中的 `required_version`；版本变化本身不得触发或补造项目记忆。
 - Product Status 只在重要阻断、跨会话交接、真实渠道发布后的记录阶段或用户要求时更新；Work Plan 只在用户明确要求、跨会话交接或发布/高风险协调确有必要时维护；Verification 只保存真实渠道发布后追加的发布/候选验收事实，或独立回顾性人工复核/长期审计证据。
 - 普通缺陷修复、不改变可观察行为的纯重构、格式整理、测试补强和内部清理本身不触发 Product Spec、ADR、Product Status、Changelog 或 Verification；结果只在最终回复和测试/CI 中报告，不写“不适用”占位。已有 TECH_DEBT 条目在问题消除后必须恢复真实状态，但不新增修复流水账。
-- 构建请求、执行、成功、失败、重试、全量单元测试结果、产物路径/摘要/签名状态，以及候选 E2E、完整验收、状态更新和就绪复核，都不触发 Product Spec、ADR、Changelog、Product Status、Work Plan 或 Verification。候选事实只写入忽略的 `release/` 原子集合、manifest 声明的相邻证据和最终回复，不得复制到 tracked 项目记忆；真实渠道发布成功后，才从已发布且带版本 tag 的默认主分支开始下一次开发生命周期，记录 Verification/发布/Product Status 并 finalize 版本周期。独立回顾性人工复核或长期审计不得改写或反向批准活动候选。
+- 构建请求、执行、成功、失败、重试、全量单元测试结果、产物路径/摘要/签名状态，以及候选 E2E、完整验收、状态更新和就绪复核，都不触发 Product Spec、ADR、Changelog、Product Status、Work Plan 或 Verification。候选事实只写入忽略的 `release/` 原子集合、manifest 声明的相邻证据和最终回复；Git 发布在本地默认主分支与 tag 复读成功时结束，下游受跟踪周期状态在下一条开发分支复核这两条 ref 后复位。真实渠道分发和回顾性审计各自按独立事件记录，不改写已完成的 Git 发布事实。
 - 当前中英文项目展示名称必须保持非空并来自已确认的产品身份事实。`LICENSE.zh-CN.md` 只写当前中文名称，`LICENSE.en.md` 只写当前英文名称；README 身份摘要和按 locale 拆分的双语 GUI 资源文件必须与同一事实一致。身份变化只通过 `$desktop-rename-project-identity` 处理，不得把机器标识当作缺失译名。
-- 根 `release-notes.json` 是下游面向最终用户的发布更新日志事实，不是按日项目记忆，也不替代 `docs/changelog/`。它只在准备首个正式发布时创建，使用 `schemaVersion: 2`；每个功能优化或问题修复条目把非空 `zh-CN` 与 `en-US` 文案绑定为一个翻译对，任一语言缺失、空白或同语言重复都失败关闭。每次发布候选构建前，根据上一次正式发布版本到当前发布源码的真实差异更新当前版本，按最新在前只保留近 5 个版本，每版“功能优化”和“问题修复”各不超过 10 个双语条目。普通缺陷修复即使不触发 Changelog，仍应进入对应发布版本的“问题修复”；失败发布可替换同版本条目，但任何更新日志字节变化都要求重新提交、构建和验收候选。
-- 构建不得整理、生成或改写更新日志；它只读校验发布准备已经整理的近五版，再通过发布专用 Tauri 合并配置嵌入相同字节。源文件、合并配置、构建后资源、最终 DMG 内资源、manifest 摘要或 About 运行时任一环不一致都阻断对应候选。
-- 上一条“构建”专指发布候选。Windows 原生本地安装试包属于开发制品：使用 `$desktop-build-tauri-local-install`，不读取或生成 `release-notes.json`，不使用发布专用 Tauri 配置，不写 `release/`，不提交，也不解析 E2E/性能选择；不得把普通“继续构建”升级解释为发布授权。
+- 根 `release-notes.json` 是下游面向最终用户的发布更新日志事实，不是按日项目记忆，也不替代 `docs/changelog/`。它只在准备首个正式发布时创建，使用 `schemaVersion: 2`；每个功能优化或问题修复条目把非空 `zh-CN` 与 `en-US` 文案绑定为一个翻译对，任一语言缺失、空白或同语言重复都失败关闭。每次正式发布前，根据上一次正式发布版本到当前发布源码的真实差异更新当前版本，按最新在前只保留包含当前发布版本在内的最近 10 个实际发布版本条目，每版“功能优化”和“问题修复”各不超过 10 个双语条目。普通缺陷修复即使不触发 Changelog，仍应进入对应发布版本的“问题修复”；失败发布可替换同版本条目，但任何更新日志字节变化都要求重新提交、构建和验收候选。
+- 构建不得整理、生成或改写更新日志；它只读校验发布准备已经整理的最近 10 个版本条目，再通过发布专用 Tauri 合并配置嵌入相同字节。源文件、合并配置、构建后资源、最终 DMG 内资源、manifest 摘要或 About 运行时任一环不一致都阻断对应候选。
+- 上一条“构建”专指发布候选。Windows 原生本地安装试包属于开发制品：使用 `$desktop-build-tauri-local-install`，不读取或生成 `release-notes.json`，不使用发布专用 Tauri 配置，不写 `release/`，不提交，也不解析 E2E 选择；不得把普通“继续构建”升级解释为发布授权。
 - 同一维护任务若另外改变产品目标/边界/约束/成功标准、引入长期决定或硬规则例外、形成重要阻断/交接、完成真实渠道发布，或另行进入回顾性人工复核/长期审计，才按该独立事件更新对应记忆。候选验收阶段只写忽略的 `release/` 原子证据；任务被称为“修复”或“重构”不能绕过相应的安全、发布或记录要求。
 - 除上述维护排除外，用户或维护者可感知且符合 Changelog 资格的真实行为/流程变化写入当日 Changelog。修改代码或规则时仍须同步受影响的权威设计文档和测试；同步事实不等于创建项目记忆。
 - 修改工程规则时，同步检查 `AGENTS.md` 的入口路由、相关 Skill、本文件和适用的机械检查；任务专属细节只在其唯一事实源中校验，不得为了通过检查复制回根入口。
@@ -138,12 +139,12 @@
 | `README.md` | 用户入口、用途、真实使用方式和维护状态 |
 | `AGENTS.md` | 轻量启动门禁、任务路由、永久地图、硬约束摘要和验证入口；不保存任务专属实施细节 |
 | `.harness/version-state.json` | 仅下游保存当前正式发布周期、首功能提升锁、待发布变化及已消费 `bug-fix` 稳定 ID；受保护且不是当前版本的第二事实源，Minor/Patch 固定 `0..99`，出现历史 `100` 一律失败关闭而非规范化读取 |
-| Git common dir `agent-first-harness/git-lifecycle.json` | 仅下游本地保存当前发布周期由 helper 精确登记的开发分支、Task/单元分支与 Worktree，以及主分支推送、tag 推送和逐项清理进度；不进入提交、不形成分支链，升级不得覆盖或扩大资源范围 |
-| `.harness/release-context.json` | 仅下游在正式发布准备时写入并随源码提交；保存当前候选的版本、日期、预期 tag、源码提交、审查结果和候选选择，构建只读消费，不作为分支策略或清理清单 |
-| `release-notes.json` | 仅下游在首次发布准备时创建；以 schema v2 保存供制品与关于页复用的近 5 个正式发布版本中英文用户更新日志，每版两类各最多 10 个翻译对，升级时受保护 |
+| Git common dir `agent-first-harness/git-lifecycle.json` | 下游在本地保存登记分支/Worktree、待完成发布、已发布的默认主分支/HEAD/tag/上下文摘要，以及独立的推送进度；发布只合并本地主分支并创建复读 tag，结束前不访问远端或删除登记资源；状态不进入源码提交，升级不得覆盖或扩大资源范围 |
+| `.harness/release-context.json` | 下游在源码/治理提交锁定 `sourceHead` 后写入，并与根 `release-notes.json` 同次提交；仅保存版本、日期、预期 tag、本地默认主分支、源码提交和审查结果，不保存推送位置或候选打包选择 |
+| `release-notes.json` | 下游在首次正式发布准备时创建；以 schema v2 保存含当前版的最近 10 个实际发布版本中英文更新日志，并供制品与关于页复用；每版两类各最多 10 个翻译对，升级时受保护 |
 | `docs/product_spec/README.md` | 产品规格日期规则和索引 |
 | `docs/product_spec/YYYYMMDD_product_spec.md` | 当日完整产品目标、范围、约束和成功标准；最新日期文件是当前规格 |
-| `docs/AGENT_POLICY.md` | 下游 Agent 能力开关、用户可见 Task 开关/标题/创建门禁及其持久执行语义 |
+| `docs/AGENT_POLICY.md` | 下游 Agent 能力开关、用户可见 Task 标题与创建门禁、候选验收偏好和发布后动作的持久执行语义 |
 | `docs/ENGINEERING_RULES.md` | 文件、注释、文档、测试、例外和机械检查详细规则 |
 | `docs/CLI_CONTRACT.md` | 下游 CLI 的统一机器接口契约 |
 | `docs/RUST_CLI_TEMPLATE.md` | 当前 Rust 共享核心与已选适配器技术基线 |
@@ -210,14 +211,13 @@
 ### 5.3 开发、构建与完整验收
 
 - Git 与受管工具环境由 `$desktop-check-development-environment` 唯一管理，并且只在本次真实命令已因受管环境失败后恢复一次。缺失时安装官方当前最新兼容稳定版、可证明低于最低下界时受管升级、范围内稳定版原样复用；Rust/Node.js/npm/pnpm 固定安装到当前用户受管全局根，忽略项目内 Rust 根环境变量，持久去重 PATH，并在当前进程与只读取持久 PATH 的新 shell 绑定路径和版本实际复探。Node 受管 marker 绑定本次已校验归档的精确版本与摘要，复用及最终复探必须精确相等；写入前逐级拒绝安装根、profile/config/env/fish 的 symlink/reparse/非普通对象和错误 marker，稳定链接仅可替换最终目标仍在同一受管根内的链接，Unix profile 通过同目录随机临时文件、原字节快照比较后原子替换。PATH 删除空段、所有相对/cwd 段与重复项，POSIX 解析不展开绝对字面 glob；任何工具变化都必须由新会话精确执行验证。Git 与 Windows MSVC 只有在平台原生受信包管理器明确要求时才允许系统级或管理员边界，必须显式可见且不得静默提权，无既有权限路线即停止。不得写项目内 shim 或让生产运行使用测试覆盖；只读模式零写入。作者身份、模板和本地提交由 `$desktop-configure-git-commits` 唯一管理；已有有效身份保持，缺失字段只在独立目标仓库 local 作用域补齐，绝不写 global/system。
-- 当前项目由 `$desktop-manage-git-lifecycle` 唯一管理开发分支到主分支的生命周期。新功能或独立 Bug 修复首次写入前自动在本地创建并切换 `feature-{ascii-kebab摘要}-{上海日期}`；创建不要求远端，碰撞使用稳定递增后缀。用户明确“推送”时，helper 普通合并本周期登记分支、切换动态默认主分支并推送复读，保留登记资源；明确“发布”时，在主分支推送成功后创建并推送 `v{版本}-{YYYYMMDD}`，远端 tag 复读成功后才按 Worktree、远端分支、本地分支顺序精确删除本周期登记资源。状态仅在 Git common dir 保存精确所有权和可重试进度，不进入提交；不得按前缀扫描、强制删除 dirty Worktree、删除未登记资源或在 tag 失败后清理。流程不设置保护分支、严格线性、活动叶子、单写入者、fast-forward-only、lease、atomic push 或审查路径等分支门禁，允许普通 merge commit，也没有发布中转分支。无关改动、疑似秘密、提交、合并、push、tag 失败、冲突或 dirty 最终状态仍按真实数据安全失败处理。
+- 当前项目由 `$desktop-manage-git-lifecycle` 管理开发分支与 Git 发布。新功能或独立 Bug 修复首次写入前自动在本地创建 `feature-{ascii-kebab摘要}-{上海日期}`；创建与发布均不要求远端。用户明确“发布”时只整理本次源码，普通合并登记分支到本地默认主分支，创建并复读指向最终 HEAD 的版本 tag；Git 发布到此结束，不 fetch、push、打包或删除登记资源。发布开始时把已确认的 `post_release_action` 冻结为本次 `postReleaseAction`；`local_package` 沿用适用的本地打包 Skill，`push_release_branch` 经独立 `push-release --remote <name>` 把已发布固定 HEAD 同步到远端默认主分支、小写 `release` 分支和 tag 并逐项复读。发布前明确要求普通主分支推送时仍可用 `publish`，但它不创建 tag，不能代替发布后推送。缺少目标远端时停止，不创建或配置远端/凭据，不扫描或删除未登记资源。流程允许普通 merge commit，不设置保护分支、严格线性、fast-forward-only、lease 或 atomic push。
 - 日常开发统一直接实施，只运行本次变更需要的相关非空单元/回归测试。不得仅因多步骤、多模块、中等风险、可并行或 Agent 偏好自动增加 Work Plan、全仓测试、格式化、代码规范、静态、集成/契约、构建、冒烟、E2E、Verification 或人工复核。
 - 非必要代码/架构/职责语义审查统一延迟到明确发布。每次发布在任何写入前解析一次 `reviewSelection: enabled | disabled`：当前请求已明确时复用；安全、隐私、不可逆操作、对外兼容契约或产品/渠道硬要求强制 `enabled` 并记录来源；否则询问一次。同一发布的修复重跑复用原选择，新发布重新询问。`disabled` 只关闭非必要语义审查，绝不能跳过范围/秘密、测试、clean、签名、渠道或真正必需的人类签署；这些检查不能被解释成分支门禁。
 - 当前项目在实施前由 `$desktop-manage-version` 只读分类，且只在变化完成并通过本次相关测试后提交版本：每周期首个功能使用 `feature` 提升 Minor 并锁到真实发布成功；每个具有新稳定 ID 的问题修复或用户可感知优化使用 `bug-fix` 提升 Patch 且不受功能锁影响；显式 Major 仍需用户批准。新生成 Minor/Patch 为 `0..99` 并按 base-100 自动进位，自动进位到 Major 是数值例外，不替代显式 Major 授权；Major 不受 99/100 的业务上限约束，但不得超过 Cargo `u64::MAX`。查询、诊断、复现、重复尝试、行为保持重构、内部优化、测试、文档、格式和清理属于 `maintenance`；`check`、`plan`、`maintenance` 都不写版本文件或状态。构建只检查 Cargo/状态一致性，不能提升版本、迁移历史 `*.100.*` 状态或重置周期。
-- 产品范围、长期决定、合格 Changelog、重要阻断/交接和用户明确要求仍分别触发对应记录或专用流程；候选验收只写 `release/`，真实渠道发布成功后及独立回顾性审计才在下一次自动开发生命周期写 tracked 记录。真实渠道发布成功后，下一次开发再自动创建新的 feature 分支。安全/隐私、数据迁移、破坏性操作、凭据/生产/付费副作用、对外兼容契约、渠道硬要求、签名与发布仍保留解决当前风险必需的授权和检查；这些检查不得被实现成分支拓扑门禁。
+- 产品范围、长期决定、合格 Changelog、重要阻断/交接和用户明确要求仍分别触发对应记录或专用流程；候选验收只写 `release/`，真实渠道分发成功和独立回顾性审计才在后续受管开发生命周期记录各自事实。下一次开发从已发布的本地主分支/tag 建分支并在该分支复核后复位版本周期；不得在 tag 后直接写脏主分支。安全/隐私、数据迁移、破坏性操作、凭据/生产/付费副作用、对外兼容契约、渠道硬要求、签名与发布仍保留解决当前风险必需的授权和检查。
 - 显式发布候选构建在任何测试或编译前解析当前候选的 E2E 选择：当前请求已明确 `enabled`/`disabled` 时直接复用，否则询问一次；持久 `e2e_hint` 仅是建议默认值。该选择只对当前发布候选有效；本地开发试包不解析该选择。
-- 构建必须运行项目全部非空单元测试。Rust 使用 workspace 全成员、全 targets、全 features 的锁定测试；GUI 同时运行完整 Rust workspace 和前端单元测试套件。测试失败或零测试阻断构建。
-- GUI 正式发布在任何测试或编译前解析当次 `performanceSelection: enabled | disabled`，该选择不持久化且不得从 E2E 推断。选择 `enabled` 或产品/渠道硬要求时，才在打包前运行 `$desktop-test-gui-release-performance`，以同一干净 HEAD 的 release-profile 探针候选测量启动、交互、整进程树 CPU/RSS、重复操作内存增长和进程回收。性能测量前必须精确定位 window-state 持久文件，快照执行前的字节或“原本不存在”，每次预热/冷启动前恢复同一隔离基线，并在成功、失败、超时或取消的所有路径恢复且复核原状态；无法定位或恢复时性能结论必须失败，不得污染用户窗口偏好或让历史几何影响冷启动样本。指标失败先修复重建，只有用户显式确认才可记录 `performanceStatus: waived` 并保留原失败证据后继续，不能改判通过。选择 `disabled` 且无硬要求时跳过探针，记录 `performanceStatus: Not run`、原因和剩余风险，不生成性能证据或运行时绑定。
+- 构建必须运行项目全部非空单元测试。Rust 覆盖 workspace 全成员、全 targets、全 features；GUI 同时运行完整 Rust workspace 和前端单元测试套件。项目锁策略缺省或为 `ignored` 时，测试/构建不得依赖项目 `--locked` 或 `--frozen-lockfile`，前端安装使用 `pnpm install --no-frozen-lockfile`。显式为 `tracked` 时，先核对适用锁文件存在、受 Git 跟踪且未被忽略，随后对实际 Rust 工作区使用 `--locked`，GUI 前端安装使用 `pnpm install --frozen-lockfile`。测试失败或零测试阻断构建。
 - 官方 updater 插件、`UpdateController` 与 `NotConfigured` 零出站状态是所有 GUI 的安装基线，不受产品/发布事实 `updaterEnabled` 控制。GUI 构建每次仍从已批准产品事实解析 `updaterEnabled`；`false` 只表示不生成、不签名且不声明 updater archive/`.sig`，不得移除固定插件或伪造更新配置；`true` 才要求受限 HTTPS endpoints、公钥、channel/target/arch、`bundle.createUpdaterArtifacts: true` 和安全私钥来源，并必须生成与当前 platform/channel/target/arch 一致的官方更新 archive 和 `.sig`、使用应用公钥实际验证后记录相对路径、大小、SHA-256 和结论。安装包允许 unsigned 不代表 updater 可不签名；发布私钥与密码只能来自批准的安全运行时，绝不能进入源码、配置、日志、manifest 或制品。
 - 候选构建记录严格遵守第 4.1 节的边界：manifest 和最终回复是发布候选构建的记录出口；本地开发试包只报告实际产物路径和风险。两者都不为构建过程或结果创建、更新任何项目记忆。
 - 发布候选 E2E 不混入单元测试、编译、签名或打包命令。选择启用或产品/渠道硬要求时，只在完整最终候选存在后运行；选择禁用时记录 `Not run` 和剩余风险。普通 debug/no-bundle 开发检查不能形成候选验收结论；需要安装包注册才能证明的深链接平台场景保持 `Not verified`。
@@ -237,7 +237,7 @@
 
 - 可确定检查的规则可以自动化，但自动化存在不代表日常开发或普通构建必须逐项运行。显式构建固定执行全量非空单元测试和实际构建；格式、lint、静态、文档链接或治理扫描只在本次变化需要、用户明确要求或发布/渠道硬要求时运行。
 - Rust core/adapter 的确定依赖事实应自动检查：适配器必须直接依赖 core，core 不得直接或通过 workspace 依赖路径到达适配器或接口框架，适配器不得彼此直接或间接依赖。检查必须覆盖重命名依赖、开发/构建依赖、目标特定依赖和 workspace 可达闭包，且不得把不含接口依赖的合法基础设施 crate 误判为适配器。
-- `TODO`、`FIXME`、`HACK` 与建议行数候选只在当次发布 `reviewSelection: enabled` 时复核；日常开发不例行扫描。需要机械核对文件行数时运行 `python3 -B .agents/skills/desktop-implement-change/scripts/check_file_line_limits.py --root .`，并分别对超过 800、1000、2000 行的文件返回失败、具体路径、配置和实际行数。
+- `TODO`、`FIXME`、`HACK` 与建议行数候选只在当次发布 `reviewSelection: enabled` 时复核；日常开发不例行扫描。需要机械核对文件行数时运行 `node .agents/skills/desktop-implement-change/scripts/check_file_line_limits.mjs --root .`，并分别对超过 800、1000、2000 行的文件返回失败、具体路径、配置和实际行数。
 - 公共 API 文档缺失可以由语言工具链判定失败。
 - 中文声明注释的存在性和归属可以按第 3.4 节机械检查；注释是否有业务意义、模块职责是否合理、函数思路是否充分，必须由人工或 Agent 语义审查，不使用字符数、注释比例或关键词数量伪装成质量检查。
 - 业务逻辑是否真正位于 core 同样必须由人工或 Agent 沿真实执行路径语义审查；不得用 adapter 行数、`if`/`match` 数量、文件名或关键词扫描伪装成完整证明。

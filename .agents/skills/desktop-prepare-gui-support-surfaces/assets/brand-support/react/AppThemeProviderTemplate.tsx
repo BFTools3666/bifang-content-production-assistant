@@ -12,8 +12,7 @@ import type { ReactElement, ReactNode } from "react";
 export type AppColorScheme = "light" | "dark" | "auto";
 
 /** 主题偏好只保存在当前设备，不进入共享 core。 */
-export const APP_COLOR_SCHEME_STORAGE_KEY =
-  "bifang-content-production-assistant:application-color-scheme";
+export const APP_COLOR_SCHEME_STORAGE_KEY = "application-color-scheme";
 
 /** GUI 初始化统一使用这一份 Mantine 主题定义。 */
 export const APP_THEME = createTheme({
