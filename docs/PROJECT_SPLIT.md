@@ -1,7 +1,7 @@
 # 独立产品范围与兼容约定
 
 - 日期：2026-10-08（Asia/Shanghai）
-- 用户要求：将已合并项目中的小红书独立出来，变成两个项目。
+- 用户要求：公司仓库只保留 CSDN、百家号长文章版；小红书不在本仓库发行。
 - change_id：`MAINT-INDEPENDENT-CREATOR-REPOSITORIES-20261008`
 - required_version：`0.2.25`；行为保持的仓库与构建重组，不重置已有版本周期。
 - 来源：`https://github.com/BFTools366/bifang-content-production-assistant`
@@ -19,8 +19,8 @@
 
 ## 独立维护
 
-两仓库各自拥有 README、构建入口、版本状态和之后的 Release。根 Cargo 显式登记 GUI package.json 与 Tauri 配置为版本镜像，后续版本门禁同步更新这些安装版本。Git 历史保留共同来源；后续仅按具体改动选择性同步通用 core/Harness 修复，不整仓覆盖产品身份和版本周期，不强制改写原作者历史。新的运行目录与测试缓存不提交到 Git。
+本仓库拥有自己的 README、构建入口、版本状态和之后的 Release。根 Cargo 显式登记 GUI package.json 与 Tauri 配置为版本镜像，后续版本门禁同步更新这些安装版本。Git 历史保留共同来源；后续仅按具体改动选择性同步通用 core/Harness 修复，不整仓覆盖产品身份和版本周期，不强制改写原作者历史。新的运行目录与测试缓存不提交到 Git。
 
 ## 本次边界
 
-这次只做源码和构建身份拆分，不新增平台、自动发布、采集方式或 AI 调用。GitHub 归属、远端创建和提交等待用户对目标账号的回答；不因默认选项或等待时间擅自创建公司或个人远端。新 Windows 安装包、安装验收和正式 Release 尚未完成。
+这次只做源码和构建身份拆分，不新增平台、自动发布、采集方式或 AI 调用。源码目标为原公司仓库 `BFTools366/bifang-content-production-assistant`。新 Windows 安装包、安装验收和正式 Release 以当次构建与实机证据为准。

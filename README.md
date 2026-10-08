@@ -52,14 +52,14 @@ macOS 已配置 Windows 交叉编译环境时：
 node tools/build-edition.mjs --windows-cross
 ```
 
-不需要选择 seo / xhs 参数；指定其他产品会在编译前报错。产品身份由 [product-edition.json](product-edition.json) 同时供 Vite 和 Rust 构建读取。
+无需选择发行版参数；指定其他产品会在编译前报错。产品身份由 [product-edition.json](product-edition.json) 同时供 Vite 和 Rust 构建读取。
 
 ## 来源与维护
 
-基于公司仓库 `BFTools366/bifang-content-production-assistant` 的 `fe0947f` 拆分，保留完整可达 Git 历史以及 2026-10-08 的 Harness 更新。拆分范围与升级兼容约定见[项目拆分说明](docs/PROJECT_SPLIT.md)。
+基于本仓库的 `fe0947f` 整理为长文章单一发行版，保留完整 Git 历史以及 2026-10-08 的 Harness 更新。拆分范围与升级兼容约定见[项目拆分说明](docs/PROJECT_SPLIT.md)。
 
 ## 当前状态
 
-源码已在本机完成独立化，两版各 218 项界面回归、6 项构建身份回归、类型检查和 Windows 目标编译检查已通过；GitHub 仓库归属待用户确认。旧双发行版 0.2.25 安装包的检查结果不能替代本次独立项目的 Windows 安装验收。当前不附带新安装包或正式 Release；安装、真实采集、AI 生成及保存重启流程需绑定新构建再次验收。
+仓库只构建 CSDN、百家号长文章版。旧双发行版安装包的检查结果不能替代当前源码的 Windows 安装验收。安装、真实采集、AI 生成及保存重启流程须绑定具体测试包和 SHA-256 再次验收；管理员完成测试版 Release 后再决定正式发布。
 
 本项目为专有商业软件。使用、复制或分发前请阅读[中文许可](LICENSE.zh-CN.md)或[英文许可](LICENSE.en.md)。
