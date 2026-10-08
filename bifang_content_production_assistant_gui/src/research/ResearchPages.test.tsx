@@ -57,21 +57,28 @@ import { WriterPage } from "./WriterPage";
 import { DraftEditor } from "./DraftEditor";
 import { articleDetailsTabAtom } from "../workbench/workbenchState";
 import {
+  IS_XHS_EDITION,
   benchmarkSessionAtom,
   composerSessionAtom,
   platformOptions,
   writerStepAtom,
 } from "./researchState";
 
+/** 同一交互回归分别运行在固定的文章产品和小红书产品中。 */
+const generationLabel = IS_XHS_EDITION ? "生成笔记文字" : "生成技术文章";
+const topicLabel = IS_XHS_EDITION ? "这篇图文笔记的主题" : "这篇技术文章的主题";
+const bodyLabel = IS_XHS_EDITION ? "笔记文字" : "文章正文";
+const continueLabel = IS_XHS_EDITION ? "继续制作图文笔记" : "继续制作简介和配图";
+
 /** 构造隔离的单元测试作品，不作为实际采集结果或产品演示数据。 */
 function testWork(id: string, views: number | null): BenchmarkWork {
   return {
     id,
-    platform: "csdn",
+    platform: IS_XHS_EDITION ? "xiaohongshu" : "csdn",
     title: `作品${id}`,
-    url: `https://blog.csdn.net/test/article/details/${id}`,
+    url: IS_XHS_EDITION ? `https://www.xiaohongshu.com/explore/${id}` : `https://blog.csdn.net/test/article/details/${id}`,
     author: "测试作者",
-    authorUrl: "https://blog.csdn.net/test",
+    authorUrl: IS_XHS_EDITION ? "https://www.xiaohongshu.com/user/profile/test" : "https://blog.csdn.net/test",
     publishedAt: "",
     excerpt: "",
     body: "正文材料".repeat(40),
@@ -164,11 +171,10 @@ afterEach(() => {
 });
 
 describe("研究页面契约", () => {
-  it("offers CSDN and Baijiahao in the technical article edition", () => {
-    expect(platformOptions().map(({ value }) => value)).toEqual([
-      "csdn",
-      "baijiahao",
-    ]);
+  it("offers_only_the_platforms_of_the_fixed_product", () => {
+    expect(platformOptions().map(({ value }) => value)).toEqual(
+      IS_XHS_EDITION ? ["xiaohongshu"] : ["csdn", "baijiahao"],
+    );
   });
   it("行和单元格不代理勾选，最低指标排除缺失值", async () => {
     await renderPage(<BenchmarkPage />);
@@ -221,15 +227,15 @@ describe("研究页面契约", () => {
     const writer = await renderPage(<WriterPage />, store);
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: "下一步：生成技术文章" }),
+        screen.getByRole("button", { name: `下一步：${generationLabel}` }),
       ).toBeEnabled(),
     );
     fireEvent.click(
-      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      screen.getByRole("button", { name: `下一步：${generationLabel}` }),
     );
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: "生成技术文章" }),
+        screen.getByRole("button", { name: generationLabel }),
       ).toBeEnabled(),
     );
     writer.unmount();
@@ -257,12 +263,12 @@ describe("研究页面契约", () => {
       },
     ]);
     await renderPage(<WriterPage />);
-    await screen.findByText("先接入 AI，才能生成技术文章");
-    fireEvent.change(screen.getByLabelText(/这篇技术文章的主题/), {
+    await screen.findByText(`先接入 AI，才能${generationLabel}`);
+    fireEvent.change(screen.getByLabelText(new RegExp(topicLabel)), {
       target: { value: "运营主题" },
     });
     expect(
-      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      screen.getByRole("button", { name: `下一步：${generationLabel}` }),
     ).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "接入 AI" }));
@@ -277,10 +283,10 @@ describe("研究页面契约", () => {
     await renderPage(<WriterPage />);
     await screen.findByText("AI 设置读取失败，请重试。原有配置不会被清空。");
     expect(
-      screen.queryByText("先接入 AI，才能生成技术文章"),
+      screen.queryByText(`先接入 AI，才能${generationLabel}`),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      screen.getByRole("button", { name: `下一步：${generationLabel}` }),
     ).toBeDisabled();
     expect(mocks.generateContent).not.toHaveBeenCalled();
   });
@@ -296,13 +302,13 @@ describe("研究页面契约", () => {
     await renderPage(<WriterPage />, store);
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: "下一步：生成技术文章" }),
+        screen.getByRole("button", { name: `下一步：${generationLabel}` }),
       ).toBeEnabled(),
     );
     fireEvent.click(
-      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      screen.getByRole("button", { name: `下一步：${generationLabel}` }),
     );
-    fireEvent.click(screen.getByRole("button", { name: "生成技术文章" }));
+    fireEvent.click(screen.getByRole("button", { name: generationLabel }));
     await screen.findByRole("alert");
     expect(mocks.generateContent).toHaveBeenCalledTimes(1);
     expect(store.get(composerSessionAtom).userMaterial).toBe("用户的真实材料");
@@ -311,16 +317,16 @@ describe("研究页面契约", () => {
 
   it("retains_preparation_and_step_when_returning_from_settings", async () => {
     const first = await renderPage(<WriterPage />);
-    fireEvent.change(screen.getByLabelText(/这篇技术文章的主题/), {
+    fireEvent.change(screen.getByLabelText(new RegExp(topicLabel)), {
       target: { value: "运营主题" },
     });
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: "下一步：生成技术文章" }),
+        screen.getByRole("button", { name: `下一步：${generationLabel}` }),
       ).toBeEnabled(),
     );
     fireEvent.click(
-      screen.getByRole("button", { name: "下一步：生成技术文章" }),
+      screen.getByRole("button", { name: `下一步：${generationLabel}` }),
     );
     first.unmount();
     first.client.clear();
@@ -330,13 +336,13 @@ describe("研究页面契约", () => {
     second.unmount();
     second.client.clear();
     await renderPage(<WriterPage />);
-    expect(screen.getByLabelText(/这篇技术文章的主题/)).toHaveValue("");
+    expect(screen.getByLabelText(new RegExp(topicLabel))).toHaveValue("");
   });
 
   it("retains_unsaved_edits_and_blocks_export_until_saved", async () => {
     const draft: ResearchDraft = {
       id: "draft-test",
-      platform: "csdn",
+      platform: IS_XHS_EDITION ? "xiaohongshu" : "csdn",
       keyword: "主题",
       title: "原标题",
       titles: ["原标题", "候选标题"],
@@ -351,7 +357,7 @@ describe("研究页面契约", () => {
       tokenUsage: null,
     };
     const first = await renderPage(<DraftEditor draft={draft} mode="review" />);
-    fireEvent.change(screen.getByLabelText("文章正文"), {
+    fireEvent.change(screen.getByLabelText(bodyLabel), {
       target: { value: "用户尚未保存的修改" },
     });
     first.unmount();
@@ -360,13 +366,13 @@ describe("研究页面契约", () => {
       <DraftEditor draft={draft} mode="export" />,
       first.store,
     );
-    expect(screen.getByLabelText("文章正文")).toHaveValue("用户尚未保存的修改");
+    expect(screen.getByLabelText(bodyLabel)).toHaveValue("用户尚未保存的修改");
     expect(
       screen.getByRole("combobox", { name: "选择二次标题" }),
     ).toBeDisabled();
     expect(screen.getByRole("button", { name: "HTML" })).toBeDisabled();
     expect(
-      screen.getByRole("button", { name: "继续制作简介和配图" }),
+      screen.getByRole("button", { name: continueLabel }),
     ).toBeDisabled();
     expect(mocks.exportDraft).not.toHaveBeenCalled();
     expect(mocks.prepareDraftArticle).not.toHaveBeenCalled();

@@ -16,9 +16,9 @@ use serde::{Deserialize, Serialize};
 
 use super::models::{ImageRequestContract, ProviderConfig, ProviderKind};
 
-#[cfg(not(feature = "xhs"))]
+#[cfg(not(bifang_xhs))]
 const KEYRING_SERVICE: &str = "com.arden.bifang-content-production-assistant.ai-provider";
-#[cfg(feature = "xhs")]
+#[cfg(bifang_xhs)]
 const KEYRING_SERVICE: &str = "com.arden.bifang-xiaohongshu-assistant.ai-provider";
 const MAX_TEXT_RESPONSE_BYTES: usize = 2 * 1024 * 1024;
 const MAX_IMAGE_RESPONSE_BYTES: usize = 36 * 1024 * 1024;

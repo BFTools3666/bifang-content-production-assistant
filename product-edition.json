@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "edition": "seo",
+  "productName": "毕方内容生产助手",
+  "identifier": "com.arden.bifang-content-production-assistant",
+  "platforms": [
+    "csdn",
+    "baijiahao"
+  ]
+}

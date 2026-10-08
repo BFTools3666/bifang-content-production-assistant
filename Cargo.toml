@@ -9,6 +9,8 @@ resolver = "3"
 [workspace.metadata.agent-first-harness]
 target-platforms = ["windows", "macos"]
 interfaces = ["cli", "gui"]
+gui-root = "bifang_content_production_assistant_gui"
+version-mirrors = ["bifang_content_production_assistant_gui/package.json", "bifang_content_production_assistant_gui/src-tauri/tauri.conf.json"]
 
 [workspace.package]
 version = "0.2.25"
