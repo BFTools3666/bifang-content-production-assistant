@@ -59,7 +59,7 @@ fn collection_url(platform: ContentPlatform, keyword: &str, page_url: Option<&st
 /// 打开独立可见WebView采集公开页面；登录与验证码由用户在该窗口完成。
 #[tauri::command]
 pub(crate) async fn start_benchmark_collection(app: AppHandle, platform: ContentPlatform, keyword: String, page_url: Option<String>, page_urls: Option<Vec<String>>, runtime: State<'_, ResearchRuntime>) -> Result<(), CommandError> {
-    if cfg!(feature = "xhs") != (platform == ContentPlatform::Xiaohongshu) { return Err(collector_error("请选择当前工具支持的平台")); }
+    if cfg!(bifang_xhs) != (platform == ContentPlatform::Xiaohongshu) { return Err(collector_error("请选择当前工具支持的平台")); }
     let mut queue = std::collections::VecDeque::new();
     if let Some(addresses) = page_urls {
         if addresses.is_empty() || addresses.len() > 10 { return Err(collector_error("请选择1到10件作品采集正文")); }

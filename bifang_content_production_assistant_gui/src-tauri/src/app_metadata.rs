@@ -1,8 +1,8 @@
 use serde::Serialize;
 
-#[cfg(not(feature = "xhs"))]
+#[cfg(not(bifang_xhs))]
 const APPLICATION_NAME: &str = "毕方内容生产助手";
-#[cfg(feature = "xhs")]
+#[cfg(bifang_xhs)]
 const APPLICATION_NAME: &str = "毕方小红书笔记助手";
 const CONTACT_CHANNEL: &str = "QQ";
 const CONTACT_VALUE: &str = "2222980";

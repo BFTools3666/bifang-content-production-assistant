@@ -10,7 +10,7 @@ use crate::workbench::models::{
 };
 
 /// 小红书首次启动和重启均不注入SEO种子，笔记提示词只初始化一次。
-#[cfg(feature = "xhs")]
+#[cfg(bifang_xhs)]
 #[tokio::test]
 async fn note_edition_keeps_note_defaults_after_restart() {
     let directory = std::env::temp_dir().join(format!("bifang-note-restart-{}", uuid::Uuid::new_v4()));
