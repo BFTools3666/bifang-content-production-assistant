@@ -842,13 +842,13 @@
     "navigation": {
       "benchmarks": "Find references",
       "styles": "Styles",
-      "writer": "Article workbench",
+      "writer": "Article production",
       "drafts": "My articles"
     }
   },
   "title_generation": {
     "title": "Generate titles with AI",
-    "description": "Enter a topic to generate title candidates. Select and add them to the workbench to save them, then produce the articles.",
+    "description": "Choose a platform and enter a topic to generate five titles. Select the ones you want to add to batch production.",
     "platform": "Target platform",
     "count": "Number of titles",
     "topic": "Topic or keywords",

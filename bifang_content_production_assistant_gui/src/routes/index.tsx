@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArticleWorkbenchPage } from "../workbench/ArticleWorkbenchPage";
-/** 首页与命名一致，直接展示标题、正文和成品的批量生产工作台。 */
-export const Route = createFileRoute("/")({ component: ArticleWorkbenchPage });
+import { WriterPage } from "../research/WriterPage";
+
+/** 首页先处理单篇文章，批量工作台由页面内的独立入口打开。 */
+export const Route = createFileRoute("/")({ component: WriterPage });

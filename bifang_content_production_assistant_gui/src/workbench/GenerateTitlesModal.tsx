@@ -2,13 +2,11 @@ import {
   Alert,
   Button,
   Checkbox,
-  Group,
   Modal,
   ScrollArea,
   Select,
   Stack,
   Text,
-  Textarea,
   TextInput,
 } from "@mantine/core";
 import { IconSparkles } from "@tabler/icons-react";
@@ -37,10 +35,7 @@ export function GenerateTitlesModal({
 }): ReactElement {
   const { t } = useTranslation("app");
   const [topic, setTopic] = useState("");
-  const [requirements, setRequirements] = useState("");
   const [platform, setPlatform] = useState<ContentPlatform>("baijiahao");
-  const [count, setCount] = useState("5");
-  const [providerId, setProviderId] = useState<string | null>(null);
   const [titles, setTitles] = useState<string[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [resultTopic, setResultTopic] = useState("");
@@ -62,13 +57,11 @@ export function GenerateTitlesModal({
       item.articleModel?.trim(),
   );
   const provider =
-    available.find((item) => item.id === providerId) ??
-    available.find((item) => item.defaultForArticle) ??
-    available[0];
+    available.find((item) => item.defaultForArticle) ?? available[0];
   const generation = useMutation({
     mutationFn: () =>
       generateArticleTitles(
-        { platform, topic, requirements, count: Number(count) },
+        { platform, topic, requirements: "", count: 5 },
         provider?.id ?? "",
       ),
     retry: false,
@@ -136,28 +129,16 @@ export function GenerateTitlesModal({
               </Button>
             </Alert>
           ) : null}
-          <Group grow align="flex-start">
-            <Select
-              label={t("title_generation.platform")}
-              data={platformOptions()}
-              value={platform}
-              allowDeselect={false}
-              disabled={busy}
-              onChange={(value) => {
-                if (value) setPlatform(value as ContentPlatform);
-              }}
-            />
-            <Select
-              label={t("title_generation.count")}
-              data={["5", "10", "20"]}
-              value={count}
-              allowDeselect={false}
-              disabled={busy}
-              onChange={(value) => {
-                if (value) setCount(value);
-              }}
-            />
-          </Group>
+          <Select
+            label={t("title_generation.platform")}
+            data={platformOptions()}
+            value={platform}
+            allowDeselect={false}
+            disabled={busy}
+            onChange={(value) => {
+              if (value) setPlatform(value as ContentPlatform);
+            }}
+          />
           <TextInput
             label={t("title_generation.topic")}
             placeholder={t("title_generation.topic_placeholder")}
@@ -167,33 +148,6 @@ export function GenerateTitlesModal({
             disabled={busy}
             onChange={(event) => setTopic(event.currentTarget.value)}
           />
-          <Textarea
-            label={t("title_generation.requirements")}
-            value={requirements}
-            autosize
-            minRows={3}
-            maxRows={6}
-            maxLength={5000}
-            disabled={busy}
-            onChange={(event) => setRequirements(event.currentTarget.value)}
-          />
-          {available.length > 1 ? (
-            <Select
-              label={t("title_generation.provider")}
-              value={provider?.id ?? null}
-              data={available.map((item) => ({
-                value: item.id,
-                label: item.name,
-              }))}
-              disabled={busy}
-              onChange={setProviderId}
-            />
-          ) : null}
-          {provider ? (
-            <Text size="xs" c="dimmed">
-              {provider.name} · {provider.articleModel}
-            </Text>
-          ) : null}
           {error ? (
             <Alert color="red" role="alert">
               {error}

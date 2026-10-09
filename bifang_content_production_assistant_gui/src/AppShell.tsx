@@ -269,7 +269,7 @@ export function AppShell({ children }: { children: ReactNode }): ReactElement {
         >
           <MantineAppShell.Navbar p={0}>
             <AppSidebarTemplate
-              activePath={activePath === "/writer" || activePath === "/batch" ? "/" : activePath}
+              activePath={activePath === "/writer" ? "/" : activePath}
               applicationName={metadataQuery.data.applicationName}
               featureItems={featureItems}
               logoSrc={APP_SIDEBAR_LOGO_PATH}

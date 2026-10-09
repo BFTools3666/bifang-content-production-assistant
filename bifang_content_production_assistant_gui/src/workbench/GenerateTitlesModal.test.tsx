@@ -129,9 +129,9 @@ describe("AI title generation", () => {
     fireEvent.change(screen.getByLabelText(/主题或关键词/), {
       target: { value: "产品使用" },
     });
-    fireEvent.change(screen.getByLabelText("受众和标题角度（选填）"), {
-      target: { value: "给第一次使用的客户" },
-    });
+    expect(screen.queryByLabelText("生成几个标题")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("受众和标题角度（选填）")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("使用的 AI 服务")).not.toBeInTheDocument();
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "生成标题" })).toBeEnabled(),
     );
@@ -139,8 +139,9 @@ describe("AI title generation", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("额度不足");
     expect(mocks.generate).toHaveBeenCalledOnce();
     expect(screen.getByLabelText(/主题或关键词/)).toHaveValue("产品使用");
-    expect(screen.getByLabelText("受众和标题角度（选填）")).toHaveValue(
-      "给第一次使用的客户",
+    expect(mocks.generate).toHaveBeenCalledWith(
+      { platform: "baijiahao", topic: "产品使用", requirements: "", count: 5 },
+      "text",
     );
   });
 });
