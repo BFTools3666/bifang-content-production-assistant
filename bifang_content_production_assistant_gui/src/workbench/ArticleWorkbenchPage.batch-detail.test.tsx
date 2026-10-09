@@ -222,7 +222,7 @@ describe("batch content workbench", () => {
     const pauseButton = await screen.findByRole("button", {
       name: "暂停批次",
     });
-    expect(pauseButton.closest('[role="status"]')).toHaveTextContent("运行中");
+    expect(pauseButton.closest('[role="status"]')).toHaveTextContent("生成中");
 
     await user.click(screen.getByRole("button", { name: "取消批次" }));
     expect(commandMocks.cancelActiveBatch).toHaveBeenCalledTimes(1);
@@ -291,12 +291,12 @@ describe("batch content workbench", () => {
       screen.getByRole("button", { name: "查看《企业知识库搭建指南》详情" }),
     );
     await user.click(
-      await screen.findByRole("button", { name: "仅重试失败阶段" }),
+      await screen.findByRole("button", { name: "重试未完成步骤" }),
     );
 
     expect(commandMocks.retryArticle).toHaveBeenCalledWith("article-a");
     expect(commandMocks.regenerateArticle).not.toHaveBeenCalled();
-    await screen.findByText("失败阶段已经进入重试队列。");
+    await screen.findByText("正在重新处理未完成的步骤。");
     await user.click(screen.getByRole("tab", { name: "历史" }));
     expect(
       await screen.findByTestId("attempt-attempt-image-2"),
@@ -308,12 +308,12 @@ describe("batch content workbench", () => {
     expect(screen.getAllByText("0 Token · 本地处理").length).toBeGreaterThan(0);
     expect(screen.getByText(/run-retry-1/)).toBeInTheDocument();
 
-    const approve = screen.getByRole("button", { name: "批准文章包" });
+    const approve = screen.getByRole("button", { name: "确认完成" });
     approve.focus();
     await user.keyboard("{Enter}");
     expect(commandMocks.approveArticle).toHaveBeenCalledWith("article-a");
     expect(
-      await screen.findByText("当前文章包已经批准并保存为不可变历史。"),
+      await screen.findByText("已确认并保存此版本，后续修改不会覆盖它。"),
     ).toBeInTheDocument();
   });
 
@@ -340,9 +340,9 @@ describe("batch content workbench", () => {
     );
 
     expect(
-      screen.queryByRole("button", { name: "仅重试失败阶段" }),
+      screen.queryByRole("button", { name: "重试未完成步骤" }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "重新生成整篇" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "重新生成文章" })).toBeEnabled();
   });
 
   /** 活动批次只锁定详情动作，不把打开已完成简介误报为新的生成或保存。 */
@@ -430,9 +430,9 @@ describe("batch content workbench", () => {
       "文章简介",
     );
     for (const name of [
-      "重新生成整篇",
-      "退回修改",
-      "批准文章包",
+      "重新生成文章",
+      "返回修改",
+      "确认完成",
       "重新生成《企业知识库搭建指南》的简介",
     ]) {
       const action = within(drawer).getByRole("button", { name });

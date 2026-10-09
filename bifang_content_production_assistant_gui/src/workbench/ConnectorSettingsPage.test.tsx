@@ -273,7 +273,7 @@ describe("connector settings page", () => {
       screen.getByRole("heading", { name: "编辑发布目标" }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/CLI profile/i)).toHaveValue("seo-publisher");
-    expect(screen.getByRole("switch", { name: "启用此连接器" })).toBeChecked();
+    expect(screen.getByRole("switch", { name: "启用此云文档目标" })).toBeChecked();
     await user.click(screen.getByRole("button", { name: "保存发布目标" }));
     await waitFor(() =>
       expect(commandMocks.saveConnectorConfig).toHaveBeenCalledWith(

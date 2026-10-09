@@ -173,6 +173,7 @@ pub fn run() {
             research::commands::prepare_research_article_task,
             research::commands::update_research_prompts,
             research::commands::generate_research_content,
+            research::commands::generate_article_titles,
             research::commands::analyze_research_style,
             research::commands::update_research_style,
             research::commands::update_research_draft,

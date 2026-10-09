@@ -228,7 +228,7 @@ describe("workbench Grid standards", () => {
       screen.getByRole("checkbox", { name: "全选当前结果（25）" }),
     );
     expect(
-      screen.getByRole("button", { name: "运行所选（25）" }),
+      screen.getByRole("button", { name: "批量制作（25 篇）" }),
     ).toBeInTheDocument();
 
     const pageSize = screen.getByRole("combobox", {

@@ -5,7 +5,7 @@ use tauri::{Manager, path::BaseDirectory};
 
 const RELEASE_NOTES_RESOURCE_PATH: &str = "release-notes.json";
 const RELEASE_NOTES_SCHEMA_VERSION: u8 = 2;
-const MAX_RELEASE_NOTE_VERSIONS: usize = 5;
+const MAX_RELEASE_NOTE_VERSIONS: usize = 10;
 const MAX_RELEASE_NOTE_ITEMS: usize = 10;
 const MAX_RELEASE_NOTES_BYTES: u64 = 1024 * 1024;
 
@@ -81,7 +81,7 @@ fn parse_release_notes(bytes: &[u8]) -> Result<ReleaseNotesDocument, ReleaseNote
     Ok(document)
 }
 
-/// 校验近五版、十条上限、唯一版本和最新在前的发布事实。
+/// 校验近十版、十条上限、唯一版本和最新在前的发布事实。
 fn validate_release_notes(document: &ReleaseNotesDocument) -> Result<(), ReleaseNotesLoadError> {
     if document.schema_version != RELEASE_NOTES_SCHEMA_VERSION
         || document.releases.is_empty()
@@ -187,6 +187,17 @@ fn is_valid_release_date(value: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// 正式规范允许十版，超过上限才拒绝整个资源。
+    #[test]
+    fn accepts_ten_release_versions_and_rejects_eleven() {
+        let releases = (0..10).map(|index| serde_json::json!({ "releaseDate":"2026-10-09", "version":format!("v1.0.{}",10-index), "featureOptimizations":[{"zh-CN":"更新功能","en-US":"Improve features"}], "bugFixes":[] })).collect::<Vec<_>>();
+        let bytes = serde_json::to_vec(&serde_json::json!({"schemaVersion":2,"releases":releases})).unwrap();
+        assert_eq!(parse_release_notes(&bytes).unwrap().releases.len(), 10);
+        let mut invalid: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        invalid["releases"].as_array_mut().unwrap().push(serde_json::json!({"releaseDate":"2026-10-09","version":"v1.0.0","featureOptimizations":[{"zh-CN":"旧版","en-US":"Earlier version"}],"bugFixes":[]}));
+        assert!(parse_release_notes(&serde_json::to_vec(&invalid).unwrap()).is_err());
+    }
 
     /// 真实 schema 能被解析，并保持两类发布内容中的中英文翻译对。
     #[test]

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 3,
+  "sourceHead": "637c04a28a153cf56a1e997fd894359aa4caf748",
+  "version": "0.2.28",
+  "releaseDate": "2026-10-09",
+  "expectedTag": "v0.2.28-20261009",
+  "defaultBranch": "master",
+  "releaseReview": {
+    "selection": "enabled",
+    "status": "passed",
+    "scopeBase": "939a8cb4c52c56d702859c8e8c31dd755b6fa288",
+    "sourceHead": "637c04a28a153cf56a1e997fd894359aa4caf748",
+    "scopeDiffSha256": "376132c45473ac7e63b2c8f42ff2ff3beb1dd1e46c86fcc585321d5fe722892b",
+    "reviewedSourceCommit": "637c04a28a153cf56a1e997fd894359aa4caf748",
+    "checks": [
+      "behavior-correctness",
+      "core-adapter-boundary",
+      "external-contracts",
+      "responsibility-and-size",
+      "temporary-markers"
+    ],
+    "evidenceSummary": "核对修复差异：标题语义由 core 控制，凭据与出站由原适配器装配，IPC 失败原因兼容且不泄露任意响应；数据库与统计契约保持，模块职责与临时标记已检查。433 Rust、223 frontend、8 packaging tests passed；许可证配置采用精确项目适配，日志逐字节比较保留原 helper。Windows 安装与 005 用户试用尚待候选，更新后台登记按用户选择暂不验收。",
+    "reason": null,
+    "remainingRisk": null
+  }
+}

@@ -19,6 +19,7 @@ import {
   IconPlus,
   IconRefresh,
   IconSearch,
+  IconSparkles,
   IconSettingsAutomation,
 } from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -28,6 +29,7 @@ import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AddTitlesModal } from "./AddTitlesModal";
+import { GenerateTitlesModal } from "./GenerateTitlesModal";
 import { ArticleDetailsDrawer } from "./ArticleDetailsDrawer";
 import {
   ArticleGrid,
@@ -137,6 +139,7 @@ export function ArticleWorkbenchPage(): ReactElement {
   const [inspectedId, setInspectedId] = useAtom(inspectedArticleIdAtom);
   const [detailsTab, setDetailsTab] = useAtom(articleDetailsTabAtom);
   const [addOpened, setAddOpened] = useState(false);
+  const [generateTitlesOpened, setGenerateTitlesOpened] = useState(false);
   const [batchPreview, setBatchPreview] = useState<BatchStartResult | null>(
     null,
   );
@@ -319,6 +322,10 @@ export function ArticleWorkbenchPage(): ReactElement {
 
   const handleAddTitles = async (titles: string): Promise<AddTitlesResult> => {
     const result = await performAction(() => addArticleTitles(titles));
+    // 新任务加入后立即展示，避免旧搜索或筛选把刚生成的标题藏起来。
+    setSearch("");
+    setStatusFilter("all");
+    setSort("created");
     setSelectedIds((current) => {
       const next = new Set(current);
       for (const id of result.taskIds) next.add(id);
@@ -518,6 +525,13 @@ export function ArticleWorkbenchPage(): ReactElement {
           <Text c="dimmed">{t("workbench.description")}</Text>
         </Stack>
         <Group>
+          <Button leftSection={<IconSparkles aria-hidden="true" size={18} />} disabled={Boolean(activeRun) || actionBusy}
+            onClick={() => setGenerateTitlesOpened(true)} variant="light">
+            {t("title_generation.title")}
+          </Button>
+          <Button variant="subtle" onClick={() => void navigate({ to: "/writer" })}>
+            {t("workbench.actions.from_topic")}
+          </Button>
           <Button
             leftSection={<IconPlus aria-hidden="true" size={18} />}
             onClick={() => setAddOpened(true)}
@@ -788,6 +802,7 @@ export function ArticleWorkbenchPage(): ReactElement {
         onSubmit={handleAddTitles}
         opened={addOpened}
       />
+      <GenerateTitlesModal opened={generateTitlesOpened} onClose={() => setGenerateTitlesOpened(false)} onSubmit={handleAddTitles} />
 
       <Modal
         centered

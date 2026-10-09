@@ -65,8 +65,8 @@ import {
 } from "./researchState";
 
 /** 同一交互回归分别运行在固定的文章产品和小红书产品中。 */
-const generationLabel = IS_XHS_EDITION ? "生成笔记文字" : "生成技术文章";
-const topicLabel = IS_XHS_EDITION ? "这篇图文笔记的主题" : "这篇技术文章的主题";
+const generationLabel = IS_XHS_EDITION ? "生成笔记文字" : "生成文章";
+const topicLabel = IS_XHS_EDITION ? "这篇图文笔记的主题" : "这篇文章的主题";
 const bodyLabel = IS_XHS_EDITION ? "笔记文字" : "文章正文";
 const continueLabel = IS_XHS_EDITION ? "继续制作图文笔记" : "继续制作简介和配图";
 
@@ -274,7 +274,7 @@ describe("研究页面契约", () => {
     fireEvent.click(screen.getByRole("button", { name: "接入 AI" }));
     expect(await screen.findByLabelText("你的 API Key")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "保存并返回内容生产" }),
+      screen.getByRole("button", { name: "保存并继续生成" }),
     ).toBeDisabled();
   });
 
@@ -450,10 +450,10 @@ describe("研究页面契约", () => {
     });
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: "保存并返回内容生产" }),
+        screen.getByRole("button", { name: "保存并继续生成" }),
       ).toBeEnabled(),
     );
-    fireEvent.click(screen.getByRole("button", { name: "保存并返回内容生产" }));
+    fireEvent.click(screen.getByRole("button", { name: "保存并继续生成" }));
     await waitFor(() =>
       expect(screen.queryByLabelText("你的 API Key")).not.toBeInTheDocument(),
     );

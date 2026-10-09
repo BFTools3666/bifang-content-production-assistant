@@ -24,228 +24,26 @@
     "BUG-CONTENT-PRODUCTION-TERMINOLOGY-20260930",
     "BUG-WINDOWS-LEGACY-SEO-SHORTCUT-20260930",
     "BUG-PLATFORM-CONTENT-TYPES-20260930",
-    "UX-COPY-CONTENT-PRODUCTION-20260930"
+    "UX-COPY-CONTENT-PRODUCTION-20260930",
+    "UX-ARTICLE-PRODUCTION-OPERATOR-20261009",
+    "BUG-UPDATE-CHECK-FEEDBACK-20261009",
+    "BUG-RELEASE-NOTES-PACKAGING-20261009",
+    "UX-RESTORE-SINGLE-ARTICLE-HOME-20261010"
   ],
-  "cycle_base_version": "0.1.0",
-  "feature_bump_applied": true,
-  "last_release": null,
+  "applied_reconciliations": [],
+  "cycle_base_version": "0.2.28",
+  "feature_bump_applied": false,
+  "last_release": {
+    "source_commit": "44cb4f2ba6460c76d63150439f887859b963e7f2",
+    "version": "0.2.28"
+  },
   "pending_changes": [
     {
-      "change_id": "FEATURE-BATCH-AI-CONTENT-WORKBENCH-MVP",
-      "kind": "feature",
-      "required_version": "0.2.0"
-    },
-    {
-      "change_id": "FEATURE-PROVIDER-CONTROLS-FEISHU-INITIAL-DATA",
-      "kind": "feature",
-      "required_version": "0.2.0"
-    },
-    {
-      "change_id": "FEATURE-STAGE-CENTRIC-AI-CONFIGURATION",
-      "kind": "feature",
-      "required_version": "0.2.0"
-    },
-    {
-      "change_id": "FEATURE-VOLCENGINE-ARK-IMAGE-PROVIDER",
-      "kind": "feature",
-      "required_version": "0.2.0"
-    },
-    {
-      "change_id": "BUGFIX-AI-SERVICES-LOADING-HANG",
+      "change_id": "UX-RESTORE-SINGLE-ARTICLE-HOME-20261010",
       "kind": "bug-fix",
-      "required_version": "0.2.1"
-    },
-    {
-      "change_id": "BUGFIX-LEGACY-ARK-PROVIDER-UPGRADE",
-      "kind": "bug-fix",
-      "required_version": "0.2.2"
-    },
-    {
-      "change_id": "BUGFIX-BATCH-PREFLIGHT-KEYCHAIN-HANG",
-      "kind": "bug-fix",
-      "required_version": "0.2.3"
-    },
-    {
-      "change_id": "BUGFIX-EXPLICIT-STAGE-AI-ASSIGNMENT",
-      "kind": "bug-fix",
-      "required_version": "0.2.4"
-    },
-    {
-      "change_id": "FEATURE-PROVIDER-DELETE-PRESERVE-HISTORY",
-      "kind": "feature",
-      "required_version": "0.2.4"
-    },
-    {
-      "change_id": "FEATURE-IMAGE-AI-CONNECTION-TEST",
-      "kind": "feature",
-      "required_version": "0.2.4"
-    },
-    {
-      "change_id": "FEATURE-GRID-STAGE-GENERATION",
-      "kind": "feature",
-      "required_version": "0.2.4"
-    },
-    {
-      "change_id": "BUG-GRID-CONTENT-PREVIEWS",
-      "kind": "bug-fix",
-      "required_version": "0.2.5"
-    },
-    {
-      "change_id": "BUG-ARK-REAL-E2E-PROBE",
-      "kind": "bug-fix",
-      "required_version": "0.2.6"
-    },
-    {
-      "change_id": "BUG-DETAIL-DRAWER-FALSE-LOADING",
-      "kind": "bug-fix",
-      "required_version": "0.2.7"
-    },
-    {
-      "change_id": "FEAT-RESIZABLE-DETAIL-DRAWER",
-      "kind": "feature",
-      "required_version": "0.2.7"
-    },
-    {
-      "change_id": "FEATURE-ARTICLE-IMAGE-EDITOR",
-      "kind": "feature",
-      "required_version": "0.2.7"
-    },
-    {
-      "change_id": "FEATURE-DETAIL-STAGE-GENERATION",
-      "kind": "feature",
-      "required_version": "0.2.7"
-    },
-    {
-      "change_id": "FEATURE-GENERATION-METRICS-CREATED-SORT",
-      "kind": "feature",
-      "required_version": "0.2.7"
-    },
-    {
-      "change_id": "FEATURE-GRID-TABLE-STANDARDS-COMPLIANCE",
-      "kind": "feature",
-      "required_version": "0.2.7"
-    },
-    {
-      "change_id": "BUGFIX-FORMAT-TABS-RENDERED-PREVIEW",
-      "kind": "bug-fix",
-      "required_version": "0.2.8"
-    },
-    {
-      "change_id": "FEATURE-CLOUD-DOCUMENT-CONNECTORS",
-      "kind": "feature",
-      "required_version": "0.2.8"
-    },
-    {
-      "change_id": "BUGFIX-GRID-NO-HORIZONTAL-SCROLL",
-      "kind": "bug-fix",
-      "required_version": "0.2.9"
-    },
-    {
-      "change_id": "BUGFIX-IMAGE-EDITOR-SEPARATE-MODAL",
-      "kind": "bug-fix",
-      "required_version": "0.2.10"
-    },
-    {
-      "change_id": "BUGFIX-PRODUCT-DISPLAY-NAME-RENAME",
-      "kind": "bug-fix",
-      "required_version": "0.2.11"
-    },
-    {
-      "change_id": "FEATURE-LARK-CLI-PUBLISHING-TARGET",
-      "kind": "feature",
-      "required_version": "0.2.11"
-    },
-    {
-      "change_id": "BUGFIX-LARK-CLI-ONBOARDING-GUIDE",
-      "kind": "bug-fix",
-      "required_version": "0.2.12"
-    },
-    {
-      "change_id": "FEATURE-ARTICLE-READ-CLI",
-      "kind": "feature",
-      "required_version": "0.2.12"
-    },
-    {
-      "change_id": "BUGFIX-FULL-PRODUCT-IDENTITY-CORRECTION",
-      "kind": "bug-fix",
-      "required_version": "0.2.13"
-    },
-    {
-      "change_id": "BUG-BIFANG-DMG-LICENSE-20260924",
-      "kind": "bug-fix",
-      "required_version": "0.2.14"
-    },
-    {
-      "change_id": "BUG-LARK-CLI-FOLDER-LIST-PARAMS-20260924",
-      "kind": "bug-fix",
-      "required_version": "0.2.15"
-    },
-    {
-      "change_id": "BUG-LARK-CLI-SYNC-FENCE-20260924",
-      "kind": "bug-fix",
-      "required_version": "0.2.16"
-    },
-    {
-      "change_id": "BUG-LARK-CLI-SETUP-BOUNDARY-20260924",
-      "kind": "bug-fix",
-      "required_version": "0.2.17"
-    },
-    {
-      "change_id": "FEATURE-CLOUDBASE-PUBLIC-SERVICES",
-      "kind": "feature",
-      "required_version": "0.2.17"
-    },
-    {
-      "change_id": "BUG-VERSION-WINDOWS-CODE-EMBEDDED-SECRET",
-      "kind": "bug-fix",
-      "required_version": "0.2.18"
-    },
-    {
-      "change_id": "FEAT-BENCHMARK-STYLE-DUAL-EDITION-20260928",
-      "kind": "feature",
-      "required_version": "0.2.18"
-    },
-    {
-      "change_id": "BUG-COLLECTION-KEEP-KNOWN-METRICS-20260929",
-      "kind": "bug-fix",
-      "required_version": "0.2.19"
-    },
-    {
-      "change_id": "BUG-BATCH-CONFIG-ERROR-DETAILS-20260929",
-      "kind": "bug-fix",
-      "required_version": "0.2.20"
-    },
-    {
-      "change_id": "FEAT-ARTICLE-WRITING-SOP-20260929",
-      "kind": "feature",
-      "required_version": "0.2.20"
-    },
-    {
-      "change_id": "BUG-AI-KEY-ONBOARDING-DISCOVERY-20260929",
-      "kind": "bug-fix",
-      "required_version": "0.2.21"
-    },
-    {
-      "change_id": "BUG-CONTENT-PRODUCTION-TERMINOLOGY-20260930",
-      "kind": "bug-fix",
-      "required_version": "0.2.22"
-    },
-    {
-      "change_id": "BUG-WINDOWS-LEGACY-SEO-SHORTCUT-20260930",
-      "kind": "bug-fix",
-      "required_version": "0.2.23"
-    },
-    {
-      "change_id": "BUG-PLATFORM-CONTENT-TYPES-20260930",
-      "kind": "bug-fix",
-      "required_version": "0.2.24"
-    },
-    {
-      "change_id": "UX-COPY-CONTENT-PRODUCTION-20260930",
-      "kind": "bug-fix",
-      "required_version": "0.2.25"
+      "required_version": "0.2.29"
     }
   ],
   "schema_version": 1,
-  "target_version": "0.2.25"
+  "target_version": "0.2.29"
 }

@@ -115,7 +115,7 @@ export function AboutPageTemplate({
       <Paper p="lg" radius="lg" withBorder>
         <Stack gap="md">
           <Title order={2}>{productName}</Title>
-          <Badge size="lg" variant="light">
+          <Badge size="lg" variant="light" style={{ textTransform: "none" }}>
             {t("about.version")} {formatDisplayVersion(version)}
           </Badge>
           {tagline ? (
@@ -145,7 +145,7 @@ export function AboutPageTemplate({
             <Title order={3}>{t("about.update_title")}</Title>
             <Group data-testid="about-update-actions" gap="xs">
               <Button
-                disabled={update.status === "not-configured"}
+                disabled={update.status === "not-configured" || isChecking}
                 leftSection={<IconRefresh aria-hidden="true" size={18} />}
                 loading={isChecking}
                 onClick={onCheckForUpdates}
@@ -180,6 +180,7 @@ export function AboutPageTemplate({
               </Text>
               {update.title ? <Text fw={600}>{update.title}</Text> : null}
               {update.message ? <Text>{update.message}</Text> : null}
+              {update.failureReason ? <Text>{t(`updater.failure_${update.failureReason.replace(/-/g, "_")}`)}</Text> : null}
             </Stack>
           </Alert>
         </Stack>

@@ -1,0 +1,22 @@
+.entry {
+  padding: 16px;
+  min-height: 76px;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-default);
+  text-align: left;
+}
+
+.entry:hover {
+  background: var(--mantine-color-default-hover);
+}
+
+.entry:focus-visible {
+  outline: 2px solid var(--mantine-primary-color-filled);
+  outline-offset: 3px;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--mantine-primary-color-filled);
+}

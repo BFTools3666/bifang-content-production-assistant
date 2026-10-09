@@ -16,6 +16,11 @@ export interface UpdatePresentation {
   title?: string;
   message?: string;
   downloadReady: boolean;
+  failureReason?:
+    | "channel-not-registered"
+    | "network-unavailable"
+    | "invalid-response"
+    | "service-unavailable";
 }
 
 /** 只接受 core 已判定的强更状态，前端不得从远端布尔值自行推导。 */

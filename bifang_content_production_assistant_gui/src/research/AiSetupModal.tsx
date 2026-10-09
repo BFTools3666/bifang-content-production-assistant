@@ -70,7 +70,7 @@ export function AiSetupModal({
         if (!save.isPending) onClose();
       }}
       title={t(
-        IS_XHS_EDITION ? "接入 AI，生成笔记文字" : "接入 AI，生成技术文章",
+        IS_XHS_EDITION ? "接入 AI，生成笔记文字" : "接入 AI，生成文章",
       )}
       size="md"
       closeOnClickOutside={!save.isPending}
@@ -82,7 +82,7 @@ export function AiSetupModal({
           {t(
             IS_XHS_EDITION
               ? "这里接入文字 AI；制作配图时需要另行配置图片服务。"
-              : "填入自己的 AI 服务后，就能生成 CSDN 或百家号的技术文章。",
+              : "填入自己的 AI 服务后，就能生成 CSDN 或百家号的文章。",
           )}
         </Text>
         <Text fw={600}>DeepSeek</Text>

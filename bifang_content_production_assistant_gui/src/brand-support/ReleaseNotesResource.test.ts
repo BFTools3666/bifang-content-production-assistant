@@ -24,6 +24,12 @@ const VALID_DOCUMENT = {
 };
 
 describe("bundled release notes resource", () => {
+  /** 发布规范允许十版，资源不能因原五版上限拒绝有效安装包。 */
+  it("accepts ten recent versions and rejects eleven", () => {
+    const releases = Array.from({ length: 10 }, (_, index) => ({ ...VALID_DOCUMENT.releases[0], version: `v1.0.${10 - index}` }));
+    expect(decodeReleaseNotesDocument({ schemaVersion: 2, releases }).releases).toHaveLength(10);
+    expect(() => decodeReleaseNotesDocument({ schemaVersion: 2, releases: [...releases, { ...VALID_DOCUMENT.releases[0], version: "v1.0.0" }] })).toThrow("invalid release notes document");
+  });
   /** 加载器只调用固定窄命令，并返回经过校验的候选资源。 */
   it("loads the packaged document through the narrow Tauri command", async () => {
     const invokeCommand = vi.fn(async () => VALID_DOCUMENT);

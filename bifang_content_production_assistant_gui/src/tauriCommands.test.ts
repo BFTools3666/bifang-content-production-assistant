@@ -31,6 +31,13 @@ const METADATA = {
 };
 
 describe("narrow Tauri command boundary", () => {
+  /** 后台未登记的可读原因只接受固定枚举，其他服务数据不能进入界面。 */
+  it("decodes safe update failure reasons", () => {
+    const failed = { currentVersion: "0.2.25", status: "failed", downloadReady: false, failureReason: "channel-not-registered" };
+    expect(decodeUpdatePresentation(failed).failureReason).toBe("channel-not-registered");
+    expect(() => decodeUpdatePresentation({ ...failed, failureReason: "raw-server-secret" })).toThrow("invalid update failure reason");
+    expect(() => decodeUpdatePresentation({ ...failed, status: "up-to-date" })).toThrow("invalid update failure reason");
+  });
   beforeEach(() => {
     invokeMock.mockReset();
   });

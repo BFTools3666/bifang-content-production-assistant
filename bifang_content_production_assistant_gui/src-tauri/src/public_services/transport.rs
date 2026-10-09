@@ -111,6 +111,14 @@ impl PublicServicesTransport for ReqwestPublicServicesTransport {
                 .execute(config.build_request(&self.client)?)
                 .await
                 .map_err(|_| PublicServicesError::NetworkUnavailable)?;
+            if response.status() == reqwest::StatusCode::BAD_REQUEST && has_json_content_type(&response) {
+                let bytes = read_bounded(response, MAX_UPDATE_BYTES).await?;
+                return Err(if version_channel_is_not_registered(&bytes) {
+                    PublicServicesError::ChannelNotRegistered
+                } else {
+                    PublicServicesError::InvalidResponse
+                });
+            }
             if response.status() != reqwest::StatusCode::OK
                 || !has_json_content_type(&response)
                 || response
@@ -138,6 +146,27 @@ fn has_json_content_type(response: &reqwest::Response) -> bool {
         .get(reqwest::header::CONTENT_TYPE)
         .and_then(|value| value.to_str().ok())
         .is_some_and(|value| value.to_ascii_lowercase().starts_with("application/json"))
+}
+
+/// 只识别版本后台已验证的应用未登记协议，不向界面暴露任意响应或凭据。
+fn version_channel_is_not_registered(bytes: &[u8]) -> bool {
+    let Ok(value) = serde_json::from_slice::<serde_json::Value>(bytes) else { return false; };
+    value.get("model").and_then(|value| value.as_str()) == Some("errors")
+        && value.get("errors").and_then(|value| value.get("datas")).and_then(|value| value.as_array())
+            .is_some_and(|errors| errors.iter().any(|error| error.get("code").and_then(|code| code.as_str()) == Some("tools.not.exist")))
+}
+
+#[cfg(test)]
+mod update_error_tests {
+    use super::*;
+
+    /// 已观察的后台拒绝能与网络失败和普通无效响应区分。
+    #[test]
+    fn recognizes_only_the_missing_application_error() {
+        assert!(version_channel_is_not_registered(br#"{"model":"errors","errors":{"model":"data.set","datas":[{"code":"tools.not.exist"}]}}"#));
+        assert!(!version_channel_is_not_registered(br#"{"model":"errors","errors":{"datas":[{"code":"unauthorized"}]}}"#));
+        assert!(!version_channel_is_not_registered(b"not json"));
+    }
 }
 
 async fn read_bounded(

@@ -44,6 +44,8 @@ pub struct UpdatePresentation {
     #[serde(skip_serializing_if = "Option::is_none")]
     message: Option<String>,
     download_ready: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    failure_reason: Option<&'static str>,
 }
 
 impl UpdatePresentation {
@@ -54,6 +56,7 @@ impl UpdatePresentation {
             title: None,
             message: None,
             download_ready: false,
+            failure_reason: None,
         }
     }
 
@@ -68,6 +71,7 @@ impl UpdatePresentation {
             title: Some(response.prompt_content.clone()),
             message: (!response.update_content.is_empty()).then(|| response.update_content.clone()),
             download_ready,
+            failure_reason: None,
         }
     }
 }
@@ -82,6 +86,7 @@ pub enum PublicServicesError {
     UpdateNotConfigured,
     ShuttingDown,
     DownloadUnavailable,
+    ChannelNotRegistered,
 }
 
 impl std::fmt::Display for PublicServicesError {
@@ -94,6 +99,7 @@ impl std::fmt::Display for PublicServicesError {
             Self::UpdateNotConfigured => "public_services_update_not_configured",
             Self::ShuttingDown => "public_services_shutting_down",
             Self::DownloadUnavailable => "public_services_download_unavailable",
+            Self::ChannelNotRegistered => "public_services_channel_not_registered",
         })
     }
 }
@@ -228,7 +234,7 @@ impl PublicServicesRuntime {
     async fn check_updates(&self) -> UpdatePresentation {
         let _gate = self.inner.update_gate.lock().await;
         if self.inner.shutting_down.load(Ordering::Acquire) {
-            return self.record_update_failure().await;
+            return self.record_update_failure(PublicServicesError::ShuttingDown).await;
         }
         if !self.inner.transport.updates_configured() {
             *self.inner.download_url.write().await = None;
@@ -248,7 +254,7 @@ impl PublicServicesRuntime {
                 *self.inner.update.write().await = presentation.clone();
                 presentation
             }
-            Err(_) => self.record_update_failure().await,
+            Err(error) => self.record_update_failure(error).await,
         }
     }
 
@@ -263,9 +269,15 @@ impl PublicServicesRuntime {
         self.check_updates().await
     }
 
-    async fn record_update_failure(&self) -> UpdatePresentation {
+    async fn record_update_failure(&self, error: PublicServicesError) -> UpdatePresentation {
         *self.inner.download_url.write().await = None;
-        let status = UpdatePresentation::status("failed");
+        let mut status = UpdatePresentation::status("failed");
+        status.failure_reason = Some(match error {
+            PublicServicesError::ChannelNotRegistered => "channel-not-registered",
+            PublicServicesError::NetworkUnavailable => "network-unavailable",
+            PublicServicesError::InvalidResponse => "invalid-response",
+            _ => "service-unavailable",
+        });
         *self.inner.update.write().await = status.clone();
         status
     }

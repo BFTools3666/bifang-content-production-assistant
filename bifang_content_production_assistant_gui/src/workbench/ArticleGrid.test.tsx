@@ -496,7 +496,7 @@ describe("article Grid interactions", () => {
     expect(
       within(informationCell).getByText("企业知识库搭建指南"),
     ).toBeInTheDocument();
-    expect(within(informationCell).getByText("文章包 v1")).toBeInTheDocument();
+    expect(within(informationCell).getByText("文章版本 1")).toBeInTheDocument();
     expect(within(informationCell).getByText("草稿")).toBeInTheDocument();
     expect(within(informationCell).getByText("创建时间")).toBeInTheDocument();
     expect(within(informationCell).getByText("更新时间")).toBeInTheDocument();
@@ -544,8 +544,8 @@ describe("article Grid interactions", () => {
       name: "生成《企业知识库搭建指南》的正文",
     });
     expect(articleAction).toBeDisabled();
-    expect(articleAction).toHaveTextContent("配置正文 AI");
-    expect(articleAction).toHaveAccessibleDescription("配置正文 AI");
+    expect(articleAction).toHaveTextContent("设置正文 AI");
+    expect(articleAction).toHaveAccessibleDescription("设置正文 AI");
     expect(
       screen.getByRole("button", {
         name: "生成《企业知识库搭建指南》的简介",

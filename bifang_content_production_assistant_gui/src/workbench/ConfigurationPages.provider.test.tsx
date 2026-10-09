@@ -715,7 +715,7 @@ describe("prompt and provider configuration pages", () => {
     await screen.findAllByText("正文服务");
     expect(screen.getByText("当前使用：正文服务")).toBeInTheDocument();
     const editArticleProvider = screen.getByRole("button", {
-      name: "配置正文：正文服务",
+      name: "设置正文 AI：正文服务",
     });
     await user.click(editArticleProvider);
     expect(
@@ -738,7 +738,7 @@ describe("prompt and provider configuration pages", () => {
     await user.clear(articleTimeout);
     await user.type(articleTimeout, "75");
 
-    await user.click(screen.getByRole("button", { name: "保存正文配置" }));
+    await user.click(screen.getByRole("button", { name: "保存正文 AI 设置" }));
 
     expect(configMocks.saveProviderConfig).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -772,7 +772,7 @@ describe("prompt and provider configuration pages", () => {
 
     await user.click(screen.getByRole("tab", { name: "简介 AI" }));
     await user.click(
-      screen.getByRole("button", { name: "配置简介：简介与配图服务" }),
+      screen.getByRole("button", { name: "设置简介 AI：简介与配图服务" }),
     );
     expect(
       screen.queryByRole("switch", { name: /设为简介的默认服务/u }),
@@ -792,7 +792,7 @@ describe("prompt and provider configuration pages", () => {
     await user.type(summaryTimeout, "50");
     expect(screen.queryByLabelText(/正文模型/u)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/图片模型/u)).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "保存简介配置" }));
+    await user.click(screen.getByRole("button", { name: "保存简介 AI 设置" }));
 
     expect(configMocks.saveProviderConfig).toHaveBeenNthCalledWith(
       2,

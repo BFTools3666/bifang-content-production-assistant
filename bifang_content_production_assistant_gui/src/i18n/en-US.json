@@ -211,8 +211,8 @@
     }
   },
   "workbench": {
-    "title": "Batch Content Workbench",
-    "description": "Manage titles in a multidimensional Grid, then run the fixed SOP for any selection to generate an article, summary, image, and HTML.",
+    "title": "Batch article workbench",
+    "description": "Generate or import titles, then produce articles, summaries, images and exports.",
     "loading": "Reading article tasks…",
     "refreshing": "Syncing progress…",
     "load_failed": "The article workbench could not be read. Local data was not changed.",
@@ -227,7 +227,7 @@
       "failed": "Needs attention"
     },
     "actions": {
-      "add_titles": "Add titles in bulk",
+      "add_titles": "Import existing titles",
       "run_selected": "Run selected ({{count}})",
       "retry_selected": "Retry selected failures",
       "retry_failed": "Retry failed stage only",
@@ -240,7 +240,8 @@
       "configure_provider": "Configure AI service",
       "select_current": "Select current results ({{count}})",
       "inspect": "View details",
-      "inspect_title": "View details for “{{title}}”"
+      "inspect_title": "View details for “{{title}}”",
+      "from_topic": "Create one article from a topic"
     },
     "feedback": {
       "added": "Created {{count}} tasks. {{duplicates}} duplicate titles were preserved as separate tasks.",
@@ -827,18 +828,41 @@
   "settings": {
     "host_state_failed": "Some system settings could not be read. You can retry; switches will not pretend to be enabled.",
     "language_failed": "The language preference could not be saved. The interface keeps its current language.",
-    "business_settings": "Content production and connections",
+    "business_settings": "Article production settings",
     "ai_services": "AI services",
     "feishu_connection": "Feishu and cloud documents",
     "writing_prompts": "Content instructions",
-    "run_history": "Run history"
+    "run_history": "Run history",
+    "ai_services_hint": "Connect a model and API key",
+    "feishu_connection_hint": "Sync cloud documents and tables",
+    "writing_prompts_hint": "Manage generation instructions",
+    "run_history_hint": "Review progress and failures"
   },
   "research": {
     "navigation": {
       "benchmarks": "Find references",
       "styles": "Styles",
-      "writer": "Content production",
+      "writer": "Article production",
       "drafts": "My articles"
     }
+  },
+  "title_generation": {
+    "title": "Generate titles with AI",
+    "description": "Choose a platform and enter a topic to generate five titles. Select the ones you want to add to batch production.",
+    "platform": "Target platform",
+    "count": "Number of titles",
+    "topic": "Topic or keywords",
+    "topic_placeholder": "For example: customer follow-ups, home organization, product guides",
+    "requirements": "Audience and title angles (optional)",
+    "provider": "AI service",
+    "generate": "Generate titles",
+    "regenerate": "Generate more titles",
+    "results": "Title candidates for “{{topic}}”",
+    "select_all": "Select all titles",
+    "add": "Add to workbench ({{count}})",
+    "setup": "Connect AI",
+    "setup_hint": "Connect a text AI service first. Your existing article AI configuration will be reused.",
+    "config_loading": "Loading AI settings",
+    "config_failed": "Could not read AI settings. Please retry."
   }
 }
