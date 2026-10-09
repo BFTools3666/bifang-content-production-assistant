@@ -149,7 +149,7 @@ export function WriterPage(): ReactElement {
           disabled={generation.isPending}
           onClick={() => void navigate({ to: "/batch" })}
         >
-          {t(IS_XHS_EDITION ? "图文制作工作台" : "批量文章工作台")}
+          {t("批量制作工作台")}
         </Button>
       </Group>
       <div className={styles.writingSteps} aria-label={t("写作步骤")}>
