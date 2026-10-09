@@ -2,6 +2,22 @@
   "schemaVersion": 2,
   "releases": [
     {
+      "releaseDate": "2026-10-10",
+      "version": "v0.2.29",
+      "featureOptimizations": [
+        {
+          "zh-CN": "文章生产首页先展示单篇文章；需要多篇时，从“批量制作工作台”进入。",
+          "en-US": "Open single-article production from the home screen, and use the Batch Production Workbench for multiple articles."
+        }
+      ],
+      "bugFixes": [
+        {
+          "zh-CN": "简化批量 AI 标题生成：选择平台并填写主题后，使用已保存的默认文本 AI 生成 5 个候选。",
+          "en-US": "Simplify batch AI title generation to platform and topic, using the saved default text AI to produce five title options."
+        }
+      ]
+    },
+    {
       "releaseDate": "2026-10-09",
       "version": "v0.2.28",
       "featureOptimizations": [
