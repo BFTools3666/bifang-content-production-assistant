@@ -438,7 +438,7 @@ checksum = "ac07cdecf99051d9a5238b80f35af32cdeba5b336e55d957b318b50137e18da5"
 
 [[package]]
 name = "bifang_content_production_assistant_cli"
-version = "0.2.28"
+version = "0.2.29"
 dependencies = [
  "assert_cmd",
  "bifang_content_production_assistant_core",
@@ -453,7 +453,7 @@ dependencies = [
 
 [[package]]
 name = "bifang_content_production_assistant_core"
-version = "0.2.28"
+version = "0.2.29"
 dependencies = [
  "jiff",
  "pulldown-cmark",
@@ -465,7 +465,7 @@ dependencies = [
 
 [[package]]
 name = "bifang_content_production_assistant_gui"
-version = "0.2.28"
+version = "0.2.29"
 dependencies = [
  "base64 0.23.1",
  "bifang_content_production_assistant_core",
