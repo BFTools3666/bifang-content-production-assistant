@@ -207,7 +207,7 @@ export function SettingsPageTemplate({
     <Stack data-testid="settings-page" gap="lg">
       <Group justify="space-between" wrap="wrap">
         <Title order={2}>{t("settings.title")}</Title>
-        <Badge size="lg" variant="light">
+        <Badge size="lg" variant="light" style={{ textTransform: "none" }}>
           {applicationName} · {formatDisplayVersion(version)}
         </Badge>
       </Group>

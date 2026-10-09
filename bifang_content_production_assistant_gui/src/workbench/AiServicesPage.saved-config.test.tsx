@@ -323,7 +323,7 @@ describe("saved AI service configuration", () => {
       "true",
     );
     await user.click(
-      screen.getByRole("button", { name: "配置正文：三阶段共享服务" }),
+      screen.getByRole("button", { name: "设置正文 AI：三阶段共享服务" }),
     );
     expect(await screen.findByLabelText(/正文模型/u)).toBeInTheDocument();
     expect(screen.queryByLabelText(/简介模型/u)).not.toBeInTheDocument();
@@ -333,7 +333,7 @@ describe("saved AI service configuration", () => {
     await user.click(screen.getByRole("button", { name: "取消" }));
     await user.click(screen.getByRole("tab", { name: "简介 AI" }));
     await user.click(
-      screen.getByRole("button", { name: "配置简介：三阶段共享服务" }),
+      screen.getByRole("button", { name: "设置简介 AI：三阶段共享服务" }),
     );
     expect(screen.queryByLabelText(/正文模型/u)).not.toBeInTheDocument();
     expect(await screen.findByLabelText(/简介模型/u)).toBeInTheDocument();
@@ -343,7 +343,7 @@ describe("saved AI service configuration", () => {
     await user.click(screen.getByRole("button", { name: "取消" }));
     await user.click(await screen.findByRole("tab", { name: "图片 AI" }));
     await user.click(
-      screen.getByRole("button", { name: "配置图片：三阶段共享服务" }),
+      screen.getByRole("button", { name: "设置图片 AI：三阶段共享服务" }),
     );
     expect(screen.queryByLabelText(/正文模型/u)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/简介模型/u)).not.toBeInTheDocument();
@@ -488,7 +488,7 @@ describe("saved AI service configuration", () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("缺少密钥；运行前请先在下方连接管理中保存"),
+      screen.getByText("还没有保存 API Key，请先在下方补充密钥。"),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("menuitem", {
@@ -807,12 +807,12 @@ describe("saved AI service configuration", () => {
 
     await user.click(await screen.findByRole("tab", { name: "图片 AI" }));
     await user.click(
-      screen.getByRole("button", { name: "配置图片：保留字段服务" }),
+      screen.getByRole("button", { name: "设置图片 AI：保留字段服务" }),
     );
     const imageModel = screen.getByLabelText(/图片模型/u);
     await user.clear(imageModel);
     await user.type(imageModel, "image-new");
-    await user.click(screen.getByRole("button", { name: "保存图片配置" }));
+    await user.click(screen.getByRole("button", { name: "保存图片 AI 设置" }));
     await waitFor(() =>
       expect(providerMocks.saveProviderConfig).toHaveBeenNthCalledWith(
         1,

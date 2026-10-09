@@ -341,7 +341,7 @@ describe("article format viewer", () => {
       name: "同步 Markdown 到飞书",
     });
     await waitFor(() => expect(syncButton).toBeDisabled());
-    expect(screen.getByText(/格式阶段尚未完成或已过期/)).toBeInTheDocument();
+    expect(screen.getByText(/请先完成文章的导出格式，再同步到云文档/)).toBeInTheDocument();
     expect(commandMocks.syncArticleToConnector).not.toHaveBeenCalled();
   });
 });

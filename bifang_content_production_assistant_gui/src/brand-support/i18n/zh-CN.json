@@ -121,17 +121,22 @@
     "version_transition": "当前 {{current}} → 可用 {{available}}",
     "install_update": "安装更新",
     "exit_application": "退出应用",
-    "open_download": "打开官方下载页"
+    "open_download": "打开官方下载页",
+    "failure_channel_not_registered": "更新服务未找到此工具。请联系发布管理员核对更新渠道；当前版本仍可使用。",
+    "failure_network_unavailable": "暂时无法连接更新服务。请检查网络后重试；当前功能可继续使用。",
+    "failure_invalid_response": "更新服务返回了无法识别的信息，请联系发布管理员检查版本配置。",
+    "failure_service_unavailable": "更新服务暂时不可用，请稍后重试。"
   },
   "release_notes": {
     "dialog_title": "更新日志",
     "entry_title": "-----------更新日志 {{date}} {{version}}----------",
     "feature_optimizations": "###功能优化",
     "bug_fixes": "###问题修复",
-    "loading": "正在读取候选内更新日志",
-    "load_failed": "无法读取此候选内的更新日志，请重试或重新安装完整候选",
+    "loading": "正在读取本版本的更新日志",
+    "load_failed": "无法读取本版本的更新日志。请重试；若仍失败，请联系发布管理员核对安装包。",
     "retry": "重试",
     "empty": "暂无已发布的更新日志",
-    "none": "无"
+    "none": "无",
+    "close": "关闭更新日志"
   }
 }

@@ -93,7 +93,7 @@ export function WriterPage(): ReactElement {
     onSuccess: (result) => {
       setDraftId(result.id);
       setError("");
-      setMessage(t(isNote ? "笔记文字已生成并保存" : "技术文章已生成并保存"));
+      setMessage(t(isNote ? "笔记文字已生成并保存" : "文章已生成并保存"));
       void client.invalidateQueries({ queryKey: RESEARCH_QUERY_KEY });
     },
     onError: (failure) => setError(researchError(failure)),
@@ -126,7 +126,7 @@ export function WriterPage(): ReactElement {
     (mode !== "style" || Boolean(input.styleId));
   const steps = [
     isNote ? "选主题和参考" : "选平台和主题",
-    isNote ? "生成笔记文字" : "生成技术文章",
+    isNote ? "生成笔记文字" : "生成文章",
     isNote ? "检查笔记文字" : "检查标题和正文",
     isNote ? "导出文字或制作配图" : "导出或继续制作",
   ];
@@ -139,7 +139,7 @@ export function WriterPage(): ReactElement {
             {t(
               isNote
                 ? "为小红书制作图文笔记：先生成笔记文字，核对后继续做配图。"
-                : "为 CSDN 或百家号生产技术类长文章：定主题、选参考、核对后再导出。",
+                : "为 CSDN 或百家号生产长文章：定主题、选参考、核对后再导出。",
             )}
           </Text>
         </div>
@@ -210,7 +210,7 @@ export function WriterPage(): ReactElement {
           title={t(
             isNote
               ? "先接入 AI，才能生成笔记文字"
-              : "先接入 AI，才能生成技术文章",
+              : "先接入 AI，才能生成文章",
           )}
           mb="lg"
         >
@@ -267,7 +267,7 @@ export function WriterPage(): ReactElement {
                     "从主题生成",
                     isNote
                       ? "输入主题和自己的资料，生成笔记文字。"
-                      : "输入主题和自己的资料，生成技术文章。",
+                      : "输入主题和自己的资料，生成文章。",
                   ],
                   [
                     "reference",
@@ -306,7 +306,7 @@ export function WriterPage(): ReactElement {
               ))}
             </div>
             <TextInput
-              label={t(isNote ? "这篇图文笔记的主题" : "这篇技术文章的主题")}
+              label={t(isNote ? "这篇图文笔记的主题" : "这篇文章的主题")}
               placeholder={t("输入主题、关键词，或读者想解决的问题")}
               value={input.keyword}
               maxLength={200}
@@ -391,7 +391,7 @@ export function WriterPage(): ReactElement {
                   setStep(1);
                 }}
               >
-                {t(isNote ? "下一步：生成笔记文字" : "下一步：生成技术文章")}
+                {t(isNote ? "下一步：生成笔记文字" : "下一步：生成文章")}
               </Button>
             </Group>
           </Stack>
@@ -485,7 +485,7 @@ export function WriterPage(): ReactElement {
             >
               {generation.isPending
                 ? t("正在生成并保存")
-                : t(isNote ? "生成笔记文字" : "生成技术文章")}
+                : t(isNote ? "生成笔记文字" : "生成文章")}
             </Button>
             {draft ? (
               <Button

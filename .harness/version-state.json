@@ -24,8 +24,12 @@
     "BUG-CONTENT-PRODUCTION-TERMINOLOGY-20260930",
     "BUG-WINDOWS-LEGACY-SEO-SHORTCUT-20260930",
     "BUG-PLATFORM-CONTENT-TYPES-20260930",
-    "UX-COPY-CONTENT-PRODUCTION-20260930"
+    "UX-COPY-CONTENT-PRODUCTION-20260930",
+    "UX-ARTICLE-PRODUCTION-OPERATOR-20261009",
+    "BUG-UPDATE-CHECK-FEEDBACK-20261009",
+    "BUG-RELEASE-NOTES-PACKAGING-20261009"
   ],
+  "applied_reconciliations": [],
   "cycle_base_version": "0.1.0",
   "feature_bump_applied": true,
   "last_release": null,
@@ -244,8 +248,28 @@
       "change_id": "UX-COPY-CONTENT-PRODUCTION-20260930",
       "kind": "bug-fix",
       "required_version": "0.2.25"
+    },
+    {
+      "change_id": "FEAT-BATCH-AI-TITLES-20261009",
+      "kind": "feature",
+      "required_version": "0.2.25"
+    },
+    {
+      "change_id": "UX-ARTICLE-PRODUCTION-OPERATOR-20261009",
+      "kind": "bug-fix",
+      "required_version": "0.2.26"
+    },
+    {
+      "change_id": "BUG-UPDATE-CHECK-FEEDBACK-20261009",
+      "kind": "bug-fix",
+      "required_version": "0.2.27"
+    },
+    {
+      "change_id": "BUG-RELEASE-NOTES-PACKAGING-20261009",
+      "kind": "bug-fix",
+      "required_version": "0.2.28"
     }
   ],
   "schema_version": 1,
-  "target_version": "0.2.25"
+  "target_version": "0.2.28"
 }

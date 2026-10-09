@@ -13,7 +13,7 @@ gui-root = "bifang_content_production_assistant_gui"
 version-mirrors = ["bifang_content_production_assistant_gui/package.json", "bifang_content_production_assistant_gui/src-tauri/tauri.conf.json"]
 
 [workspace.package]
-version = "0.2.25"
+version = "0.2.28"
 edition = "2024"
 rust-version = "1.95"
 

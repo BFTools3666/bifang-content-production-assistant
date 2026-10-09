@@ -121,17 +121,22 @@
     "version_transition": "Current {{current}} → available {{available}}",
     "install_update": "Install update",
     "exit_application": "Exit application",
-    "open_download": "Open official download page"
+    "open_download": "Open official download page",
+    "failure_channel_not_registered": "The update service could not find this application. Ask the release administrator to check its update channel; you can keep using the current version.",
+    "failure_network_unavailable": "Could not connect to the update service. Check your connection and retry. You can keep using this version.",
+    "failure_invalid_response": "The update service returned an invalid response. Ask the release administrator to check its version configuration.",
+    "failure_service_unavailable": "The update service is temporarily unavailable. Please retry later."
   },
   "release_notes": {
     "dialog_title": "Release notes",
     "entry_title": "-----------Release notes {{date}} {{version}}----------",
     "feature_optimizations": "###Feature optimizations",
     "bug_fixes": "###Bug fixes",
-    "loading": "Reading release notes from this candidate",
-    "load_failed": "The release notes bundled with this candidate could not be read. Retry or reinstall the complete candidate.",
+    "loading": "Reading the release notes for this version",
+    "load_failed": "The release notes for this version could not be read. Retry; if it still fails, ask the release administrator to check the installer.",
     "retry": "Retry",
     "empty": "No published release notes are available",
-    "none": "None"
+    "none": "None",
+    "close": "Close release notes"
   }
 }

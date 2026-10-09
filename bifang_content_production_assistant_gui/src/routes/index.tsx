@@ -1,4 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { WriterPage } from "../research/WriterPage";
-/** 首页直接进入运营人员的文章写作流程。 */
-export const Route = createFileRoute("/")({ component: WriterPage });
+import { ArticleWorkbenchPage } from "../workbench/ArticleWorkbenchPage";
+/** 首页与命名一致，直接展示标题、正文和成品的批量生产工作台。 */
+export const Route = createFileRoute("/")({ component: ArticleWorkbenchPage });

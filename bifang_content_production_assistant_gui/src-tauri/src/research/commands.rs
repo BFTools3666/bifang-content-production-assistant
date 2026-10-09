@@ -45,6 +45,15 @@ async fn generate_text(repository: &WorkspaceRepository, provider_id: &str, prom
     Ok((plan.model, result))
 }
 
+/// 仅生成标题候选，用户确认后才由既有添加标题用例建立文章任务。
+#[tauri::command]
+pub(crate) async fn generate_article_titles(input: TitleGenerationInput, provider_id: String, repository: State<'_, Arc<WorkspaceRepository>>, runtime: State<'_, ResearchRuntime>) -> Result<GeneratedTitles, CommandError> {
+    let _guard = runtime.generation.try_lock().map_err(|_| research_error("已有生成正在进行，请等待结果".into()))?;
+    let prompt = build_title_generation_prompt(&input).map_err(research_error)?;
+    let (_, result) = generate_text(&repository, &provider_id, &prompt).await?;
+    parse_generated_titles(&result.text, &input).map_err(research_error)
+}
+
 /// 生成二次标题和原创正文，结构通过校验后才原子保存草稿。
 #[tauri::command]
 pub(crate) async fn generate_research_content(input: ContentGenerationInput, provider_id: String, repository: State<'_, Arc<WorkspaceRepository>>, runtime: State<'_, ResearchRuntime>) -> Result<ResearchDraft, CommandError> {

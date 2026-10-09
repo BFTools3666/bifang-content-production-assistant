@@ -165,6 +165,21 @@ async fn unconfigured_services_make_no_requests() {
     assert_eq!(*transport.update_requests.lock().expect("测试锁"), 0);
 }
 
+/// 后台未登记与网络错误保留各自原因，不把失败显示为已是最新版。
+#[tokio::test]
+async fn update_failures_preserve_safe_reasons_and_disable_downloads() {
+    for (error, expected) in [(PublicServicesError::ChannelNotRegistered, "channel-not-registered"), (PublicServicesError::NetworkUnavailable, "network-unavailable")] {
+        let root = tempdir().unwrap();
+        let mut transport = FakeTransport::configured(Vec::new());
+        transport.update = Err(error);
+        let runtime = PublicServicesRuntime::with_components(root.path().to_path_buf(), Arc::new(transport), Arc::new(fixed_clock));
+        let result = runtime.check_updates().await;
+        assert_eq!(result.status, "failed");
+        assert_eq!(result.failure_reason, Some(expected));
+        assert!(!result.download_ready);
+    }
+}
+
 #[test]
 fn strict_seven_field_response_and_truth_table_are_preserved() {
     let cases = [

@@ -124,11 +124,26 @@ export function decodeUpdatePresentation(value: unknown): UpdatePresentation {
     "message",
     "status",
     "title",
+    "failureReason",
   ]);
   if (Object.keys(value).some((key) => !allowed.has(key))) {
     throw new Error("invalid update presentation fields");
   }
   const status = decodeAdapterUpdaterStatus(value.status);
+  const failureReason = value.failureReason;
+  if (
+    failureReason !== undefined &&
+    (status !== "failed" ||
+      typeof failureReason !== "string" ||
+      ![
+        "channel-not-registered",
+        "network-unavailable",
+        "invalid-response",
+        "service-unavailable",
+      ].includes(failureReason))
+  ) {
+    throw new Error("invalid update failure reason");
+  }
   const downloadReady = value.downloadReady;
   if (typeof downloadReady !== "boolean") {
     throw new Error("invalid update download state");
@@ -143,6 +158,7 @@ export function decodeUpdatePresentation(value: unknown): UpdatePresentation {
     message: optionalText("message"),
     status,
     title: optionalText("title"),
+    failureReason: failureReason as UpdatePresentation["failureReason"],
   };
 }
 

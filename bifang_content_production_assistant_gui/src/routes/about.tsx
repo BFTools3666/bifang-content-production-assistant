@@ -58,7 +58,11 @@ function AboutRouteComponent(): ReactElement {
         void openUpdateDownload();
       }}
       productName={metadataQuery.data.applicationName}
-      update={update}
+      update={
+        updateQuery.isFetching
+          ? { ...update, status: "checking", downloadReady: false }
+          : update
+      }
       version={metadataQuery.data.version}
     />
   );

@@ -4,11 +4,13 @@ mod model;
 mod generation;
 mod library;
 mod delivery;
+mod titles;
 
 pub use model::*;
 pub use generation::*;
 pub use library::*;
 pub use delivery::*;
+pub use titles::*;
 
 #[cfg(test)]
 mod tests;

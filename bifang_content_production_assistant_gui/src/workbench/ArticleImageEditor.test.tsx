@@ -200,7 +200,7 @@ describe("article image editor", () => {
     });
 
     resolveSave?.();
-    await screen.findByText("配图编辑已保存为新的文章包版本。");
+    await screen.findByText("配图编辑已保存为新的文章版本。");
     await waitFor(() => expect(loadEditorMock).toHaveBeenCalledTimes(2));
     expect(onDirtyChange).toHaveBeenLastCalledWith(false);
   });

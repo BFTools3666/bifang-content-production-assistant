@@ -216,14 +216,14 @@ describe("batch content workbench", () => {
     await user.click(
       screen.getByRole("checkbox", { name: /企业知识库搭建指南/ }),
     );
-    await user.click(screen.getByRole("button", { name: "运行所选（1）" }));
+    await user.click(screen.getByRole("button", { name: "批量制作（1 篇）" }));
 
     expect(commandMocks.previewSelectedBatch).toHaveBeenCalledWith([
       "article-a",
     ]);
     expect(commandMocks.startSelectedBatch).not.toHaveBeenCalled();
     expect(
-      await screen.findByRole("dialog", { name: "确认运行所选任务" }),
+      await screen.findByRole("dialog", { name: "开始制作这些文章？" }),
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "确认并开始生成" }));
@@ -272,7 +272,7 @@ describe("batch content workbench", () => {
     commandMocks.generateArticleStage.mockResolvedValue({ batchId: "article-only", queuedCount: 1, queuedTaskIds: ["article-a"], skipped: [], skippedCount: 0 });
     const user = userEvent.setup();
     await renderWorkbench();
-    expect(await screen.findByText(/尚未配置：简介、配图/u)).toBeInTheDocument();
+    expect(await screen.findByText(/还需要设置：简介、配图/u)).toBeInTheDocument();
     const generate = screen.getByRole("button", { name: "生成《企业知识库搭建指南》的正文" });
     expect(generate).toBeEnabled();
     await user.click(generate);
@@ -327,9 +327,9 @@ describe("batch content workbench", () => {
     await user.click(
       await screen.findByRole("checkbox", { name: /企业知识库搭建指南/ }),
     );
-    const runSelected = screen.getByRole("button", { name: "运行所选（1）" });
+    const runSelected = screen.getByRole("button", { name: "批量制作（1 篇）" });
     const retrySelected = screen.getByRole("button", {
-      name: "重试所选失败行",
+      name: "重试所选失败项",
     });
     expect(runSelected).toBeEnabled();
     expect(retrySelected).toBeEnabled();
@@ -507,7 +507,7 @@ describe("batch content workbench", () => {
     await renderWorkbench();
 
     const addButton = await screen.findByRole("button", {
-      name: "批量添加标题",
+      name: "导入现有标题",
     });
     addButton.focus();
     await user.keyboard("{Enter}");
@@ -551,11 +551,11 @@ describe("batch content workbench", () => {
     selectAll.focus();
     await user.keyboard("[Space]");
     expect(
-      screen.getByRole("button", { name: "运行所选（20）" }),
+      screen.getByRole("button", { name: "批量制作（20 篇）" }),
     ).toBeEnabled();
     await user.keyboard("[Space]");
     expect(
-      screen.getByRole("button", { name: "运行所选（0）" }),
+      screen.getByRole("button", { name: "批量制作（0 篇）" }),
     ).toBeDisabled();
 
     for (const title of ["SEO 标题 1", "SEO 标题 2"]) {
@@ -565,11 +565,11 @@ describe("batch content workbench", () => {
       checkbox.focus();
       await user.keyboard("[Space]");
     }
-    const runButton = screen.getByRole("button", { name: "运行所选（2）" });
+    const runButton = screen.getByRole("button", { name: "批量制作（2 篇）" });
     runButton.focus();
     await user.keyboard("{Enter}");
     expect(
-      await screen.findByRole("dialog", { name: "确认运行所选任务" }),
+      await screen.findByRole("dialog", { name: "开始制作这些文章？" }),
     ).toBeInTheDocument();
     const cancelButton = screen.getByRole("button", { name: "取消" });
     cancelButton.focus();
@@ -664,7 +664,7 @@ describe("batch content workbench", () => {
     await user.click(
       screen.getByRole("checkbox", { name: "全选当前结果（2）" }),
     );
-    expect(screen.getByRole("button", { name: "运行所选（2）" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "批量制作（2 篇）" })).toBeEnabled();
 
     await user.clear(search);
     expect(
@@ -677,7 +677,7 @@ describe("batch content workbench", () => {
       screen.getByRole("checkbox", { name: "选择《无关文章》" }),
     ).not.toBeChecked();
 
-    await user.click(screen.getByRole("button", { name: "运行所选（2）" }));
+    await user.click(screen.getByRole("button", { name: "批量制作（2 篇）" }));
     expect(commandMocks.previewSelectedBatch).toHaveBeenCalledWith([
       "article-visible-b",
       "article-visible-a",

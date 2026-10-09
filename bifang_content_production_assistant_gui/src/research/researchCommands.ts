@@ -21,6 +21,38 @@ export async function generateContent(input: GenerationInput, providerId: string
   return invoke<ResearchDraft>("generate_research_content", { input, providerId });
 }
 
+/** 只有主题与标题要求的生成输入，不要求用户先写标题。 */
+export interface TitleGenerationInput {
+  platform: ContentPlatform;
+  topic: string;
+  requirements: string;
+  count: number;
+}
+
+/** 调用已有文本 AI 配置并校验窄响应；不会自动建立文章任务。 */
+export async function generateArticleTitles(
+  input: TitleGenerationInput,
+  providerId: string,
+): Promise<string[]> {
+  const result = await invoke<unknown>("generate_article_titles", {
+    input,
+    providerId,
+  });
+  if (
+    !result ||
+    typeof result !== "object" ||
+    !("titles" in result) ||
+    !Array.isArray(result.titles) ||
+    result.titles.length !== input.count ||
+    !result.titles.every(
+      (title: unknown) => typeof title === "string" && title.trim().length > 0,
+    )
+  ) {
+    throw new Error("AI返回的标题格式不正确，请重试");
+  }
+  return result.titles as string[];
+}
+
 /** 将同一主页至少三件完整公开作品分析并保存为风格。 */
 export async function analyzeStyle(platform: ContentPlatform, homepageUrl: string, sourceIds: string[], name: string, providerId: string): Promise<StyleProfile> {
   return invoke<StyleProfile>("analyze_research_style", { platform, homepageUrl, sourceIds, name, providerId });

@@ -259,7 +259,7 @@ describe("article image editor modal", () => {
     await act(async () => finishSave?.());
     await waitFor(() => expect(closeButton).toBeEnabled());
     expect(
-      within(dialog).getByText("配图编辑已保存为新的文章包版本。"),
+      within(dialog).getByText("配图编辑已保存为新的文章版本。"),
     ).toBeInTheDocument();
     await user.click(closeButton);
     await waitFor(() => expect(dialog).not.toBeInTheDocument());

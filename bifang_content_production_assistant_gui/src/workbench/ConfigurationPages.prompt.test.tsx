@@ -288,7 +288,7 @@ describe("prompt and provider configuration pages", () => {
     expect(
       await screen.findByText("撰写 批量内容工作台示例"),
     ).toBeInTheDocument();
-    const articleContent = screen.getByLabelText(/Prompt 内容/u);
+    const articleContent = screen.getByLabelText(/给 AI 的具体要求/u);
     await user.clear(articleContent);
     await user.click(articleContent);
     await user.paste("未保存 {{title}} 草稿");
@@ -300,10 +300,10 @@ describe("prompt and provider configuration pages", () => {
     ).not.toBeInTheDocument();
     await user.click(screen.getByRole("tab", { name: /简介 · v1/u }));
     await user.click(screen.getByRole("tab", { name: /正文 · v1/u }));
-    expect(screen.getByLabelText(/Prompt 内容/u)).toHaveValue(
+    expect(screen.getByLabelText(/给 AI 的具体要求/u)).toHaveValue(
       "未保存 {{title}} 草稿",
     );
-    await user.click(screen.getByRole("button", { name: "保存为新版本" }));
+    await user.click(screen.getByRole("button", { name: "保存修改" }));
     expect(configMocks.savePromptTemplate).toHaveBeenCalledWith({
       content: "未保存 {{title}} 草稿",
       id: "article",
@@ -312,14 +312,14 @@ describe("prompt and provider configuration pages", () => {
       version: 1,
     });
     await user.click(screen.getByRole("tab", { name: /简介 · v1/u }));
-    await user.click(screen.getByRole("button", { name: "保存为新版本" }));
+    await user.click(screen.getByRole("button", { name: "保存修改" }));
     await waitFor(() =>
       expect(configMocks.savePromptTemplate).toHaveBeenCalledWith(
         expect.objectContaining({ id: "summary", version: 1 }),
       ),
     );
     await user.click(screen.getByRole("tab", { name: /配图 · v1/u }));
-    await user.click(screen.getByRole("button", { name: "保存为新版本" }));
+    await user.click(screen.getByRole("button", { name: "保存修改" }));
     await waitFor(() =>
       expect(configMocks.savePromptTemplate).toHaveBeenCalledWith(
         expect.objectContaining({ id: "image", version: 1 }),
@@ -364,12 +364,12 @@ describe("prompt and provider configuration pages", () => {
     const user = userEvent.setup();
     await renderConfiguration(<PromptTemplatesPage />);
 
-    const content = await screen.findByLabelText(/Prompt 内容/u);
+    const content = await screen.findByLabelText(/给 AI 的具体要求/u);
     await user.clear(content);
     await user.type(content, "没有必需变量");
-    await user.click(screen.getByRole("button", { name: "保存为新版本" }));
+    await user.click(screen.getByRole("button", { name: "保存修改" }));
     const message = await screen.findByText(
-      "Prompt 缺少当前阶段必需变量，请对照页面变量列表补齐。",
+      "生成要求 缺少当前阶段必需变量，请对照页面变量列表补齐。",
     );
     expect(message.closest('[role="alert"]')).not.toBeNull();
 
@@ -378,7 +378,7 @@ describe("prompt and provider configuration pages", () => {
     await user.paste("恢复 {{title}}");
     expect(
       screen.queryByText(
-        "Prompt 缺少当前阶段必需变量，请对照页面变量列表补齐。",
+        "生成要求 缺少当前阶段必需变量，请对照页面变量列表补齐。",
       ),
     ).not.toBeInTheDocument();
   });
@@ -455,7 +455,7 @@ describe("prompt and provider configuration pages", () => {
       queryKey: ["prompt-templates"],
     });
     expect(
-      await screen.findByText("正在刷新 Prompt 模板…"),
+      await screen.findByText("正在刷新生成要求…"),
     ).toBeInTheDocument();
     expect(screen.getByDisplayValue("撰写 {{title}}")).toBeInTheDocument();
     rejectRefresh(new Error("refresh failed"));
@@ -463,7 +463,7 @@ describe("prompt and provider configuration pages", () => {
 
     const refreshAlert = (
       await screen.findByText(
-        "刷新 Prompt 模板失败；仍显示上次成功读取的本地数据。",
+        "刷新失败，仍显示上次读取的生成要求。",
       )
     ).closest('[role="alert"]');
     expect(refreshAlert).not.toBeNull();

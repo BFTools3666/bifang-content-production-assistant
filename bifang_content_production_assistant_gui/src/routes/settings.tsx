@@ -1,11 +1,29 @@
-import { Alert, Button, Center, Loader, Stack, Text } from "@mantine/core";
-import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
+import {
+  Alert,
+  Button,
+  Center,
+  Group,
+  Loader,
+  SimpleGrid,
+  Stack,
+  Text,
+  UnstyledButton,
+} from "@mantine/core";
+import {
+  IconAlertCircle,
+  IconRefresh,
+  IconSparkles,
+  IconLink,
+  IconAdjustments,
+  IconHistory,
+} from "@tabler/icons-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppMetadata, useInterfaceLanguage } from "../AppShell";
 import { SettingsPageTemplate } from "../brand-support/SettingsPageTemplate";
+import classes from "./settings.module.css";
 import {
   getAutostartEnabled,
   getSystemNotificationSetting,
@@ -85,27 +103,36 @@ function SettingsRouteComponent(): ReactElement | null {
   return (
     <Stack gap="lg">
       <Text fw={650}>{t("settings.business_settings")}</Text>
-      <Button
-        variant="default"
-        onClick={() => void navigate({ to: "/providers" })}
-      >
-        {t("settings.ai_services")}
-      </Button>
-      <Button
-        variant="default"
-        onClick={() => void navigate({ to: "/connectors" })}
-      >
-        {t("settings.feishu_connection")}
-      </Button>
-      <Button
-        variant="default"
-        onClick={() => void navigate({ to: "/prompts" })}
-      >
-        {t("settings.writing_prompts")}
-      </Button>
-      <Button variant="default" onClick={() => void navigate({ to: "/runs" })}>
-        {t("settings.run_history")}
-      </Button>
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+        {(
+          [
+            ["ai_services", "/providers", IconSparkles],
+            ["feishu_connection", "/connectors", IconLink],
+            ["writing_prompts", "/prompts", IconAdjustments],
+            ["run_history", "/runs", IconHistory],
+          ] as const
+        ).map(([id, to, Icon]) => (
+          <UnstyledButton
+            key={id}
+            className={classes.entry}
+            aria-label={t(`settings.${id}`)}
+            aria-describedby={`settings-${id}-hint`}
+            onClick={() => void navigate({ to })}
+          >
+            <Group gap="md" wrap="nowrap">
+              <Icon className={classes.icon} aria-hidden="true" size={22} />
+              <Stack gap={2}>
+                <Text fw={600} size="sm">
+                  {t(`settings.${id}`)}
+                </Text>
+                <Text id={`settings-${id}-hint`} c="dimmed" size="xs">
+                  {t(`settings.${id}_hint`)}
+                </Text>
+              </Stack>
+            </Group>
+          </UnstyledButton>
+        ))}
+      </SimpleGrid>
 
       {hostStateFailed ? (
         <Alert
