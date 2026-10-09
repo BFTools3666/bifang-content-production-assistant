@@ -1,5 +1,5 @@
 ---
-schema_version: 3
+schema_version: 4
 confirmed_by: arden
 confirmed_at: 2026-09-12
 decision_mode: reuse_then_infer_then_ask
@@ -8,6 +8,7 @@ user_owned_tasks: disabled
 parallel_worktree_subagents: enabled
 acceptance_smoke: enabled
 e2e_hint: disabled
+post_release_action: local_package
 ---
 
 # Agent 运行策略
@@ -21,6 +22,7 @@ e2e_hint: disabled
 - `parallel_worktree_subagents: enabled`：仅在用户明确要求并行时允许 Worktree + 写入型 Subagent；必须分配互不重叠的文件所有权并登记所创建的 Worktree 与分支。启用本身不触发并行。
 - `acceptance_smoke: enabled`：完整真实候选验收时允许执行适用的冒烟测试；不触发日常冒烟。
 - `e2e_hint: disabled`：只是每次显式候选构建询问 E2E 时的建议默认值；当前候选仍需单独明确选择。
+- `post_release_action`：`local_package` 进入已有本地候选打包流程；`push_release_branch` 同步远端默认主分支、`release` 分支和 tag。发布后动作直接读取 `post_release_action`，每次新 Git 发布冻结已确认的 `post_release_action`；重试沿用冻结动作。用户当前请求的安装验收与合并顺序优先。
 - `decision_mode: reuse_then_infer_then_ask`：复用能力偏好；E2E 先读取建议默认值，再复用当前发布候选请求中已明确的选择，否则在候选构建前询问一次。GUI 发布性能只复用当前发布请求已明确的选择，否则逐次询问。
 
 `enabled` 表示允许且在精确触发时采用，不是无条件执行；`disabled` 不能绕过安全、产品或渠道硬门禁。当前请求明确约束优先于持久偏好，当前发布候选的 E2E 明确选择优先于 `e2e_hint`。
@@ -48,9 +50,10 @@ e2e_hint: disabled
 生命周期只在 Git common dir 的 `agent-first-harness/git-lifecycle.json` 登记当前周期由 helper 创建或明确接管的分支与 Worktree；该状态不是 tracked 资产。写操作以同一 common-dir 锁串行化；未登记资源永远不进入自动清理。
 
 - 用户明确“推送”时运行 `publish`：范围内提交后，将登记分支逐个用普通 `git merge --no-edit` 合并到动态默认主分支，切换并推送主分支，复读远端。成功后保留登记资源，不创建 tag。
-- 用户明确“发布”时，先由 `$desktop-prepare-release` 形成并提交 `.harness/release-context.json`，再运行 `release --version <version>`。主分支推送并复读成功后，在当前 HEAD 创建并推送 `v{version}-{YYYYMMDD}`，再复读远端 tag。
-- 只有主分支与 tag 均已确认成功，才按登记清单依次删除 Worktree、远端分支、本地分支；逐项持久化结果。不得强删 dirty Worktree、默认主分支、未登记分支或未登记 Worktree，也不得按前缀或通配符扩大范围。
-- 缺少远端、认证、合并冲突、tag 冲突或清理所有权不成立时保持可恢复状态并停止。流程不替用户创建远端、填写地址、处理凭据、上传产物或操作渠道。
+- 用户明确“发布”时，先由 `$desktop-prepare-release` 复核并提交源码、双语更新日志和 `.harness/release-context.json`，再运行 `release --version <version>`；它只合并本地默认主分支并创建同一提交的版本 tag，不访问远端。
+- 本地 Git 发布完成后，按该次冻结动作执行后续路径：`local_package` 先运行 `check-post-release --action local_package` 并进入现有候选打包及验收；`push_release_branch` 才运行 `push-release --remote <name>`，普通推送远端默认主分支、`release` 分支和 tag 并复读为同一提交。
+- 用户要求先在 005 使用确认后再合并 GitHub 时，远端操作必须等待这次人工确认；本地准备和安装包不代表公司仓库已合并。
+- 保留登记分支和 Worktree；需要清理时另行明确授权。缺少远端、认证、合并冲突、tag 冲突或清理所有权不成立时保持可恢复状态并停止。流程不替用户创建远端、填写凭据或操作未授权渠道。
 
 流程不设置保护分支、严格线性、active leaf、单写入者、fast-forward-only、lease、atomic push、审查路径白名单或发布中转分支。用户可见 Task 的“每项目同时只允许一个写入型 active Task”是创建调度门禁，不是分支历史策略。
 
@@ -108,7 +111,7 @@ Task 绑定：
 
 ## 策略迁移与后续切换
 
-本文件只承认 `schema_version: 3` 和当前五个策略字段，不兼容、不推断任何更早 schema 或旧字段名，包括 `milestone_smoke`、`milestone_e2e`。不合规文件必须由用户重新走五项确认，一次性物化为 schema v3。
+本文件只承认 `schema_version: 4`、当前五个能力策略字段和发布后动作字段，不兼容、不推断任何更早 schema 或旧字段名，包括 `milestone_smoke`、`milestone_e2e`。不合规文件必须由用户重新走五项确认，一次性物化为 schema v4。
 
 初始化后的永久策略变更必须由用户明确确认，同时更新 `confirmed_by`、`confirmed_at`，并在当日 ADR 记录前后值、原因、影响与恢复条件。同值请求按幂等 no-op 处理，不重写元数据或 ADR。切换 `user_owned_tasks` 只影响之后的结果边界，不迁移、中断、删除或改挂当前与既有 Task/Worktree。
 
