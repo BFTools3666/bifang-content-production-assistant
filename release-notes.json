@@ -3,6 +3,17 @@
   "releases": [
     {
       "releaseDate": "2026-10-10",
+      "version": "v0.2.30",
+      "featureOptimizations": [
+        {
+          "zh-CN": "单篇文章页和批量工作台的单篇入口统一显示“一键生成文章”。",
+          "en-US": "Label the single-article page and its batch workbench entry as Generate an article in one click."
+        }
+      ],
+      "bugFixes": []
+    },
+    {
+      "releaseDate": "2026-10-10",
       "version": "v0.2.29",
       "featureOptimizations": [
         {
