@@ -241,7 +241,7 @@
       "select_current": "全选当前结果（{{count}}）",
       "inspect": "查看详情",
       "inspect_title": "查看《{{title}}》详情",
-      "from_topic": "从主题生成单篇文章"
+      "from_topic": "一键生成文章"
     },
     "feedback": {
       "added": "已创建 {{count}} 条任务；其中 {{duplicates}} 条标题重复但按独立任务保留。",

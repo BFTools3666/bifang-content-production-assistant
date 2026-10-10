@@ -241,7 +241,7 @@
       "select_current": "Select current results ({{count}})",
       "inspect": "View details",
       "inspect_title": "View details for “{{title}}”",
-      "from_topic": "Create one article from a topic"
+      "from_topic": "Generate an article in one click"
     },
     "feedback": {
       "added": "Created {{count}} tasks. {{duplicates}} duplicate titles were preserved as separate tasks.",
